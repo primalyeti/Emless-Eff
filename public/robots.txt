@@ -1,0 +1,15 @@
+User-agent: *
+Disallow: /.svn/
+Disallow: /application/
+Disallow: /config/
+Disallow: /db/
+Disallow: /files/
+Disallow: /library/
+Disallow: /public/.svn/
+Disallow: /public/css/
+Disallow: /public/fonts/
+Disallow: /public/img/
+Disallow: /public/js/
+Disallow: /public/swf/
+Disallow: /scripts/
+Disallow: /tmp/

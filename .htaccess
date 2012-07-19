@@ -1,0 +1,12 @@
+<IfModule mod_rewrite.c>
+RewriteEngine on
+RewriteBase /
+
+# rewrite blank to public
+RewriteRule ^$ public/ [L]
+
+# if its not a script, file, ticket or mail, go to public
+RewriteCond %{REQUEST_URI} !^/scripts/(.*)$
+RewriteCond %{REQUEST_URI} !^/files/(.*)$
+RewriteRule (.*) public/$1 [L]
+</IfModule>
