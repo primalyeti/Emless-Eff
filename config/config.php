@@ -25,6 +25,7 @@ switch( $_SERVER["SERVER_NAME"] )			# what environment are we in
 	default:
 		define( 'ENVIRONMENT', 'LOCAL' );	# define environment
 		
+		define( 'DB_TYPE',		'PDO' );		# database connection type. Valid values are "PDO", "MYSQL"
 		define( 'DB_NAME', 		'' );		# database name
 		define( 'DB_USER', 		'' );		# database user
 		define( 'DB_PASSWORD', 	'' );		# database password
@@ -33,6 +34,10 @@ switch( $_SERVER["SERVER_NAME"] )			# what environment are we in
 		define( 'DOMAIN', 'http://local.audiobase.com' . BASE_PATH );			# nonsecure domain
 		define( 'DOMAIN_SECURE', 'http://local.audiobase.com' . BASE_PATH );	# secure domain url
 }
+
+/** DEBUG VARIABLES **/
+define( 'DEVELOPMENT_ENVIRONMENT', true );
+define( 'PRINT_GLOBALS', false );
 
 /** LOG VARIABLES **/
 define( 'LOG_FILE_NAME', 'error.log' );
@@ -49,12 +54,11 @@ define( 'TRACKER_ISON', false );		# is tracking on
 date_default_timezone_set( 'America/Vancouver' );
 
 /** Site Variables **/
-define( 'SITE_TITLE', 'audioBase.com' );
-define( 'META_TITLE', "Download Royalty-Free Audio Sample Loops");
-define( 'META_DESCRIPTION', "Buy, Sell, &amp; Download AppleLoops, WAV Loops, Audio Samples, Song Construction Kits, Sound EFX, and more ..." );
-define( 'META_SEARCH_CATEGORIES', "appleloops,wave loops,aiff loops,sample loops,audio samples,hip hop samples,house samples,techno samples" );
-define( 'META_KEYWORDS', "Hip Hop Samples,Techno Samples,House Samples,Free Loops,Royalty Free Sounds,Hip Hop Loops,download,sound fx" );
-define( 'META_IMAGE', "https://www.audiobase.com/img/logo.jpg" );
+define( 'SITE_TITLE', 'Emless-F Framework' );
+define( 'META_TITLE', "");
+define( 'META_DESCRIPTION', "" );
+define( 'META_SEARCH_CATEGORIES', "" );
+define( 'META_IMAGE', "" );
 
 /** ADMIN VARIABLES **/
 define( 'ADMIN_SESSION_VAR', "admin" );		# admin session variable

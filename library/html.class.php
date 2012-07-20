@@ -1,12 +1,12 @@
 <?
 class HTML
 {
-	function urlsafe( $string )
+	public function urlsafe( $string )
 	{
 		return htmlspecialchars( preg_replace( "/\s/i", "-", preg_replace( "/[^a-z0-9\s]/i", "", $string ) ) );
 	}
 	
-	function shortenUrls( $data )
+	public function shortenUrls( $data )
 	{
 		return preg_replace_callback( "@(https?://([-\w\.]+)+(:\d+)?(/([\w/_\.]*(\?\S+)?)?)?)@", array( get_class( $this ), "_fetchTinyUrl" ), $data );
 	}
@@ -22,49 +22,108 @@ class HTML
 		curl_close( $ch ); 
 		return self::_link( $data, $data, "", true );
 	}
+	
+	public function link( $text, $url = "#", $options = array() )
+	{
+		$url = ( is_array( $url ) ? $url : array( 0 => $url ) );
+		$options = ( is_array( $options ) ? $options : array( 0 => $options ) );
 
-	function link( $path, $text, $att = "" )
-	{
-		return self::_link( $path, $text, $att );
+		$href = BASE_PATH;
+		$query = "?";
+		$attributes = " ";
+		
+		foreach( $url as $n => $v )
+		{
+			if( !empty( $n ) )
+			{
+				$query .= $n . "=" . $v . "&";
+			}
+			else
+			{
+				$href .= $v . "/";
+			}
+		}
+		$query = substr( $query, 0, -1 );
+		$href = substr( $href, 0, -1 );
+		
+		foreach( $options as $a => $k )
+		{
+			$attributes .= $a . '="' . addslashes( $k ) . '" ';
+		}
+		
+		return '<a href="' . addslashes( $href ) . urlencode( $query ) . '"' . $attributes . ">" . htmlentities( $text ) . "</a>";
 	}
 	
-	function elink( $path, $text, $att = "" )
+	public function js( $file_name, $options = array() )
 	{
-		return self::_link( $path, $text, $att, true );
-	}
-
-	private function _link( $path, $text, $att, $external = false )
-	{
-		return  "<a href='" . ( $external == false ? BASE_PATH : "" ) . $path . "' " . $att . ">" . $text . "</a>";
-	}
-
-	function form( $action, $method = "post", $att = "" )
-	{
-		return "<form action='" . BASE_PATH . $action . "' method='" . $method . "' " . $att . " >";
+		$options = ( is_array( $options ) ? $options : array( 0 => $options ) );
+		$attributes = " ";
+		
+		foreach( $options as $a => $k )
+		{
+			$attributes .= $a . '="' . addslashes( $k ) . '" ';
+		}
+	
+		return "<script type='text/javascript' src='" . BASE_PATH . "js/" . $file_name . ".js'"  . $attributes . "></script>" . "\r\n";
 	}
 	
-	function js( $file_name )
+	public function css( $file_name, $options = array() )
 	{
-		return "<script type='text/javascript' src='" . BASE_PATH . "js/" . $file_name . ".js'></script>" . "\r\n";
+		$options = ( is_array( $options ) ? $options : array( 0 => $options ) );
+		$attributes = " ";
+		
+		foreach( $options as $a => $k )
+		{
+			$attributes .= $a . '="' . addslashes( $k ) . '" ';
+		}
+		
+		return "<link type='text/css' rel='stylesheet' href='" . BASE_PATH . "css/" . $file_name . ".css'"  . $attributes . "/>";
 	}
 	
-	function ejs( $file_name )
+	public function img( $file_name, $options = array() )
 	{
-		return "<script type='text/javascript' src='" . $file_name . "'></script>" . "\r\n";
+		$options = ( is_array( $options ) ? $options : array( 0 => $options ) );
+		$attributes = " ";
+		
+		foreach( $options as $a => $k )
+		{
+			$attributes .= $a . '="' . addslashes( $k ) . '" ';
+		}
+		
+		return "<img src='" . BASE_PATH . "img/" . $file_name . "'"  . $attributes . "/>";
 	}
 	
-	function css( $file_name, $media = "screen", $id = "" )
+	public function form_open( $action, $options = array(), $formElemets = array() )
 	{
-		return "<link type='text/css' rel='stylesheet' href='" . BASE_PATH . "css/" . $file_name . ".css' media='" . $media . "'" . ( !empty( $id ) ? " id='" . $id . "'" : "" ) . " />";
+		$options = ( is_array( $options ) ? $options : array( 0 => $options ) );
+		$defaults = array(
+			"method" => "post",
+			"accept-charset" => "utf-8",
+		);
+		
+		$options = array_merge( $defaults, $options );
+		
+		
+		$form = "<form action='" . BASE_PATH . urlencode( $action ) . "'" . $attributes . ">";
+		
+		if( !empty( $formElemets ) )
+		{
+			$form .= $this->form_expand( $formElemets );
+		}
+		
+		return $form;
 	}
 	
-	function ecss( $file_name, $media = "screen", $id = "" )
+	public function form_open_multipart( $action, $options = array(), $formElemets = array() )
 	{
-		return "<link type='text/css' rel='stylesheet' href='" . $file_name . "' media='" . $media . "'" . ( !empty( $id ) ? " id='" . $id . "'" : "" ) . " />";
+		$options = ( is_array( $options ) ? $options : array( 0 => $options ) );
+		$options = array_merge( array( "enctype" => "multipart/form-data" ), $options );
+		
+		return $this->form_open( $action, $options, $formElemets );
 	}
 	
-	function img( $file_name, $att = "" )
+	public function form_close()
 	{
-		return "<img src='" . BASE_PATH . "img/" . $file_name . "' " . $att . " />";
+		return "</form>";
 	}
 }

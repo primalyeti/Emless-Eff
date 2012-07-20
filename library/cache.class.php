@@ -1,9 +1,9 @@
 <?
 class Cache
 {
-	protected $_cacheHistory = array();
+	protected static $_cacheHistory = array();
 	
-	function get( $name, $properties = null )
+	public static function get( $name, $properties = null )
 	{
 		// cache is disables
 		if( CACHE_ISON === false )
@@ -66,7 +66,7 @@ class Cache
 		return false;
 	}
 	
-	function __call( $method, $arguments )
+	public static function __callStatic( $method, $arguments )
 	{
 		if( $method == "set" )
 		{
@@ -82,7 +82,7 @@ class Cache
 		}
 	}
 	
-	function setWithKey( $name, $value )
+	private function setWithKey( $name, $value )
 	{
 		if( CACHE_ISON === false )
 		{
@@ -113,7 +113,7 @@ class Cache
 		return true;
 	}
 	
-	function setWithoutKey( $value )
+	private function setWithoutKey( $value )
 	{
 		if( CACHE_ISON === false )
 		{
@@ -146,9 +146,7 @@ class Cache
 		fclose( $handle );
 		return true;
 	}
-	
-	////////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////////	
+		
 	private function initProperties()
 	{
 		return array(
@@ -167,12 +165,5 @@ class Cache
 		$now = time();
 		
 		return ( ( $now - $mdate ) < $expiry );
-	}
-
-	public function debug()
-	{
-		echo "<pre>";
-		print_r( get_object_vars( $this ) );
-		echo "</pre>";
 	}
 }

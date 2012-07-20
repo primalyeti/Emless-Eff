@@ -4,13 +4,11 @@ Emless-Eff
 PHP Framework
 
 Planned Changes:
+Fix global namespace
 Better HTML implementation
-	-Forms
 	-Form validation such as email, phone number, etc
-	-Built-in includes (jQuery, etc)
 
 Better modulation of blocks and increase memory efficiency
-Better handling of AJAX calls
 Better admin implementation
 Better error handling
 Better htaccess/template
