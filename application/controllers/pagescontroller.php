@@ -8,16 +8,19 @@ class PagesController extends Controller
 	
 	function index()
 	{
-		$this->load->library("form_validation");
-		
-		$this->form_validation->set_rule( "username", "unique|required" );
-		$this->form_validation->set_rule( "password", "unique" );
-		
-		print_r( $this->form_validation );
-		
-		if( $this->form_validation->run( $this->post ) == false )
-		{
+		$this->load->library("form_manager");
 			
+		$this->form_manager->set_rule( "username", "required" );
+		$this->form_manager->set_rule( "password", "required" );
+		$this->form_manager->set_rule( "type", "required" );
+		$this->form_manager->set_rule( "features", "required" );
+		
+		#print_r( $this->post );
+		#print_r( $this->form_manager );
+		
+		if( $this->form_manager->validate( $this->post ) === false )
+		{
+			print_r( $this->form_manager );
 		}
 	}
 	

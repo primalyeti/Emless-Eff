@@ -5,6 +5,8 @@ class Template
 	protected $_view;
 	protected $variables = array();
 	
+	public $load = null;
+	
 	function __construct( $controller, $action )	
 	{
 		$this->_controller = $controller;
@@ -40,6 +42,11 @@ class Template
 			return $this->variables[$name];
 		}
 		
+		if( $this->load->$name !== NULL )
+		{
+			return $this->load->$name;
+		}
+		
 		$EmlessF = Registry::get("EmlessF");
 		$val = $EmlessF->$name;
 	    if( $val !== NULL )
@@ -54,11 +61,18 @@ class Template
 		}
 		
 		return null;
-    }	
+    }
+    
+    public function set_loader( $loader )
+    {
+	    $this->load = $loader;
+    }
 
 	/** Display Template **/
     function render( $render_wrappers = 0 )
 	{	
+		$this->load->library("html");
+		
 		extract( $this->variables );
 		$EmlessF = Registry::get("EmlessF");
 		

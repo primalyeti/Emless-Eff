@@ -93,7 +93,7 @@ class HTML
 		return "<img src='" . BASE_PATH . "img/" . $file_name . "'"  . $attributes . "/>";
 	}
 	
-	public function form_open( $action, $options = array(), $formElemets = array() )
+	public function form_open( $action, $options = array() )
 	{
 		$options = ( is_array( $options ) ? $options : array( 0 => $options ) );
 		$defaults = array(
@@ -102,7 +102,11 @@ class HTML
 		);
 		
 		$options = array_merge( $defaults, $options );
-		
+		$attributes = "";
+		foreach( $options as $a => $k )
+		{
+			$attributes .= $a . '="' . addslashes( $k ) . '" ';
+		}
 		
 		$form = "<form action='" . BASE_PATH . urlencode( $action ) . "'" . $attributes . ">";
 		

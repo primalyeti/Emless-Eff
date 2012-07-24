@@ -87,6 +87,16 @@ class EmlessF
 		}
 	}
 	
+	public function __get( $name )
+    {
+	    if( isset( $this->$name ) )
+	    {
+		    return $this->$name;
+	    }
+	    
+	    return null;
+    }
+	
 	static public function action( $controller, $action, $queryString = null, $render = 0 )
 	{
 		$controllerName = ucfirst( $controller ) . 'Controller';
@@ -120,11 +130,11 @@ class EmlessF
 	
 	protected function register_globals_to_framework()
 	{
-		$this->post 	= new Global_link( $_POST );
-		$this->get 		= new Global_link( $_GET );
-		$this->session 	= new Global_link( $_SESSION );
-		$this->cookies 	= new Global_link( $_COOKIE );
-		$this->files 	= new Global_link( $_FILES );
+		$this->post 	= $_POST;#new Global_link( $_POST );
+		$this->get 		= $_GET;#new Global_link( $_GET );
+		$this->session 	= $_SESSION;#new Global_link( $_SESSION );
+		$this->cookies 	= $_COOKIE;#new Global_link( $_COOKIE );
+		$this->files 	= $_FILES;#new Global_link( $_FILES );
 	}
 	
 	protected function remove_magic_quotes()

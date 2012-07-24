@@ -10,7 +10,7 @@ class Controller
 	protected $render;			# render template or not
 	protected $render_wrappers;	# render header and footer
 	
-	protected $loader;
+	protected $load;
 
 	function __construct( $controller, $action, $render = 1 )
 	{	
@@ -47,11 +47,6 @@ class Controller
 		{
 			$this->_template->set( $name, $value );
 		}
-	}
-	
-	public function load()
-	{
-		return $this->loader;
 	}
 	
 	public function __get( $name )
@@ -105,6 +100,7 @@ class Controller
 	{
 		if( $this->render && isset( $this->_template ) )
 		{
+			$this->_template->set_loader( $this->load );
 			$this->_template->render( $this->render_wrappers );
 		}
 	}

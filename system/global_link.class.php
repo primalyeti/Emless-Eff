@@ -16,4 +16,9 @@ class Global_link
 		}
 		return null;
     }
+    
+    public function data()
+    {
+	    return $this->link;
+    }
 }
