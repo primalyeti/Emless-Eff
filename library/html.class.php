@@ -23,7 +23,7 @@ class HTML
 		return self::_link( $data, $data, "", true );
 	}
 	
-	public function link( $text, $url = "#", $options = array() )
+	public function link( $url, $text = "", $options = array() )
 	{
 		$url = ( is_array( $url ) ? $url : array( 0 => $url ) );
 		$options = ( is_array( $options ) ? $options : array( 0 => $options ) );
@@ -65,6 +65,16 @@ class HTML
 		}
 	
 		return "<script type='text/javascript' src='" . BASE_PATH . "js/" . $file_name . ".js'"  . $attributes . "></script>" . "\r\n";
+	}
+	
+	public function jquery()
+	{
+		$this->js( "jquery" );
+	}
+	
+	public function modernizr()
+	{
+		$this->js( "modernizr" );
 	}
 	
 	public function css( $file_name, $options = array() )

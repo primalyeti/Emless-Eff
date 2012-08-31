@@ -132,8 +132,6 @@ class Form_manager
 		
 		$isValid = true;
 		
-		print_r( $data );
-		
 		foreach( $this->fields as $localFieldName => &$localFieldData )
 		{
 			$sentFieldData = "";
@@ -178,7 +176,7 @@ class Form_manager
 				}
 			}
 		}
-		print_r( $this );
+
 		return $isValid;
 	}
 	

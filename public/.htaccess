@@ -3,7 +3,8 @@
  	
  	RewriteCond %{REQUEST_FILENAME} !-f
 	RewriteCond %{REQUEST_FILENAME} !-d
-
+	RewriteRule "(^|/)\." - [F]
+	
 	# Rewrite all other URLs to index.php/URL
 	RewriteRule (.*) index.php?url=$1 [L,QSA]
 </IfModule>

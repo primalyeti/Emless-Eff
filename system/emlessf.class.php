@@ -4,6 +4,7 @@ class EmlessF
 	protected $_url;
 	protected $_default;
 	protected $_routing;
+	protected $_loader;
 	
 	public $post;
 	public $get;
@@ -15,10 +16,13 @@ class EmlessF
 	{
 		global $url, $default, $routing;
 		
+		Registry::set( "unroutedURL", $url, true );
+		
 		$this->_url = $url;
 		$this->_default = $default;
 		$this->_routing = $routing;
-				
+		$this->_loader = new Loader();
+		
 		$this->set_reporting();
 		$this->remove_magic_quotes();
 		$this->register_globals_to_framework();
@@ -29,29 +33,62 @@ class EmlessF
 	{
 		$queryString = array();
 		
-		if( !isset( $this->_url ) )
-		{
-			$controller = $this->_default['controller'];
-			$action = $this->_default['action'];
-		}
-		else
+		$controller = $this->_default['controller'];
+		$action 	= $this->_default['action'];
+		
+		if( isset( $this->_url ) )
 		{
 			$url = $this->routeURL( $this->_url );
 			$urlArray = explode( "/", $url );
 			
+			for( $i = 0; $i < count( $urlArray ); $i++ )
+			{
+				if( empty( $urlArray[$i] ) )
+				{
+					unset( $urlArray[$i] );
+				}
+			}
+			
 			// get controller
-			$controller = $urlArray[0];
-			array_shift( $urlArray );
+			if( isset( $urlArray[0] ) )
+			{
+				$controller = $urlArray[0];
+				array_shift( $urlArray );
+			}
+			
+			// if is admin
+			if( $controller == ADMIN_ALIAS )
+			{
+				Registry::set( "isAdmin", true, true );
+				$controller = $this->_default['admin']['controller'];
+				$action 	= $this->_default['admin']['action'];
+				
+				// get controller
+				if( isset( $urlArray[0] ) )
+				{
+					$controller = $urlArray[0];
+					array_shift( $urlArray );
+				}
+			}
 			
 			// get action
-			$action = $urlArray[0];
-			array_shift( $urlArray );
+			if( isset( $urlArray[0] ) )
+			{
+				$action = $urlArray[0];
+				array_shift( $urlArray );
+			}
 			
 			// query string
 			$queryString = $urlArray;
 		}
 		
+		Registry::set( "isAdmin", false );
+		
 		$controllerName = ucfirst( $controller ) . 'Controller';
+		if( DEVELOPMENT_ENVIRONMENT == true )
+		{
+			#echo "Original: " . $controllerName . " C: " . $controller . " A: " . $action . "<br>";
+		}
 			
 		if( !class_exists( $controllerName ) || !method_exists( $controllerName, $action ) )
 		{
@@ -66,7 +103,7 @@ class EmlessF
 		}
 		
 		$dbh = new SQLQuery();
-		Registry::set( "dbh", $dbh );
+		Registry::set( "dbh", $dbh, true );
 		
 		$dispatch = new $controllerName( $controller, $action );
 		
@@ -85,6 +122,11 @@ class EmlessF
 		{
 			die( "Error 0: Framework could not init" );
 		}
+	}
+	
+	public function load()
+	{
+		return $this->_loader;
 	}
 	
 	public function __get( $name )
@@ -130,11 +172,11 @@ class EmlessF
 	
 	protected function register_globals_to_framework()
 	{
-		$this->post 	= $_POST;#new Global_link( $_POST );
-		$this->get 		= $_GET;#new Global_link( $_GET );
-		$this->session 	= $_SESSION;#new Global_link( $_SESSION );
-		$this->cookies 	= $_COOKIE;#new Global_link( $_COOKIE );
-		$this->files 	= $_FILES;#new Global_link( $_FILES );
+		$this->post 	= $_POST;
+		$this->get 		= $_GET;
+		$this->session 	= $_SESSION;
+		$this->cookies 	= $_COOKIE;
+		$this->files 	= $_FILES;
 	}
 	
 	protected function remove_magic_quotes()

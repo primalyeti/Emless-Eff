@@ -1,0 +1,16 @@
+/* TEAM */
+	Lead Framework Programmer: Peter Marinopoulos
+	Contact: contact [at] pdotmedia.com
+	Twitter: @pdotmedia
+	From: Montreal, Quebec
+
+/* THANKS */
+	Base Framework Code: Anant Garg
+	Twitter: @anant_garg
+	From: Mumbai, India
+
+/* SITE */
+	Last update: Ongoing!
+	Language: English
+	Doctype: HTML5
+	IDE: Coda, Dreamweaver

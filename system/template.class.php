@@ -2,10 +2,8 @@
 class Template 
 {
 	protected $_controller;
-	protected $_view;
-	protected $variables = array();
-	
-	public $load = null;
+	protected $_views;
+	protected $_vars = array();
 	
 	function __construct( $controller, $action )	
 	{
@@ -13,23 +11,29 @@ class Template
 		$this->_view = $action;
 	}
 
-	private function view( $view )
-	{
-		$this->_view = $view;
-	}
-
 	/** Set Variables **/
-	function set( $name, $value )
+	function set_variables( $arr )
 	{
-		$this->variables[$name] = $value;
+		$this->_vars = $arr;
+	}
+	
+	function set_views( $arr )
+	{
+		$this->_views = $arr;
+	}
+	
+	public function load()
+	{
+		$EmlessF = Registry::get("EmlessF");
+		return $EmlessF->load();
 	}
 	
 	/** Set Variables **/
 	function get( $name )
 	{
-		if( isset( $this->variables[$name] ) )
+		if( isset( $this->_vars[$name] ) )
 		{
-			return $this->variables[$name];
+			return $this->_vars[$name];
 		}
 		
 		return null;
@@ -37,17 +41,7 @@ class Template
 	
 	public function __get( $name )
     {
-	    if( array_key_exists( $name, $this->variables ) )
-		{
-			return $this->variables[$name];
-		}
-		
-		if( $this->load->$name !== NULL )
-		{
-			return $this->load->$name;
-		}
-		
-		$EmlessF = Registry::get("EmlessF");
+	    $EmlessF = Registry::get("EmlessF");
 		$val = $EmlessF->$name;
 	    if( $val !== NULL )
 	    {
@@ -60,21 +54,20 @@ class Template
 		    return $val;
 		}
 		
+		if( $this->load()->$name != null )
+		{
+			return $this->load()->$name;
+		}
+		
 		return null;
     }
     
-    public function set_loader( $loader )
-    {
-	    $this->load = $loader;
-    }
-
 	/** Display Template **/
-    function render( $render_wrappers = 0 )
+    function render()
 	{	
-		$this->load->library("html");
+		$this->load()->library( "html" );
 		
-		extract( $this->variables );
-		$EmlessF = Registry::get("EmlessF");
+		extract( $this->_vars );
 		
 		if( PRINT_GLOBALS )
 		{
@@ -82,42 +75,46 @@ class Template
 			echo "<pre>" . print_r( $_COOKIE, true ) . "</pre><br />";
 		}
 		
-		if( $render_wrappers == 1 )
-		{	
-			$headerPath = ROOT . DS . 'application' . DS . 'views' . DS . $this->_controller . DS . 'header.php';
-			if( file_exists( $headerPath ) )
-			{
-				include( $headerPath );
-			}
-			else
-			{
-				include( ROOT . DS . 'application' . DS . 'views' . DS . 'header.include.php' );
-			}
-		}
-		
-		$viewPath = ROOT . DS . 'application' . DS . 'views' . DS . $this->_controller . DS . $this->_view . '.php';
-		if( file_exists( $viewPath ) )
+		foreach( $this->_views as $view )
 		{
-			include( $viewPath );
-		}
+			$pathItems = explode( "/", $view );
 			
-		if( $render_wrappers == 1 )
-		{
-			$footerPath = ROOT . DS . 'application' . DS . 'views' . DS . $this->_controller . DS . 'footer.php';
-			if( file_exists( $footerPath ) )
+			if( count( $pathItems ) == 1 )
 			{
-				include( $footerPath );
+				$path = ROOT . DS . 'application' . DS . 'views' . DS . $this->_controller . DS . $view . '.php';
+				if( Registry::get( "isAdmin" ) == true )
+				{
+					$path = ROOT . DS . 'admin' . DS . 'views' . DS . $this->_controller . DS . $view . '.php';
+				}
+				
+				if( file_exists( $path ) )
+				{
+					include( $path );
+				}
+				continue;
 			}
-			else
+			
+			if( count( $pathItems ) > 1 )
 			{
-				include( ROOT . DS . 'application' . DS . 'views' . DS . 'footer.include.php' );
+				$path = ROOT . DS . 'application' . DS . 'views' . DS . $view . '.php';
+				if( Registry::get( "isAdmin" ) == true )
+				{
+					$path = ROOT . DS . 'admin' . DS . 'views' . DS . $view . '.php';
+				}
+				
+				if( file_exists( $path ) )
+				{
+					include( $path );
+				}
 			}
 		}
     }
 
 	function include_file( $file_name )
 	{
-		extract( $this->variables );
+		$this->load()->library( "html" );
+	
+		extract( $this->_vars );
 		
 		if( file_exists( ROOT . DS . 'application' . DS . 'views' . DS . $this->_controller . DS . $file_name  ) )
 		{

@@ -2,6 +2,7 @@
 Class Registry
 {
 	private static $objects = array();
+	private static $locks = array();
 	private static $instance;
 	
 	private function __construct()
@@ -18,6 +19,7 @@ Class Registry
 		{
 			self::$instance = new self();
 		}
+		
 		return self::$instance;
 	}
 	
@@ -26,9 +28,34 @@ Class Registry
 		return self::singleton()->getter( $key );
     }
 	
-	static function set( $key, $instance )
+	static function set( $key, $instance, $locked = false )
 	{
-		return self::singleton()->setter( $key, $instance );
+		if( self::singleton()->get_lock( $key ) == NULL )
+		{
+			if( $locked )
+			{
+				self::singleton()->set_lock( $key );
+			}
+		
+			return self::singleton()->setter( $key, $instance );
+		}
+		
+		return NULL;
+    }
+    
+    protected function get_lock( $key )
+    {
+	    if( isset( self::$locks[$key] ) )
+	    {
+		    return true;
+	    }
+	    
+	    return NULL;
+    }
+    
+    protected function set_lock( $key )
+    {
+	    self::$locks[$key] = true;
     }
     
     protected function getter( $key )
@@ -37,6 +64,7 @@ Class Registry
 		{
 			return self::$objects[$key];
         }
+        
 		return NULL;
 	}
 	
@@ -44,4 +72,7 @@ Class Registry
 	{
 		self::$objects[$key] = $val;
 	}
+	
+	
+	
 }

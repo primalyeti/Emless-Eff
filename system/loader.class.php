@@ -16,11 +16,11 @@ class Loader
 	public function library( $class )
 	{
 		$path = ROOT . DS . 'library' . DS . $class . ".class.php";
-	
-		if( file_exists( $path ) )
+		$class = ucfirst( $class );
+		
+		if( file_exists( $path ) && !isset( $this->loaded[strtolower($class)] ) )
 		{
-			include( $path );
-			$class = ucfirst( $class );
+			include_once( $path );
 			
 			if( class_exists( $class ) )
 			{

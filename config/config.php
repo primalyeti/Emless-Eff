@@ -26,13 +26,13 @@ switch( $_SERVER["SERVER_NAME"] )			# what environment are we in
 		define( 'ENVIRONMENT', 'LOCAL' );	# define environment
 		
 		define( 'DB_TYPE',		'PDO' );		# database connection type. Valid values are "PDO", "MYSQL"
-		define( 'DB_NAME', 		'' );		# database name
-		define( 'DB_USER', 		'' );		# database user
-		define( 'DB_PASSWORD', 	'' );		# database password
-		define( 'DB_HOST', 		'' );		# database host (typically localhost)
+		define( 'DB_NAME', 		'audiobase_new' );		# database name
+		define( 'DB_USER', 		'ab_new' );		# database user
+		define( 'DB_PASSWORD', 	'aud10' );		# database password
+		define( 'DB_HOST', 		'trainers.macprovideo.com' );		# database host (typically localhost)
 		
-		define( 'DOMAIN', 'http://local.audiobase.com' . BASE_PATH );			# nonsecure domain
-		define( 'DOMAIN_SECURE', 'http://local.audiobase.com' . BASE_PATH );	# secure domain url
+		define( 'DOMAIN', 'http://local.framework.com' . BASE_PATH );			# nonsecure domain
+		define( 'DOMAIN_SECURE', 'http://local.framework.com' . BASE_PATH );	# secure domain url
 }
 
 /** DEBUG VARIABLES **/
@@ -48,7 +48,13 @@ define( 'CACHE_ISON', false );					# is caching on
 define( 'CACHE_DEFAULT_LIFESPAN', 5 * 60 );		# how long before cache is refreshed
 
 /** TRACKING VARIABLES **/
-define( 'TRACKER_ISON', false );		# is tracking on	
+define( 'TRACKER_ISON', false );				# is tracking on	
+
+/** HONEY POT VARIABLES **/
+define( 'HONEYPOT_URL', "trix/cereal" );
+define( 'HONEYPOT_TRAPPED_URL', "trix/sillyrabbit" );
+define( 'HONEYPOT_FILENAME', "honeypot.xml" );
+define( 'HONEYPOT_SESSION_VAR', "emlessf_honeypot" );
 
 // set default timezone for date() method
 date_default_timezone_set( 'America/Vancouver' );
@@ -61,5 +67,5 @@ define( 'META_SEARCH_CATEGORIES', "" );
 define( 'META_IMAGE', "" );
 
 /** ADMIN VARIABLES **/
-define( 'ADMIN_SESSION_VAR', "admin" );		# admin session variable
-define( 'ADMIN_ALIAS', '/admin' );			# url where admin section can be found. RECOMMENDED YOU CHANGE
+define( 'ADMIN_SESSION_VAR', "admin" );			# admin session variable
+define( 'ADMIN_ALIAS', 'backdoor' );			# url where admin section can be found. RECOMMENDED YOU CHANGE
