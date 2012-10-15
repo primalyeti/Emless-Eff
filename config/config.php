@@ -23,7 +23,7 @@ define( 'TRACKER_DIR', TEMP_DIR . "trackers/" );		# directory for all tracker fi
 switch( $_SERVER["SERVER_NAME"] )			# what environment are we in
 {
 	default:
-		define( 'ENVIRONMENT', 'LOCAL' );	# define environment
+		define( 'ENVIRONMENT', 'LOCAL' );		# define environment
 		
 		define( 'DB_TYPE',		'PDO' );		# database connection type. Valid values are "PDO", "MYSQL"
 		define( 'DB_NAME', 		'audiobase_new' );		# database name
@@ -36,7 +36,7 @@ switch( $_SERVER["SERVER_NAME"] )			# what environment are we in
 }
 
 /** DEBUG VARIABLES **/
-define( 'DEVELOPMENT_ENVIRONMENT', true );
+define( 'DEVELOPMENT_ENVIRONMENT', false );
 define( 'PRINT_GLOBALS', false );
 
 /** LOG VARIABLES **/

@@ -2,14 +2,16 @@
 class Loader
 {
 	public $loaded = array();
+	public $included = array();
 
 	public function helper( $helper )
 	{
 		$path = ROOT . DS . 'helpers' . DS . $helper . ".php";
 	
-		if( file_exists( $path ) )
+		if( file_exists( $path ) && !isset( $this->included[strtolower($helper)] ) )
 		{
 			include( $path );
+			$this->included[strtolower($helper)] = true;
 		}
 	}
 	
@@ -27,7 +29,10 @@ class Loader
 				$this->loaded[strtolower($class)] = new $class();
 			}
 		}
-		
+		else if( isset( $this->loaded[strtolower($class)] ) )
+		{
+			return $this->loaded[strtolower($class)];
+		}
 		return null;
 	}
 	

@@ -3,7 +3,6 @@ class Controller
 {
 	protected $_controller;		# controller name
 	protected $_action;			# controllers action
-	protected $_url;			# url that was passed
 	
 	protected $_template;		# template
 	protected $_views = array();# the view to load
@@ -18,8 +17,6 @@ class Controller
 		$this->_action 		= $action;
 		$this->_view 		= $action;
 		
-		$this->_url = Registry::get("unroutedURL");
-		
 		$this->render = $render;
 		$this->render_wrappers = 1;
 	}
@@ -31,7 +28,7 @@ class Controller
 	
 	public function action( $action, $controller, $query = null, $render = 0 )
 	{
-		$EmlessF = Registry::get("EmlessF");
+		$EmlessF = Registry::get("framework");
 		$EmlessF::action( $action, $controller, $query, $render );
 	}
 	
@@ -42,19 +39,11 @@ class Controller
 	
 	public function load()
 	{
-		$EmlessF = Registry::get("EmlessF");
-		return $EmlessF->load();
+		return Registry::get( "framework" )->load();
 	}
 	
 	public function __get( $name )
     {
-	    $EmlessF = Registry::get("EmlessF");
-		$val = $EmlessF->$name;
-	    if( $val !== NULL )
-	    {
-		    return $val;
-		}
-		
 	    $val = Registry::get( $name );
 	    if( $val !== NULL )
 	    {

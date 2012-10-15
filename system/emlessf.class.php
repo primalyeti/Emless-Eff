@@ -16,12 +16,12 @@ class EmlessF
 	{
 		global $url, $default, $routing;
 		
-		Registry::set( "unroutedURL", $url, true );
+		Registry::set( "url", $url, true );
 		
 		$this->_url = $url;
 		$this->_default = $default;
 		$this->_routing = $routing;
-		$this->_loader = new Loader();
+		$this->_loader 		= new Loader();
 		
 		$this->set_reporting();
 		$this->remove_magic_quotes();
@@ -85,7 +85,7 @@ class EmlessF
 		Registry::set( "isAdmin", false );
 		
 		$controllerName = ucfirst( $controller ) . 'Controller';
-		if( DEVELOPMENT_ENVIRONMENT == true )
+		if( ENVIRONMENT != "LIVE" && DEVELOPMENT_ENVIRONMENT == true )
 		{
 			#echo "Original: " . $controllerName . " C: " . $controller . " A: " . $action . "<br>";
 		}
@@ -97,7 +97,7 @@ class EmlessF
 			$action 		= "index";
 		}
 		
-		if( DEVELOPMENT_ENVIRONMENT == true )
+		if( ENVIRONMENT != "LIVE" && DEVELOPMENT_ENVIRONMENT == true )
 		{
 			echo $controllerName . " C: " . $controller . " A: " . $action . "<br>";
 		}
@@ -107,7 +107,7 @@ class EmlessF
 		
 		$dispatch = new $controllerName( $controller, $action );
 		
-		if( !is_null( Registry::get( "EmlessF" ) ) && file_exists( ROOT . DS . 'config' . DS . "init_hooks.php" ) )
+		if( !is_null( Registry::get( "framework" ) ) && file_exists( ROOT . DS . 'config' . DS . "init_hooks.php" ) )
 		{
 			include( ROOT . DS . "config" . DS . "init_hooks.php" );
 		}
@@ -149,14 +149,15 @@ class EmlessF
 	/** Check if environment is development and display errors **/
 	protected function set_reporting()
 	{
-		if( DEVELOPMENT_ENVIRONMENT == true )
+		error_reporting( E_ALL /* | E_STRICT */ );
+		#set_error_handler('exceptions_error_handler'); 
+		
+		if( ENVIRONMENT != "LIVE" && DEVELOPMENT_ENVIRONMENT == true )
 		{
-			error_reporting( E_ALL );
 			ini_set( 'display_errors', 'On' );
 		}
 		else
 		{
-			error_reporting( E_ALL );
 			ini_set( 'display_errors', 'Off' );
 			ini_set( 'log_errors', 'On' );
 			ini_set( 'error_log', ROOT . DS . LOGS_DIR . LOG_FILE_NAME );

@@ -24,42 +24,6 @@ function log_error( $error )
 	}
 }
 
-function meta_set_url( $url = "" )
-{
-	if( $url == "" )
-	{
-		return DOMAIN . substr( $_SERVER['REQUEST_URI'], 1 );
-	}
-	return DOMAIN . $url;
-}
-
-function meta_set_image( $img = "" )
-{
-	if( $img == "" )
-	{
-		return META_IMAGE;
-	}
-	return $img;
-}
-
-function meta_set_description( $desc = "" )
-{
-	if( $desc == "" )
-	{
-		return META_DESCRIPTION;
-	}
-	return $desc;
-}
-
-function meta_set_title( $title = "" )
-{
-	if( $title == "" )
-	{
-		return META_TITLE;
-	}
-	return $title;
-}
-
 function errCheck( $errs, $keys, $msg = "", $att = "" )
 {
 	$errs = (array) $errs;
@@ -88,61 +52,11 @@ function errCheck( $errs, $keys, $msg = "", $att = "" )
 	return "<div class='error'>" . ( $msg != "" ? $msg : "Required Field" ) . "</div>";
 }
 
-function bot_honey_trap_link()
+function exceptions_error_handler( $severity, $message, $filename, $lineno )
 {
-	$emlessf = Registry::get( "EmlessF" );
-	echo $emlessf->load()->html->link( HONEYPOT_URL, "This link will get you banned", array( "style" => "display: none; position: absolute; top:0; left: 0; margin-left: -99%;" ) );
+	if( error_reporting() != 0 & $severity )
+	{
+		throw new ErrorException($message, 0, $severity, $filename, $lineno);
+	}
+	return;
 }
-
-function bot_honey_trap_init()
-{
-	if( !isset( $_SESSION[HONEYPOT_SESSION_VAR] ) )
-	{
-		$_SESSION[HONEYPOT_SESSION_VAR]['isBot'] = false;
-		bot_honey_trap_scan();
-	}
-	
-	bot_honey_trap_is_set();
-}
-
-function bot_honey_trap_is_set()
-{
-	if( isset( $_SESSION[HONEYPOT_SESSION_VAR] ) && $_SESSION[HONEYPOT_SESSION_VAR]['isBot'] == true && $_SERVER['REQUEST_URI'] != BASE_PATH . HONEYPOT_TRAPPED_URL )
-	{
-		forward( HONEYPOT_TRAPPED_URL );
-	}
-}
-
-function bot_honey_trap_scan()
-{
-	$blacklistPath = ROOT . DS . FILE_DIR . HONEYPOT_FILENAME;
-	$ip = $_SERVER['REMOTE_ADDR'];
-	$uagent = $_SERVER['HTTP_USER_AGENT'];
-	
-	// if file exists, get its contents
-	if( file_exists( $blacklistPath ) )
-	{
-		$data = file_get_contents( $blacklistPath );		
-	}
-	// file doesnt exist, create it
-	else
-	{
-		$data = "<blacklist></blacklist>";
-	}
-	
-	$theList = new SimpleXMLElement( $data );	
-	
-	$exists = false;
-	if( count( $theList->children() ) > 0 )
-	{
-		for( $i = 0; $i < count( $theList->children() ); $i++ )
-		{
-			if( $theList->bot[$i]->ip == $ip )
-			{
-				$_SESSION[HONEYPOT_SESSION_VAR]['isBot'] = true;
-				break;
-			}
-		}
-	}
-}
-

@@ -15,14 +15,26 @@ class SQLQuery
 		{	
 			$this->_dbObj = new MySQLConn( DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
 		}
+		
+		if( $this->_dbObj->isValid() == false )
+		{
+			if( ENVIRONMENT != "LIVE" && DEVELOPMENT_ENVIRONMENT == true )
+			{
+				throw new Exception( $this->_dbhObj->error() );
+			}
+			else
+			{
+				throw new Exception( "Could not connect to DB" );
+			}
+		}
 	}
 	
-	public function clean( $string, $type )
+	public function clean( $string, $type = "str" )
 	{
 		return $this->_dbObj->clean( $string, $type );
 	}
 	
-	public function query( $query, $params )
+	public function query( $query, $params = null )
 	{
 		return $this->_dbObj->query( $query, $params );
 	}
@@ -83,7 +95,7 @@ class MySQLConn extends SQLHandle
 
 	function clean( $string, $type = "str" )
 	{
-		return  mysql_real_escape_string( $string, $this->_dbHandle );
+		return  "'" . mysql_real_escape_string( $string, $this->_dbHandle ) . "'";
 	}
 
 	function query( $query, $params = null )
@@ -103,7 +115,18 @@ class MySQLConn extends SQLHandle
 		
 		$this->_result = mysql_query( $query, $this->_dbHandle );
 				
-		if( is_resource( $this->_result ) ) # substr_count( strtoupper( $query ), "SELECT " ) > 0
+		if( !is_resource( $this->_result ) ) # substr_count( strtoupper( $query ), "SELECT " ) > 0
+		{
+			if( ENVIRONMENT != "LIVE" && DEVELOPMENT_ENVIRONMENT == true )
+			{
+				echo $this->error() . " SQL STATEMENT:" . $query;
+			}
+			else
+			{
+				error_log( $this->error() . " SQL STATEMENT:" . $query );
+			}
+		}
+		else
 		{
 			if( mysql_num_rows( $this->_result ) > 0 )
 			{
@@ -159,7 +182,7 @@ class PDOConn extends SQLHandle
 		catch( PDOException $e )
 		{
 			$msg = $e->getMessage();
-			if( DEVELOPMENT_ENVIRONMENT == true )
+			if( ENVIRONMENT != "LIVE" && DEVELOPMENT_ENVIRONMENT == true )
 			{
 				echo $msg;
 			}
@@ -178,7 +201,7 @@ class PDOConn extends SQLHandle
     	return $this->_isConn;
     }
 
-	function clean( $string )
+	function clean( $string, $type = "str" )
 	{
 		switch( $type )
 		{
@@ -217,7 +240,7 @@ class PDOConn extends SQLHandle
 		catch( PDOException $e )
 		{
 			$msg = $e->getMessage() . " SQL STATEMENT:" . $query;
-			if( DEVELOPMENT_ENVIRONMENT == true )
+			if( ENVIRONMENT != "LIVE" && DEVELOPMENT_ENVIRONMENT == true )
 			{
 				echo $msg;
 			}
@@ -243,7 +266,7 @@ class PDOConn extends SQLHandle
 		catch( PDOException $e )
 		{
 			$msg = $e->getMessage() . " SQL STATEMENT:" . $query;
-			if( DEVELOPMENT_ENVIRONMENT == true )
+			if( ENVIRONMENT != "LIVE" && DEVELOPMENT_ENVIRONMENT == true )
 			{
 				echo $msg;
 			}

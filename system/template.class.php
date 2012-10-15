@@ -24,8 +24,7 @@ class Template
 	
 	public function load()
 	{
-		$EmlessF = Registry::get("EmlessF");
-		return $EmlessF->load();
+		return Registry::get( "framework" )->load();
 	}
 	
 	/** Set Variables **/
@@ -41,14 +40,7 @@ class Template
 	
 	public function __get( $name )
     {
-	    $EmlessF = Registry::get("EmlessF");
-		$val = $EmlessF->$name;
-	    if( $val !== NULL )
-	    {
-		    return $val;
-		}
-		
-		$val = Registry::get( $name );
+	    $val = Registry::get( $name );
 	    if( $val !== NULL )
 	    {
 		    return $val;
