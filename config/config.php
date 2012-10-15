@@ -54,7 +54,7 @@ define( 'TRACKER_ISON', false );				# is tracking on
 define( 'HONEYPOT_URL', "trix/cereal" );
 define( 'HONEYPOT_TRAPPED_URL', "trix/sillyrabbit" );
 define( 'HONEYPOT_FILENAME', "honeypot.xml" );
-define( 'HONEYPOT_SESSION_VAR', "emlessf_honeypot" );
+define( 'HONEYPOT_SESSION_VAR', "framework_honeypot" );
 
 // set default timezone for date() method
 date_default_timezone_set( 'America/Vancouver' );

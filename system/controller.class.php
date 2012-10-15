@@ -30,8 +30,7 @@ class Controller
 	
 	public function action( $action, $controller, $query = null, $render = 0 )
 	{
-		$EmlessF = Registry::get("framework");
-		$EmlessF::action( $action, $controller, $query, $render );
+		Framework::action( $action, $controller, $query, $render );
 	}
 	
 	public function set( $name, $value )
@@ -41,7 +40,7 @@ class Controller
 	
 	public function load()
 	{
-		return Registry::get( "framework" )->load();
+		return $this->framework->load();
 	}
 	
 	public function __get( $name )

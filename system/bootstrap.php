@@ -7,9 +7,9 @@ require_once( ROOT . DS . 'system' . DS . 'functions.include.php' );
 
 session_start();
 
-$emlessf = New EmlessF();
-Registry::set( "framework", $emlessf, true );
-$emlessf->init();
+$framework = New Framework();
+Registry::set( "framework", $framework, true );
+$framework->init();
 
 /** Autoload any classes that are required **/
 function __autoload( $className )

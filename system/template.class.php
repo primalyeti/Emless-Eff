@@ -24,7 +24,7 @@ class Template
 	
 	public function load()
 	{
-		return Registry::get( "framework" )->load();
+		return $this->framework->load();
 	}
 	
 	/** Set Variables **/
@@ -74,7 +74,7 @@ class Template
 			if( count( $pathItems ) == 1 )
 			{
 				$path = ROOT . DS . 'application' . DS . 'views' . DS . $this->_controller . DS . $view . '.php';
-				if( Registry::get( "isAdmin" ) == true )
+				if( $this->isAdmin == true )
 				{
 					$path = ROOT . DS . 'admin' . DS . 'views' . DS . $this->_controller . DS . $view . '.php';
 				}
@@ -89,7 +89,7 @@ class Template
 			if( count( $pathItems ) > 1 )
 			{
 				$path = ROOT . DS . 'application' . DS . 'views' . DS . $view . '.php';
-				if( Registry::get( "isAdmin" ) == true )
+				if( $this->isAdmin == true )
 				{
 					$path = ROOT . DS . 'admin' . DS . 'views' . DS . $view . '.php';
 				}
@@ -120,6 +120,6 @@ class Template
 	
 	function module( $controller, $action )
 	{	
-		EmlessF::action( $controller, $action, array(), 1 );
+		Framework::action( $controller, $action, array(), 1 );
 	}
 }
