@@ -22,6 +22,9 @@ class PagesController extends Controller
 			print_r( $this->form_manager );
 		}
 		
+		
+		// INITIALIZE VIEWS
+		//--------------------
 		$this->view( "index" );
 	}
 	

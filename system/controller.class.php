@@ -9,7 +9,8 @@ class Controller
 	protected $_vars = array(); # template vars
 	
 	protected $render;			# render template or not
-	protected $render_wrappers;	# render header and footer
+	protected $render_header;	# render header
+	protected $render_footer;	# render footer
 		
 	function __construct( $controller, $action, $render = 1 )
 	{	
@@ -18,7 +19,8 @@ class Controller
 		$this->_view 		= $action;
 		
 		$this->render = $render;
-		$this->render_wrappers = 1;
+		$this->render_header = 1;
+		$this->render_footer = 1;
 	}
 	
 	public function view( $view )
@@ -63,23 +65,36 @@ class Controller
 		return null;
     }
     
+    public function enable_header()
+    {
+	    $this->render_header = 1;
+    }
+    
+    public function disable_header()
+    {
+	    $this->render_header = 0;
+    }
+    
+    public function enable_footer()
+    {
+	    $this->render_footer = 1;
+    }
+    
+    public function disable_footer()
+    {
+	    $this->render_footer = 0;
+    }
+    
+    public function enable_wrappers()
+	{
+		$this->render_header = 1;
+		$this->render_footer = 1;
+	}
+    
 	public function disable_wrappers()
 	{
-		$this->toggle_wrappers( 0 );
-	}
-	
-	public function enable_wrappers()
-	{
-		$this->toggle_wrappers( 1 );
-	}
-
-	public function toggle_wrappers( $toggle = -1 )
-	{
-		$this->render_wrappers ^= 1;
-		if( $toggle > -1 )
-		{
-			$this->render_wrappers = $toggle;
-		}
+		$this->render_header = 0;
+		$this->render_footer = 0;
 	}
 
 	public function __destruct()
@@ -88,9 +103,13 @@ class Controller
 		{
 			$this->_template = new Template( $this->_controller, $this->_action );
 			
-			if( $this->render_wrappers )
+			if( $this->render_header )
 			{
 				array_unshift( $this->_views, "/header" );
+			}
+			
+			if( $this->render_footer )
+			{
 				array_push( $this->_views, "/footer" );
 			}
 						
