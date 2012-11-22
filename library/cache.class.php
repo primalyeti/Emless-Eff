@@ -19,7 +19,7 @@ class Cache
 		
 		$historyItem = array(
 			"name" => $name,
-			"properties" => $this->initProperties(),
+			"properties" => self::initProperties(),
 		);
 
 		if( is_array( $properties ) && !empty( $properties ) )
@@ -34,10 +34,10 @@ class Cache
 		}
 		
 		// set history
-		array_push( $this->_cacheHistory, $historyItem );
+		array_push( self::$_cacheHistory, $historyItem );
 		
 		// no file
-		$fileName = $this->filename( $name );
+		$fileName = self::filename( $name );
 		if( !file_exists( $fileName ) )
 		{	
 			return false;
@@ -73,10 +73,10 @@ class Cache
 			switch( count( $arguments ) )
 			{
 				case 1:
-					return call_user_func_array( array( $this, "setWithoutKey" ), $arguments );
+					return call_user_func_array( array( self, "setWithoutKey" ), $arguments );
 					break;
 				case 2:
-					return call_user_func_array( array( $this, "setWithKey" ), $arguments );
+					return call_user_func_array( array( self, "setWithKey" ), $arguments );
 					break;
 			}
 		}
@@ -94,7 +94,7 @@ class Cache
 			return false;
 		}
 		
-		$handle = fopen( $this->filename( $name ), "w" );	# open file
+		$handle = fopen( self::filename( $name ), "w" );	# open file
 		
 		if( $handle == false )
 		{
@@ -125,10 +125,10 @@ class Cache
 			return false;
 		}
 		
-		$historyItem = end( $this->_cacheHistory );
+		$historyItem = end( self::$_cacheHistory );
 		$name = $historyItem["name"];
 		
-		$handle = fopen( $this->filename( $name ), "w" );	# open file
+		$handle = fopen( self::filename( $name ), "w" );	# open file
 		
 		if( $handle == false )
 		{
@@ -161,7 +161,7 @@ class Cache
 	
 	private function isValid()
 	{
-		$mdate = filemtime( $this->filename() );
+		$mdate = filemtime( self::filename() );
 		$now = time();
 		
 		return ( ( $now - $mdate ) < $expiry );
