@@ -61,6 +61,7 @@ class Cache
 			fclose( $handle );												
 
 			$unserialized = unserialize( $content );				# unserialize it, it might be an array
+			array_pop( self::$_cacheHistory );						# we got it, remove it from history
 			return $unserialized;									# return unserialized content
 		}
 		return false;
@@ -125,7 +126,7 @@ class Cache
 			return false;
 		}
 		
-		$historyItem = end( self::$_cacheHistory );
+		$historyItem = array_pop( self::$_cacheHistory );
 		$name = $historyItem["name"];
 		
 		$handle = fopen( self::filename( $name ), "w" );	# open file
