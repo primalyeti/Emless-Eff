@@ -4,7 +4,7 @@ class Form_manager
 	protected $fields;
 	protected $tags = array( "<p>", "</p>" );
 	
-	public function set_rule( $field, $rules )
+	public function set_rule( $field, $rules = "" )
 	{
 		if( !isset( $this->fields[$field] ) )
 		{
