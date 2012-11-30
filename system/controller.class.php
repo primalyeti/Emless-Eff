@@ -100,7 +100,7 @@ class Controller
 	{
 		if( $this->render )
 		{
-			$this->_template = new Template( $this->_controller, $this->_action );
+			$this->_template = new Template( strtolower( $this->_controller ), strtolower( $this->_action ) );
 			
 			if( $this->render_header )
 			{
