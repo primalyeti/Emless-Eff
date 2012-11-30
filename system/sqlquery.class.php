@@ -59,7 +59,7 @@ interface SQLConn
 {
 	public function connect( $host, $username, $password, $dbname );
 	public function clean( $string );
-	public function query( $query, $params );
+	public function query( $query, $params = null );
 	public function id();
 	public function errno();
 	public function error();
