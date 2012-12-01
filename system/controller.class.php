@@ -30,7 +30,7 @@ class Controller
 	
 	public function action( $action, $controller, $query = null, $render = 0 )
 	{
-		Framework::action( $action, $controller, $query, $render );
+		return Framework::action( $action, $controller, $query, $render );
 	}
 	
 	public function set( $name, $value )

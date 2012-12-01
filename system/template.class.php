@@ -120,6 +120,6 @@ class Template
 	
 	function module( $controller, $action )
 	{	
-		Framework::action( $controller, $action, array(), 1 );
+		return Framework::action( $controller, $action, array(), 1 );
 	}
 }

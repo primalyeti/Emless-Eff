@@ -91,7 +91,7 @@ class Framework
 		
 		if( ENVIRONMENT != "LIVE" && DEVELOPMENT_ENVIRONMENT == true )
 		{
-			echo $controllerName . " C: " . $controller . " A: " . $action . "<br>";
+			#echo $controllerName . " C: " . $controller . " A: " . $action . "<br>";
 		}
 		
 		$dbh = new SQLQuery();
@@ -166,10 +166,10 @@ class Framework
 	protected function register_globals_to_framework()
 	{
 		Registry::set( "post", $_POST, true );
-		Registry::set( "get", $_POST, true );
-		Registry::set( "session", $_POST, true );
-		Registry::set( "cookies", $_POST, true );
-		Registry::set( "files", $_POST, true );
+		Registry::set( "get", $_GET, true );
+		Registry::set( "session", $_SESSION, true );
+		Registry::set( "cookie", $_COOKIE, true );
+		Registry::set( "files", $_FILES, true );
 	}
 	
 	protected function remove_magic_quotes()

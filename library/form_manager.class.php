@@ -4,7 +4,7 @@ class Form_manager
 	protected $fields;
 	protected $tags = array( "<p>", "</p>" );
 	
-	public function set_rule( $field, $rules = "" )
+	public function set_rule( $field, $rules = "", $display_name = "" )
 	{
 		if( !isset( $this->fields[$field] ) )
 		{
@@ -12,6 +12,11 @@ class Form_manager
 		}
 		
 		$this->fields[$field]["rules"] = explode( "|", $rules );
+		
+		if( $display_name != "" )
+		{
+			$this->fields[$field]["display_name"] = $display_name;
+		}
 	}
 	
 	public function set_rules( $arr )
@@ -82,23 +87,35 @@ class Form_manager
 	}
 	
 	public function get_error( $field, $newTags = array() )
-	{
-		if( empty( $this->fields[$field]["message"] ) )
+	{	
+		if( $this->fields[$field]["valid"] == false && !empty( $this->fields[$field]["message"] ) )
 		{
-			return false;
+			$tags = ( count( $newTags ) == 2 ? $newTags : $this->tags );
+			echo $this->tags[0] . $this->fields[$field]["message"] . $this->tags[1];
 		}
 		
-		$tags = ( count( $newTags ) == 2 ? $newTags : $this->tags );
-		
-		echo $this->tags[0] . $this->fields[$field]["message"] . $this->tags[1];
+		return false;
 	}
 	
 	public function get_errors()
 	{
-		foreach( $this->fields as $fieldName => $fieldData )
+		if( !empty( $this->fields ) )
 		{
-			$this->get_error( $fieldName );
+			foreach( $this->fields as $fieldName => $fieldData )
+			{
+				$this->get_error( $fieldName );
+			}
 		}
+	}
+	
+	public function get_display_name( $field )
+	{
+		if( !empty( $this->fields[$field]["display_name"] ) )
+		{
+			return $this->fields[$field]["display_name"];
+		}
+		
+		return $field;
 	}
 	
 	public function validate( $data )
@@ -152,7 +169,7 @@ class Form_manager
 				}
 			}
 			
-			$localFieldData["value"] = $sentFieldData;
+			$this->set_value( $localFieldName, $sentFieldData );
 			
 			if( $localFieldData["valid"] == false )
 			{
@@ -163,11 +180,11 @@ class Form_manager
 			foreach( $localFieldData['rules'] as $rule )
 			{
 				preg_match( "/\[([\d\w\"\._]*)\]/i", $rule, $sub );
-				preg_replace( "/\[([\d\w\"\._]*)\]/i", "", $rule );
+				$rule = preg_replace( "/\[([\d\w\"\._]*)\]/i", "", $rule );
 				
 				if( method_exists( $this, "validate_" . $rule ) )
 				{
-					call_user_func_array( array( $this, "validate_" . $rule ), array( $localFieldName, $localFieldData, $sentFieldData, $data, $sub ) );
+					$localFieldData["valid"] = call_user_func_array( array( $this, "validate_" . $rule ), array( $localFieldName, $localFieldData, $sentFieldData, $data, $sub ) );
 				}
 								
 				if( $localFieldData["valid"] == false )
@@ -180,47 +197,51 @@ class Form_manager
 		return $isValid;
 	}
 	
-	protected function validate_required( $localFieldName, &$localFieldData, $sentFieldData, $data, $sub )
+	protected function validate_required( $localFieldName, $localFieldData, $sentFieldData, $data, $sub )
 	{
 		if( empty( $sentFieldData ) )
 		{
-			$localFieldData["valid"] = false;
 			if( !isset( $localFieldData["message"] ) )
 			{
-				$this->set_message( $localFieldName, ucwords( $localFieldName ) . " is required." );
+				$this->set_message( $localFieldName, $this->get_display_name( $localFieldName ) . " is required." );
 			}
+			return 0;
 		}
+		
+		return  true;
 	}
 	
-	protected function validate_matches( $localFieldName, &$localFieldData, $sentFieldData, $data, $sub )
+	protected function validate_matches( $localFieldName, $localFieldData, $sentFieldData, $data, $sub )
 	{
 		if( is_array( $sentFieldData ) )
 		{
 			echo "Form array can not be validated against 'matches[]'";
-			return false;
+			return 0;
 		}
 		
-		if( $sentFieldData != trim( $data[$sub[0]] ) )
+		if( $sentFieldData != trim( $data[$sub[1]] ) )
 		{
-			$localFieldData["valid"] = false;
 			if( !isset( $localFieldData["message"] ) )
 			{
-				$this->set_message( $localFieldName, ucwords( $localFieldName ) . " must match " . ucwords( $sub[0] ) . "." );
+				$this->set_message( $localFieldName, $this->get_display_name( $localFieldName ) . " must match " . ucwords( $sub[1] ) . "." );
 			}
+			return 0;
 		}
+		
+		return 1;
 	}
 	
-	protected function validate_is_unique( $localFieldName, &$localFieldData, $sentFieldData, $data, $sub )
+	protected function validate_is_unique( $localFieldName, $localFieldData, $sentFieldData, $data, $sub )
 	{
 		if( is_array( $sentFieldData ) )
 		{
 			echo "Form array can not be validated against 'is_unique'";
-			return false;
+			return 0;
 		}
 	
 		$dbh = Registry::get("dbh");
 		
-		$dbParams = explode( ".". $sub[0] );
+		$dbParams = explode( ".". $sub[1] );
 		$check = $dbh->query(
 			"SELECT COUNT( * ) AS `count`
 			FROM " . $dbParams[0] . "
@@ -230,214 +251,239 @@ class Form_manager
 		
 		if( count( $check ) != 1 )
 		{
-			$localFieldData["valid"] = false;
 			if( !isset( $localFieldData["message"] ) )
 			{
-				$this->set_message( $localFieldName, ucwords( $localFieldName ) . " must be unique." );
+				$this->set_message( $localFieldName, $this->get_display_name( $localFieldName ) . " must be unique." );
 			}
+			return 0;
 		}
-
+		
+		return 1;
 	}
 	
-	protected function validate_min_length( $localFieldName, &$localFieldData, $sentFieldData, $data, $sub )
+	protected function validate_min_length( $localFieldName, $localFieldData, $sentFieldData, $data, $sub )
 	{
-		if( strlen( $sentFieldData ) < $sub[0] || ( is_array( $sentFieldData ) && count( $sentFieldData ) < $sub[0] ) )
+		if( strlen( $sentFieldData ) < $sub[1] || ( is_array( $sentFieldData ) && count( $sentFieldData ) < $sub[1] ) )
 		{
-			$localFieldData["valid"] = false;
 			if( !isset( $localFieldData["message"] ) )
 			{
-				$this->set_message( $localFieldName, ucwords( $localFieldName ) . " minimum length is " . $sub[0] . "." );
+				$this->set_message( $localFieldName, $this->get_display_name( $localFieldName ) . " minimum length is " . $sub[1] . "." );
 			}
+			return 0;
 		}
+		
+		return 1;
 	}
 	
-	protected function validate_max_length( $localFieldName, &$localFieldData, $sentFieldData, $data, $sub )
+	protected function validate_max_length( $localFieldName, $localFieldData, $sentFieldData, $data, $sub )
 	{
-		if( strlen( $sentFieldData ) > $sub[0] || ( is_array( $sentFieldData ) && count( $sentFieldData ) > $sub[0] ) )
+		if( strlen( $sentFieldData ) > $sub[1] || ( is_array( $sentFieldData ) && count( $sentFieldData ) > $sub[1] ) )
 		{
-			$localFieldData["valid"] = false;
 			if( !isset( $localFieldData["message"] ) )
 			{
-				$this->set_message( $localFieldName, ucwords( $localFieldName ) . " maximum length is " . $sub[0] . "." );
+				$this->set_message( $localFieldName, $this->get_display_name( $localFieldName ) . " maximum length is " . $sub[1] . "." );
 			}
+			return 0;
 		}
+		
+		return 1;
 	}
 	
-	protected function validate_exact_length( $localFieldName, &$localFieldData, $sentFieldData, $data, $sub )
+	protected function validate_exact_length( $localFieldName, $localFieldData, $sentFieldData, $data, $sub )
 	{
-		if( strlen( $sentFieldData ) != $sub[0] || ( is_array( $sentFieldData ) && count( $sentFieldData ) != $sub[0] ) )
+		if( strlen( $sentFieldData ) != $sub[1] || ( is_array( $sentFieldData ) && count( $sentFieldData ) != $sub[1] ) )
 		{
-			$localFieldData["valid"] = false;
 			if( !isset( $localFieldData["message"] ) )
 			{
-				$this->set_message( $localFieldName, ucwords( $localFieldName ) . " length must be exactly " . $sub[0] . "." );
+				$this->set_message( $localFieldName, $this->get_display_name( $localFieldName ) . " length must be exactly " . $sub[1] . "." );
 			}
+			return 0;
 		}
+		
+		return 1;
 	}
 	
-	protected function validate_greater_than( $localFieldName, &$localFieldData, $sentFieldData, $data, $sub )
+	protected function validate_greater_than( $localFieldName, $localFieldData, $sentFieldData, $data, $sub )
 	{
 		if( is_array( $sentFieldData ) )
 		{
 			echo "Form array can not be validated against 'greater_than[]'";
-			return false;
+			return 0;
 		}
 	
-		if( $sentFieldData < $sub[0] )
+		if( $sentFieldData < $sub[1] )
 		{
-			$localFieldData["valid"] = false;
 			if( !isset( $localFieldData["message"] ) )
 			{
-				$this->set_message( $localFieldName, ucwords( $localFieldName ) . " must be greater than " . $sub[0] . "." );
+				$this->set_message( $localFieldName, $this->get_display_name( $localFieldName ) . " must be greater than " . $sub[1] . "." );
 			}
+			return 0;
 		}
+		
+		return 1;
 	}
 	
-	protected function validate_less_than( $localFieldName, &$localFieldData, $sentFieldData, $data, $sub )
+	protected function validate_less_than( $localFieldName, $localFieldData, $sentFieldData, $data, $sub )
 	{
 		if( is_array( $sentFieldData ) )
 		{
 			echo "Form array can not be validated against 'less_than[]'";
-			return false;
+			return 0;
 		}
 		
-		if( $sentFieldData > $sub[0] )
+		if( $sentFieldData > $sub[1] )
 		{
-			$localFieldData["valid"] = false;
 			if( !isset( $localFieldData["message"] ) )
 			{
-				$this->set_message( $localFieldName, ucwords( $localFieldName ) . " must be less than " . $sub[0] . "." );
+				$this->set_message( $localFieldName, $this->get_display_name( $localFieldName ) . " must be less than " . $sub[1] . "." );
 			}
+			return 0;
 		}
+		
+		return 1;
 	}
 	
-	protected function validate_alpha( $localFieldName, &$localFieldData, $sentFieldData, $data, $sub )
+	protected function validate_alpha( $localFieldName, $localFieldData, $sentFieldData, $data, $sub )
 	{
 		if( is_array( $sentFieldData ) )
 		{
 			echo "Form array can not be validated against 'alpha'";
-			return false;
+			return 0;
 		}
 		
 		if( preg_match( "/[^a-z]*/i", $sentFieldData ) )
 		{
-			$localFieldData["valid"] = false;
 			if( !isset( $localFieldData["message"] ) )
 			{
-				$this->set_message( $localFieldName, ucwords( $localFieldName ) . " must be an alphabetical character." );
+				$this->set_message( $localFieldName, $this->get_display_name( $localFieldName ) . " must be an alphabetical character." );
 			}
+			return 0;
 		}
+		
+		return 1;
 	}
 	
-	protected function validate_alpha_numeric( $localFieldName, &$localFieldData, $sentFieldData, $data, $sub )
+	protected function validate_alpha_numeric( $localFieldName, $localFieldData, $sentFieldData, $data, $sub )
 	{
 		if( is_array( $sentFieldData ) )
 		{
 			echo "Form array can not be validated against 'alpha_numeric'";
-			return false;
+			return 0;
 		}
 		
 		if( preg_match( "/[^a-z\d]*/i", $sentFieldData ) )
 		{
-			$localFieldData["valid"] = false;
 			if( !isset( $localFieldData["message"] ) )
 			{
-				$this->set_message( $localFieldName, ucwords( $localFieldName ) . " must be an alphanumeric character." );
+				$this->set_message( $localFieldName, $this->get_display_name( $localFieldName ) . " must be an alphanumeric character." );
 			}
+			return 0;
 		}
+		
+		return 1;
 	}
 	
-	protected function validate_alpha_dash( $localFieldName, &$localFieldData, $sentFieldData, $data, $sub )
+	protected function validate_alpha_dash( $localFieldName, $localFieldData, $sentFieldData, $data, $sub )
 	{
 		if( is_array( $sentFieldData ) )
 		{
 			echo "Form array can not be validated against 'alpha_dash'";
-			return false;
+			return 0;
 		}
 		
 		if( preg_match( "/[^\w\d]*/i", $sentFieldData ) )
 		{
-			$localFieldData["valid"] = false;
 			if( !isset( $localFieldData["message"] ) )
 			{
-				$this->set_message( $localFieldName, ucwords( $localFieldName ) . " must be an alphanumeric character, hyphen or underscore." );
+				$this->set_message( $localFieldName, $this->get_display_name( $localFieldName ) . " must be an alphanumeric character, hyphen or underscore." );
 			}
+			return 0;
 		}
+		
+		return 1;
 	}
 	
-	protected function validate_integer( $localFieldName, &$localFieldData, $sentFieldData, $data, $sub )
+	protected function validate_integer( $localFieldName, $localFieldData, $sentFieldData, $data, $sub )
 	{
 		if( is_array( $sentFieldData ) )
 		{
 			echo "Form array can not be validated against 'integer'";
-			return false;
+			return 0;
 		}
 		
 		if( preg_match( "/[^\d]*/i", $sentFieldData ) )
 		{
-			$localFieldData["valid"] = false;
 			if( !isset( $localFieldData["message"] ) )
 			{
-				$this->set_message( $localFieldName, ucwords( $localFieldName ) . " must be a whole number." );
+				$this->set_message( $localFieldName, $this->get_display_name( $localFieldName ) . " must be a whole number." );
 			}
+			return 0;
 		}
+		
+		return 1;
 	}
 	
-	protected function validate_decimal( $localFieldName, &$localFieldData, $sentFieldData, $data, $sub )
+	protected function validate_decimal( $localFieldName, $localFieldData, $sentFieldData, $data, $sub )
 	{
 		if( is_array( $sentFieldData ) )
 		{
 			echo "Form array can not be validated against 'decimal'";
-			return false;
+			return 0;
 		}
 		
 		if( preg_match( "/[^\d\.]*/i", $sentFieldData ) )
 		{
-			$localFieldData["valid"] = false;
 			if( !isset( $localFieldData["message"] ) )
 			{
-				$this->set_message( $localFieldName, ucwords( $localFieldName ) . " must be a decimal." );
+				$this->set_message( $localFieldName, $this->get_display_name( $localFieldName ) . " must be a decimal." );
 			}
+			return 0;
 		}
+		
+		return 1;
 	}
 	
-	protected function validate_valid_email( $localFieldName, &$localFieldData, $sentFieldData, $data, $sub )
+	protected function validate_valid_email( $localFieldName, $localFieldData, $sentFieldData, $data, $sub )
 	{
 		if( is_array( $sentFieldData ) )
 		{
 			echo "Form array can not be validated against 'valid_email'";
-			return false;
+			return 0;
 		}
 		
 		if( !preg_match( "^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$^", $sentFieldData ) )
 		{
-			$localFieldData["valid"] = false;
 			if( !isset( $localFieldData["message"] ) )
 			{
-				$this->set_message( $localFieldName, ucwords( $localFieldName ) . " must be a valid email." );
+				$this->set_message( $localFieldName, $this->get_display_name( $localFieldName ) . " must be a valid email." );
 			}
+			return 0;
 		}
+		
+		return 1;
 	}
 	
-	protected function validate_valid_ip( $localFieldName, &$localFieldData, $sentFieldData, $data, $sub )
+	protected function validate_valid_ip( $localFieldName, $localFieldData, $sentFieldData, $data, $sub )
 	{
 		if( is_array( $sentFieldData ) )
 		{
 			echo "Form array can not be validated against 'valid_ip'";
-			return false;
+			return 0;
 		}
 		
 		if( !filter_var( $sentFieldData, FILTER_FLAG_IPV4 ) && !filter_var( $sentFieldData, FILTER_FLAG_IPV6 ) )
 		{
-			$localFieldData["valid"] = false;
 			if( !isset( $localFieldData["message"] ) )
 			{
-				$this->set_message( $localFieldName, ucwords( $localFieldName ) . " must be a valid ip." );
+				$this->set_message( $localFieldName, $this->get_display_name( $localFieldName ) . " must be a valid ip." );
 			}
+			return 0;
 		}
+		
+		return 1;
 	}
 	
-	protected function validate_callback( $localFieldName, &$localFieldData, $sentFieldData, $data, $sub )
+	protected function validate_callback( $localFieldName, $localFieldData, $sentFieldData, $data, $sub )
 	{
 		
 	}
@@ -445,6 +491,7 @@ class Form_manager
 	protected function create_field_node( $name )
 	{
 		$this->fields[$name] = array(
+			"display_name" => "",
 			"rules" => array(),
 			"valid" => true,
 		);
