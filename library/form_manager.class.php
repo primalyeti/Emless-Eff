@@ -71,10 +71,10 @@ class Form_manager
 		return "";
 	}
 	
-	public function get_select( $field, $value, $default = false )
+	public function get_select( $field, $value, $default = 0 )
 	{
 		if( !empty( $this->fields[$field]["value"] ) && $this->fields[$field]["value"] == $value || 
-			( $default == true && empty( $this->fields[$field]["value"] ) )
+			( $default == 1 && empty( $this->fields[$field]["value"] ) )
 		)
 		{
 			return "selected=\"selected\"";
@@ -88,13 +88,13 @@ class Form_manager
 	
 	public function get_error( $field, $newTags = array() )
 	{	
-		if( $this->fields[$field]["valid"] == false && !empty( $this->fields[$field]["message"] ) )
+		if( $this->fields[$field]["valid"] == 0 && !empty( $this->fields[$field]["message"] ) )
 		{
 			$tags = ( count( $newTags ) == 2 ? $newTags : $this->tags );
 			echo $this->tags[0] . $this->fields[$field]["message"] . $this->tags[1];
 		}
 		
-		return false;
+		return 0;
 	}
 	
 	public function get_errors()
@@ -147,7 +147,7 @@ class Form_manager
 			return null;
 		}
 		
-		$isValid = true;
+		$isValid = 1;
 		
 		foreach( $this->fields as $localFieldName => &$localFieldData )
 		{
@@ -171,10 +171,13 @@ class Form_manager
 			
 			$this->set_value( $localFieldName, $sentFieldData );
 			
-			if( $localFieldData["valid"] == false )
+			/*
+			if( $localFieldData["valid"] == 0 )
 			{
-				next;
+				$isValid = 0;
+				continue;
 			}
+			*/
 			
 			// go through each rule
 			foreach( $localFieldData['rules'] as $rule )
@@ -186,10 +189,10 @@ class Form_manager
 				{
 					$localFieldData["valid"] = call_user_func_array( array( $this, "validate_" . $rule ), array( $localFieldName, $localFieldData, $sentFieldData, $data, $sub ) );
 				}
-								
-				if( $localFieldData["valid"] == false )
+				
+				if( $localFieldData["valid"] == 0 )
 				{
-					$isValid = false;
+					$isValid = 0;
 				}
 			}
 		}
@@ -208,7 +211,7 @@ class Form_manager
 			return 0;
 		}
 		
-		return  true;
+		return  1;
 	}
 	
 	protected function validate_matches( $localFieldName, $localFieldData, $sentFieldData, $data, $sub )
@@ -493,7 +496,7 @@ class Form_manager
 		$this->fields[$name] = array(
 			"display_name" => "",
 			"rules" => array(),
-			"valid" => true,
+			"valid" => 0,
 		);
 	}
 }

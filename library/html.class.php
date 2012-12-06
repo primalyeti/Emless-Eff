@@ -133,12 +133,12 @@ class HTML
 	
 	public function jquery()
 	{
-		$this->js( "jquery" );
+		return $this->js( "jquery" );
 	}
 	
 	public function modernizr()
 	{
-		$this->js( "modernizr" );
+		return $this->js( "modernizr" );
 	}
 	
 	public function css( $file_name, $options = array() )
@@ -173,6 +173,7 @@ class HTML
 		$defaults = array(
 			"method" => "post",
 			"accept-charset" => "utf-8",
+			"name" => uniqid(),
 		);
 		
 		$options = array_merge( $defaults, $options );

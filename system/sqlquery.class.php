@@ -95,7 +95,22 @@ class MySQLConn extends SQLHandle
 
 	function clean( $string, $type = "str" )
 	{
-		return  "'" . mysql_real_escape_string( $string, $this->_dbHandle ) . "'";
+		$toReturn = mysql_real_escape_string( $string, $this->_dbHandle );
+	
+		switch( $type )
+		{
+			case "bool":
+			case "null":
+			case "int":
+				$toReturn = $toReturn;
+				break;
+			default:
+			case "str":
+				$toReturn = "'" . $toReturn . "'";
+				break;
+		}
+		
+		return $toReturn;
 	}
 
 	function query( $query, $params = null )
@@ -203,24 +218,22 @@ class PDOConn extends SQLHandle
 
 	function clean( $string, $type = "str" )
 	{
+		$toReturn = $this->_dbHandle->quote( $string, PDO::PARAM_STR );
+	
 		switch( $type )
 		{
 			case "bool":
-				$type = "PARAM_BOOL";
-				break;
 			case "null":
-				$type = "PARAM_NULL";
-				break;
 			case "int":
-				$type = "PARAM_INT";
+				$toReturn = substr( $toReturn, 1, -1 );
 				break;
 			default:
 			case "str":
-				$type = "PARAM_STR";
+				$toReturn = $toReturn;
 				break;
 		}
 		
-		return $this->_dbHandle->quote( $string, constant( "PDO::" . $type ) );
+		return $toReturn;
 	}
 
 	function query( $query, $params = null )
