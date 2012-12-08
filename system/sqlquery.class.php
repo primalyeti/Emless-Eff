@@ -122,7 +122,7 @@ class MySQLConn extends SQLHandle
 		{
 			return false;
 		}
-		
+				
 		$result = array();
 		$table = array();
 		$field = array();
@@ -130,7 +130,7 @@ class MySQLConn extends SQLHandle
 		
 		$this->_result = mysql_query( $query, $this->_dbHandle );
 				
-		if( !is_resource( $this->_result ) ) # substr_count( strtoupper( $query ), "SELECT " ) > 0
+		if( !is_resource( $this->_result ) )
 		{
 			if( ENVIRONMENT != "LIVE" && DEVELOPMENT_ENVIRONMENT == true )
 			{
@@ -266,9 +266,41 @@ class PDOConn extends SQLHandle
 		
 		if( $params != null && is_array( $params ) && count( $params ) > 0 )
 		{
-			for( $i = 1; $i <= count( $params ); $i++ )
+			$i = 0;
+			foreach( $params as $param )
 			{
-				$stmt->bindValue( $i, $params[$i-1] );
+				$i++;
+				
+				$tmpParamValue = $param;
+				$tmpParamType = PDO::PARAM_STR;
+				
+				if( is_array( $param ) )
+				{
+					$tmpParamValue 	= $param[0];
+					
+					switch( $tmpParam[1] )
+					{
+						case "bool":
+							$tmpParamType = PDO::PARAM_BOOL;
+							break;
+							
+						case "null":
+							$tmpParamType = PDO::PARAM_NULL;
+							break;
+						
+						case "int":
+							$tmpParamType = PDO::PARAM_INT;
+							break;
+						
+						default:
+						case "str":
+							$tmpParamType = PDO::PARAM_STR;
+							break;
+					}
+					
+				}
+				
+				$stmt->bindValue( $i, $tmpParamValue, $tmpParamType );
 			}
 		}
 		
