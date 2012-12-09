@@ -2,7 +2,7 @@
 	Lead Framework Programmer: Peter Marinopoulos
 	Contact: contact [at] pdotmedia.com
 	Twitter: @pdotmedia
-	From: Montreal, Quebec
+	From: Vancouver, BC, Canada
 
 /* THANKS */
 	Base Framework Code: Anant Garg
