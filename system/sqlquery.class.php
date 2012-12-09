@@ -44,14 +44,19 @@ class SQLQuery
 		return $this->_dbObj->id();
 	}
 	
+	public function error()
+	{
+		return $this->_dbObj->error();
+	}
+	
 	public function errno()
 	{
 		return $this->_dbObj->errno();
 	}
 	
-	public function error()
+	public function errdesc()
 	{
-		return $this->_dbObj->error();
+		return $this->_dbObj->errdesc();
 	}
 }
 
@@ -61,8 +66,9 @@ interface SQLConn
 	public function clean( $string );
 	public function query( $query, $params = null );
 	public function id();
-	public function errno();
 	public function error();
+	public function errno();
+	public function errdesc();
 }
 
 abstract class SQLHandle implements SQLConn
@@ -174,12 +180,17 @@ class MySQLConn extends SQLHandle
 
     /** Get error string **/
     function error() {
-        return mysql_error( $this->_dbHandle );
+        return !( $this->errno() === 0 );
     }
     
      /** Get error numer **/
     function errno() {
         return mysql_errno( $this->_dbHandle );
+    }
+    
+    /** Get error string **/
+    function errdesc() {
+        return mysql_error( $this->_dbHandle );
     }
 }
 
@@ -359,12 +370,18 @@ class PDOConn extends SQLHandle
     /** Get error string **/
     function error()
     {
-        return print_r( $this->_dbHandle->errorInfo(), true );
+        return !( $this->errno() === false );
     }
     
      /** Get error numer **/
     function errno()
     {
         return ( $this->_dbHandle->errorCode() == "00000" ? false : $this->_dbHandle->errorCode() );
+    }
+    
+    /** Get error string **/
+    function errdesc()
+    {
+        return print_r( $this->_dbHandle->errorInfo(), true );
     }
 }
