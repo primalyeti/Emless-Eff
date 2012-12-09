@@ -167,7 +167,7 @@ class HTML
 		return "<img src='" . BASE_PATH . "img/" . $file_name . "'"  . $attributes . "/>";
 	}
 	
-	public function form_open( $action, $options = array() )
+	public function form_open( $action = "", $options = array() )
 	{
 		$options = ( is_array( $options ) ? $options : array( 0 => $options ) );
 		$defaults = array(
@@ -183,7 +183,12 @@ class HTML
 			$attributes .= $a . '="' . addslashes( $k ) . '" ';
 		}
 		
-		$form = "<form action='" . BASE_PATH . urlencode( $action ) . "'" . $attributes . ">";
+		if( $action == "" )
+		{
+			$action = $this->url;
+		}
+		
+		$form = "<form action='" . BASE_PATH . $action . "'" . $attributes . ">";
 		
 		if( !empty( $formElemets ) )
 		{
