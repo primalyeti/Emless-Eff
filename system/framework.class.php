@@ -77,9 +77,9 @@ class Framework
 		Registry::set( "isAdmin", false );
 		
 		$controllerName = ucfirst( $controller ) . 'Controller';
-		if( ENVIRONMENT != "LIVE" && DEVELOPMENT_ENVIRONMENT == true )
+		if( ENVIRONMENT != "LIVE" && DEVELOPMENT_ENVIRONMENT == true && DEVELOPMENT_SHOW_CONTROLLER == true )
 		{
-			#echo "Original: " . $controllerName . " C: " . $controller . " A: " . $action . "<br>";
+			echo "Original: " . $controllerName . " C: " . $controller . " A: " . $action . "<br>";
 		}
 			
 		if( !class_exists( $controllerName ) || !method_exists( $controllerName, $action ) )
@@ -89,9 +89,9 @@ class Framework
 			$action 		= "index";
 		}
 		
-		if( ENVIRONMENT != "LIVE" && DEVELOPMENT_ENVIRONMENT == true )
+		if( ENVIRONMENT != "LIVE" && DEVELOPMENT_ENVIRONMENT == true && DEVELOPMENT_SHOW_CONTROLLER == true )
 		{
-			#echo $controllerName . " C: " . $controller . " A: " . $action . "<br>";
+			echo $controllerName . " C: " . $controller . " A: " . $action . "<br>";
 		}
 		
 		$dbh = new SQLQuery();
