@@ -38,7 +38,7 @@ switch( $_SERVER["SERVER_NAME"] )			# what environment are we in
 /** DEBUG VARIABLES **/
 define( 'DEVELOPMENT_ENVIRONMENT', false );
 define( 'PRINT_GLOBALS', false );
-define( 'DEVELOPMENT_SHOW_CONTROLLER', true );
+define( 'DEVELOPMENT_SHOW_CONTROLLER', false );
 
 /** LOG VARIABLES **/
 define( 'LOG_FILE_NAME', 'error.log' );

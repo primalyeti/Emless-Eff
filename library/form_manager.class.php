@@ -11,7 +11,10 @@ class Form_manager
 			$this->create_field_node( $field );
 		}
 		
-		$this->fields[$field]["rules"] = explode( "|", $rules );
+		if( $rules != "" )
+		{
+			$this->fields[$field]["rules"] = explode( "|", $rules );
+		}
 		
 		if( $display_name != "" )
 		{
@@ -354,7 +357,7 @@ class Form_manager
 			return 0;
 		}
 		
-		if( preg_match( "/[^a-z]*/i", $sentFieldData ) )
+		if( !preg_match( "/[^a-z]*/i", $sentFieldData ) )
 		{
 			if( !isset( $localFieldData["message"] ) )
 			{
@@ -374,7 +377,7 @@ class Form_manager
 			return 0;
 		}
 		
-		if( preg_match( "/[^a-z\d]*/i", $sentFieldData ) )
+		if( !preg_match( "/[^a-z\d]*/i", $sentFieldData ) )
 		{
 			if( !isset( $localFieldData["message"] ) )
 			{
@@ -394,7 +397,7 @@ class Form_manager
 			return 0;
 		}
 		
-		if( preg_match( "/[^\w\d]*/i", $sentFieldData ) )
+		if( !preg_match( "/[^\w\d]*/i", $sentFieldData ) )
 		{
 			if( !isset( $localFieldData["message"] ) )
 			{
@@ -414,7 +417,7 @@ class Form_manager
 			return 0;
 		}
 		
-		if( preg_match( "/[^\d]*/i", $sentFieldData ) )
+		if( !preg_match( "/[^\d]*/i", $sentFieldData ) )
 		{
 			if( !isset( $localFieldData["message"] ) )
 			{
@@ -434,7 +437,7 @@ class Form_manager
 			return 0;
 		}
 		
-		if( preg_match( "/[^\d\.]*/i", $sentFieldData ) )
+		if( !preg_match( "/[^\d\.]*/i", $sentFieldData ) )
 		{
 			if( !isset( $localFieldData["message"] ) )
 			{

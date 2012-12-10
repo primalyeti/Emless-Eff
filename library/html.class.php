@@ -62,7 +62,7 @@ class HTML
 	
 	public function author( $url = "humans.txt" )
 	{
-		return "<link rel=\"author\" type=\"text/plain\" href=\"" . $url . "\" />";
+		return "<link rel=\"author\" type=\"text/plain\" href=\"" . BASE_PATH . $url . "\" />";
 	}
 
 	public function urlsafe( $string )
