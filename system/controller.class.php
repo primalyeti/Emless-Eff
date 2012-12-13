@@ -64,6 +64,16 @@ class Controller
 		return null;
     }
     
+    public function enable_render()
+    {
+	    $this->render = 1;
+    }
+    
+    public function disable_render()
+    {
+	    $this->render = 0;
+    }
+    
     public function enable_header()
     {
 	    $this->render_header = 1;
