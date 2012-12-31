@@ -115,7 +115,7 @@ class HTML
 			$attributes .= $a . '="' . addslashes( $k ) . '" ';
 		}
 		
-		return '<a href="' . addslashes( $href ) . urlencode( $query ) . '"' . $attributes . ">" . htmlentities( $text ) . "</a>";
+		return '<a href="' . addslashes( $href ) . urlencode( $query ) . '"' . $attributes . ">" . $text . "</a>";
 	}
 	
 	public function js( $file_name, $options = array() )

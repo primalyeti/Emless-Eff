@@ -159,7 +159,19 @@ class Framework
 	/** Check for Magic Quotes and remove them **/
 	protected function strip_slashes_deep( $value )
 	{
-		$value = is_array( $value ) ? array_map( array( "this", 'strip_slashes_deep' ), $value ) : stripslashes( $value );
+		if( empty( $value ) )
+		{
+			$value = "";
+		}
+		else if ( is_array( $value ) )
+		{
+			$value = array_map( array( "this", "strip_slashes_deep" ), $value );
+		}
+		else
+		{
+			$value = stripslashes( $value );
+		}
+		
 		return $value;
 	}
 	

@@ -4,7 +4,6 @@
 #	please add all custom variables to vars.php file
 
 /** PATH VARIABLES **/
-define( 'BASE_PATH', '/' );								# website base path, all files located past this point
 define( 'FILE_DIR', "files/" );							# uploaded files
 define( 'FILE_TEMP_DIR', FILE_DIR . "temp/" );			# temporary uplaoded file directory
 define( 'TEMP_DIR', "tmp/" );							# directory for all temporary files
@@ -23,9 +22,11 @@ define( 'TRACKER_DIR', TEMP_DIR . "trackers/" );		# directory for all tracker fi
 switch( $_SERVER["SERVER_NAME"] )			# what environment are we in
 {
 	default:
-		define( 'ENVIRONMENT', 'LOCAL' );		# define environment
+		define( 'ENVIRONMENT', 'LOCAL' );	# define environment
 		
-		define( 'DB_TYPE',		'PDO' );		# database connection type. Valid values are "PDO", "MYSQL"
+		define( 'BASE_PATH', '/' );			# website base path, all files located past this point
+		
+		define( 'DB_TYPE',		'PDO' );	# database connection type. Valid values are "PDO", "MYSQL"
 		define( 'DB_NAME', 		'' );		# database name
 		define( 'DB_USER', 		'' );		# database user
 		define( 'DB_PASSWORD', 	'' );		# database password
@@ -51,6 +52,7 @@ define( 'CACHE_DEFAULT_LIFESPAN', 5 * 60 );		# how long before cache is refreshe
 define( 'TRACKER_ISON', false );				# is tracking on	
 
 /** HONEY POT VARIABLES **/
+define( 'HONEYPOT_ACTIVE', false );
 define( 'HONEYPOT_URL', "trix/cereal" );
 define( 'HONEYPOT_TRAPPED_URL', "trix/sillyrabbit" );
 define( 'HONEYPOT_FILENAME', "honeypot.xml" );

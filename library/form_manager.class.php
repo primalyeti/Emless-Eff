@@ -151,6 +151,10 @@ class Form_manager
 		}
 		
 		$isValid = 1;
+		if( empty( $this->fields ) )
+		{
+			return $isValid;
+		}
 		
 		foreach( $this->fields as $localFieldName => &$localFieldData )
 		{

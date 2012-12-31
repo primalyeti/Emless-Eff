@@ -1,11 +1,26 @@
 <?
+function bot_honey_trap_is_active()
+{
+	return HONEYPOT_ACTIVE;
+}
+
 function bot_honey_trap_link()
 {
+	if( bot_honey_trap_is_active() === false )
+	{
+		return;
+	}
+	
 	echo Registry::get( "framework" )->load()->html->link( HONEYPOT_URL, "This link will get you banned", array( "style" => "display: none; position: absolute; top:0; left: 0; margin-left: -99%;" ) );
 }
 
 function bot_honey_trap_init()
 {
+	if( bot_honey_trap_is_active() === false )
+	{
+		return;
+	}
+
 	if( !isset( $_SESSION[HONEYPOT_SESSION_VAR] ) )
 	{
 		$_SESSION[HONEYPOT_SESSION_VAR]['isBot'] = false;
@@ -17,6 +32,11 @@ function bot_honey_trap_init()
 
 function bot_honey_trap_is_set()
 {
+	if( bot_honey_trap_is_active() === false )
+	{
+		return;
+	}
+	
 	if( isset( $_SESSION[HONEYPOT_SESSION_VAR] ) && $_SESSION[HONEYPOT_SESSION_VAR]['isBot'] == true && $_SERVER['REQUEST_URI'] != BASE_PATH . HONEYPOT_TRAPPED_URL )
 	{
 		forward( HONEYPOT_TRAPPED_URL );
@@ -25,6 +45,11 @@ function bot_honey_trap_is_set()
 
 function bot_honey_trap_scan()
 {
+	if( bot_honey_trap_is_active() === false )
+	{
+		return;
+	}
+	
 	$blacklistPath = ROOT . DS . FILE_DIR . HONEYPOT_FILENAME;
 	$ip = $_SERVER['REMOTE_ADDR'];
 	$uagent = $_SERVER['HTTP_USER_AGENT'];
