@@ -4,28 +4,26 @@ class SQLQuery
 	protected $_dbObj = false;
     protected $_result;
 
-	public function __construct()
+	public function __construct( $db_type, $db_host, $db_user, $db_password, $db_name )
 	{
-		if( DB_TYPE == "" || DB_TYPE == "PDO" )
+		if( $db_type == "" || $db_type == "PDO" )
 		{
-			$this->_dbObj = new PDOConn( DB_HOST, DB_USER, DB_PASSWORD, DB_NAME );
+			$this->_dbObj = new PDOConn( $db_host, $db_user, $db_password, $db_name );
 		}
 		
-		if( DB_TYPE == "MYSQL" || $this->_dbObj->isValid() == false )
+		if( $db_type == "MYSQL" || $this->_dbObj->isValid() == false )
 		{	
-			$this->_dbObj = new MySQLConn( DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
+			$this->_dbObj = new MySQLConn( $db_host, $db_user, $db_password, $db_name );
 		}
 		
 		if( $this->_dbObj->isValid() == false )
 		{
-			if( ENVIRONMENT != "LIVE" && DEVELOPMENT_ENVIRONMENT == true )
-			{
-				throw new Exception( $this->_dbhObj->error() );
-			}
-			else
+			if( ENVIRONMENT == "LIVE" )
 			{
 				throw new Exception( "Could not connect to DB" );
+				return;
 			}
+			throw new Exception( $this->_dbhObj->error() );
 		}
 	}
 	
@@ -44,31 +42,26 @@ class SQLQuery
 		return $this->_dbObj->id();
 	}
 	
-	public function error()
-	{
-		return $this->_dbObj->error();
-	}
-	
 	public function errno()
 	{
 		return $this->_dbObj->errno();
 	}
 	
-	public function errdesc()
+	public function error()
 	{
-		return $this->_dbObj->errdesc();
+		return $this->_dbObj->error();
 	}
 }
 
 interface SQLConn
 {
-	public function connect( $host, $username, $password, $dbname );
-	public function clean( $string );
-	public function query( $query, $params = null );
-	public function id();
-	public function error();
-	public function errno();
-	public function errdesc();
+	function connect( $host, $username, $password, $dbname );
+	function isValid();
+	function clean( $string );
+	function query( $query, $params );
+	function id();
+	function errno();
+	function error();
 }
 
 abstract class SQLHandle implements SQLConn
@@ -81,12 +74,31 @@ abstract class SQLHandle implements SQLConn
 	{
 		$this->connect( $host, $username, $password, $dbname );
 	}
+	
+	public function isValid()
+    {
+    	return $this->_isConn;
+    }
+	
+	protected function put_error( $msg )
+    {
+	    if( ENVIRONMENT == "LIVE" )
+		{
+			error_log( $msg );
+		}
+		else
+		{
+			echo $msg;
+		}
+		
+		return;
+    }
 }
 
 class MySQLConn extends SQLHandle
 {
     /** Connects to database **/
-    function connect( $host, $username, $password, $dbname )
+    public function connect( $host, $username, $password, $dbname )
 	{
 		$link = mysql_connect( $host, $username, $password );
 		
@@ -99,7 +111,7 @@ class MySQLConn extends SQLHandle
 		}
     }
 
-	function clean( $string, $type = "str" )
+	public function clean( $string, $type = "str" )
 	{
 		$toReturn = mysql_real_escape_string( $string, $this->_dbHandle );
 	
@@ -119,7 +131,7 @@ class MySQLConn extends SQLHandle
 		return $toReturn;
 	}
 
-	function query( $query, $params = null )
+	public function query( $query, $params = null )
 	{
 		$query = trim( $query );
 		
@@ -128,7 +140,7 @@ class MySQLConn extends SQLHandle
 		{
 			return false;
 		}
-				
+		
 		$result = array();
 		$table = array();
 		$field = array();
@@ -136,16 +148,10 @@ class MySQLConn extends SQLHandle
 		
 		$this->_result = mysql_query( $query, $this->_dbHandle );
 				
-		if( !is_resource( $this->_result ) )
+		if( !is_resource( $this->_result ) ) # substr_count( strtoupper( $query ), "SELECT " ) > 0
 		{
-			if( ENVIRONMENT != "LIVE" && DEVELOPMENT_ENVIRONMENT == true )
-			{
-				echo $this->error() . " SQL STATEMENT:" . $query;
-			}
-			else
-			{
-				error_log( $this->error() . " SQL STATEMENT:" . $query );
-			}
+			$this->put_error( $this->error() . " SQL STATEMENT:" . $query );
+			return false;
 		}
 		else
 		{
@@ -173,31 +179,26 @@ class MySQLConn extends SQLHandle
 		return $result;
 	}
 	
-	function id()
+	public function id()
 	{
 		return mysql_insert_id( $this->_dbHandle );
 	}
 
     /** Get error string **/
-    function error() {
-        return !( $this->errno() === 0 );
+    public function error() {
+        return mysql_error( $this->_dbHandle );
     }
     
      /** Get error numer **/
-    function errno() {
+    public function errno() {
         return mysql_errno( $this->_dbHandle );
-    }
-    
-    /** Get error string **/
-    function errdesc() {
-        return mysql_error( $this->_dbHandle );
     }
 }
 
 class PDOConn extends SQLHandle
 {
     /** Connects to database **/
-    function connect( $host, $username, $password, $dbname )
+    public function connect( $host, $username, $password, $dbname )
 	{
 		try
 		{
@@ -207,27 +208,14 @@ class PDOConn extends SQLHandle
 		}
 		catch( PDOException $e )
 		{
-			$msg = $e->getMessage();
-			if( ENVIRONMENT != "LIVE" && DEVELOPMENT_ENVIRONMENT == true )
-			{
-				echo $msg;
-			}
-			else
-			{
-				log_error( $msg );
-			}
+			$this->put_error( $e->getMessage() );
 			return false;
 		}
 		
 		$this->_isConn = true;
     }
     
-    function isValid()
-    {
-    	return $this->_isConn;
-    }
-
-	function clean( $string, $type = "str" )
+    public function clean( $string, $type = "str" )
 	{
 		$toReturn = $this->_dbHandle->quote( $string, PDO::PARAM_STR );
 	
@@ -247,7 +235,7 @@ class PDOConn extends SQLHandle
 		return $toReturn;
 	}
 
-	function query( $query, $params = null )
+	public function query( $query, $params = null )
 	{
 		$query = trim( $query );
 		
@@ -263,56 +251,60 @@ class PDOConn extends SQLHandle
 		}
 		catch( PDOException $e )
 		{
-			$msg = $e->getMessage() . " SQL STATEMENT:" . $query;
-			if( ENVIRONMENT != "LIVE" && DEVELOPMENT_ENVIRONMENT == true )
-			{
-				echo $msg;
-			}
-			else
-			{
-				log_error( $msg );
-			}
+			$this->put_error( $e->getMessage() . " SQL STATEMENT:" . $query );
 			return false;
 		}
 		
-		if( $params != null && is_array( $params ) && count( $params ) > 0 )
+		if( $params != null && is_array( $params ) && !empty( $params ) )
 		{
-			$i = 0;
-			foreach( $params as $param )
+			// make sure they're all the same length
+			$lens = array();
+			foreach( $params as $key => $param )
 			{
-				$i++;
-				
-				$tmpParamValue = $param;
-				$tmpParamType = PDO::PARAM_STR;
-				
-				if( is_array( $param ) )
+				if( !array( $param ))
 				{
-					$tmpParamValue 	= $param[0];
+					$this->put_error( "Parameter " . $key . " is not an array. SQL STATEMENT:" . $query );
+					return false;
+				}
+				array_push( $lens, count( $param ) );
+			}
+			unset( $param, $key );
+			$lens = array_unique( $lens );
+			
+			if( count( $lens ) != 1 )
+			{
+				$this->put_error( "Statement contains both question mark and named placeholders. SQL STATEMENT:" . $query );
+				return false;
+			}
+			$len = $lens[0];
+			
+			// go through each param
+			for( $i = 1; $i <= count( $params ); $i++ )
+			{
+				$key = $i-1;
+				$parameter 	= $i;
+				$value 		= $params[$key][0];
+				$data_type 	= $params[$key][1];
+				
+				// named placeholders
+				if( $len == 3 )
+				{
+					$parameter 	= $params[$key][0];
+					$value 		= $params[$key][1];
+					$data_type 	= $params[$key][2];
 					
-					switch( $tmpParam[1] )
+					if( !in_array( $data_type, array( "bool", "null", "int", "str" ) ) )
 					{
-						case "bool":
-							$tmpParamType = PDO::PARAM_BOOL;
-							break;
-							
-						case "null":
-							$tmpParamType = PDO::PARAM_NULL;
-							break;
-						
-						case "int":
-							$tmpParamType = PDO::PARAM_INT;
-							break;
-						
-						default:
-						case "str":
-							$tmpParamType = PDO::PARAM_STR;
-							break;
+						$data_type = "str";
 					}
-					
 				}
 				
-				$stmt->bindValue( $i, $tmpParamValue, $tmpParamType );
-			}
+				if( $stmt->bindValue( $parameter, $value, constant( "PDO::PARAM_" . strtoupper( $data_type ) ) ) === false )
+				{
+					$this->put_error( "Statement parameter " . $parameter . " ( " . $parameter . "," . $value . "," . $data_type . " ) is invalid. SQL STATEMENT:" . $query );
+					return false;
+				}
+			}	
 		}
 		
 		try
@@ -321,15 +313,7 @@ class PDOConn extends SQLHandle
 		}
 		catch( PDOException $e )
 		{
-			$msg = $e->getMessage() . " SQL STATEMENT:" . $query;
-			if( ENVIRONMENT != "LIVE" && DEVELOPMENT_ENVIRONMENT == true )
-			{
-				echo $msg;
-			}
-			else
-			{
-				log_error( $msg );
-			}
+			$this->put_error( $e->getMessage() . " SQL STATEMENT:" . $query );
 			return false;
 		}
 		
@@ -362,26 +346,20 @@ class PDOConn extends SQLHandle
 		return $result;
 	}
 	
-	function id()
+	public function id()
 	{
 		return $this->_dbHandle->lastInsertId();
 	}
 
     /** Get error string **/
-    function error()
+    public function error()
     {
-        return !( $this->errno() === false );
+        return print_r( $this->_dbHandle->errorInfo(), true );
     }
     
      /** Get error numer **/
-    function errno()
+    public function errno()
     {
         return ( $this->_dbHandle->errorCode() == "00000" ? false : $this->_dbHandle->errorCode() );
-    }
-    
-    /** Get error string **/
-    function errdesc()
-    {
-        return print_r( $this->_dbHandle->errorInfo(), true );
     }
 }
