@@ -207,7 +207,7 @@ class MySQLConn extends SQLHandle
         return mysql_errno( $this->_dbHandle );
     }
     
-     /** Get error numer **/
+    /** Get error string **/
     public function errdesc() {
         return mysql_error( $this->_dbHandle );
     }
@@ -233,7 +233,12 @@ class PDOConn extends SQLHandle
 		$this->_isConn = true;
     }
     
-    public function clean( $string, $type = "str" )
+    public function isValid()
+    {
+    	return $this->_isConn;
+    }
+
+	public function clean( $string, $type = "str" )
 	{
 		$toReturn = $this->_dbHandle->quote( $string, PDO::PARAM_STR );
 	
@@ -375,7 +380,7 @@ class PDOConn extends SQLHandle
         return ( $this->_dbHandle->errorCode() != "00000" );
     }
     
-    /** Get error numer **/
+     /** Get error number **/
     public function errno()
     {
         return $this->_dbHandle->errorCode();

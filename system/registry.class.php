@@ -23,12 +23,12 @@ Class Registry
 		return self::$instance;
 	}
 	
-	static function get( $key )
+	public static function get( $key )
 	{
 		return self::singleton()->getter( $key );
     }
 	
-	static function set( $key, $instance, $locked = false )
+	public static function set( $key, $instance, $locked = false )
 	{
 		if( self::singleton()->get_lock( $key ) == NULL )
 		{

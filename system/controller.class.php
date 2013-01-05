@@ -23,22 +23,22 @@ class Controller
 		$this->render_footer = 1;
 	}
 	
-	public function view( $view )
+	final public function view( $view )
 	{
 		array_push( $this->_views, $view );
 	}
 	
-	public function action( $action, $controller, $query = null, $render = 0 )
+	final public function action( $action, $controller, $query = null, $render = 0 )
 	{
 		return Framework::action( $action, $controller, $query, $render );
 	}
 	
-	public function set( $name, $value )
+	final public function set( $name, $value )
 	{
 		$this->_vars[$name] = $value;
 	}
 	
-	public function load()
+	final public function load()
 	{
 		return $this->framework->load();
 	}
@@ -64,43 +64,43 @@ class Controller
 		return null;
     }
     
-    public function enable_render()
+    final public function enable_render()
     {
 	    $this->render = 1;
     }
     
-    public function disable_render()
+    final public function disable_render()
     {
 	    $this->render = 0;
     }
     
-    public function enable_header()
+    final public function enable_header()
     {
 	    $this->render_header = 1;
     }
     
-    public function disable_header()
+    final public function disable_header()
     {
 	    $this->render_header = 0;
     }
     
-    public function enable_footer()
+    final public function enable_footer()
     {
 	    $this->render_footer = 1;
     }
     
-    public function disable_footer()
+    final public function disable_footer()
     {
 	    $this->render_footer = 0;
     }
     
-    public function enable_wrappers()
+    final public function enable_wrappers()
 	{
 		$this->render_header = 1;
 		$this->render_footer = 1;
 	}
     
-	public function disable_wrappers()
+	final public function disable_wrappers()
 	{
 		$this->render_header = 0;
 		$this->render_footer = 0;

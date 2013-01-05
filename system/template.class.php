@@ -12,23 +12,23 @@ class Template
 	}
 
 	/** Set Variables **/
-	function set_variables( $arr )
+	final public function set_variables( $arr )
 	{
 		$this->_vars = $arr;
 	}
 	
-	function set_views( $arr )
+	final public function set_views( $arr )
 	{
 		$this->_views = $arr;
 	}
 	
-	public function load()
+	final public public function load()
 	{
 		return $this->framework->load();
 	}
 	
 	/** Set Variables **/
-	function get( $name )
+	final public function get( $name )
 	{
 		if( isset( $this->_vars[$name] ) )
 		{
@@ -55,7 +55,7 @@ class Template
     }
     
 	/** Display Template **/
-    function render()
+    final public function render()
 	{	
 		$this->load()->library( "html" );
 		
@@ -102,7 +102,7 @@ class Template
 		}
     }
 
-	function include_file( $file_name )
+	final public function include_file( $file_name )
 	{
 		$this->load()->library( "html" );
 	
@@ -118,7 +118,7 @@ class Template
 		}
 	}
 	
-	function module( $controller, $action )
+	final public function module( $controller, $action )
 	{	
 		return Framework::action( $controller, $action, array(), 1 );
 	}

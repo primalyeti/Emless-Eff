@@ -131,7 +131,7 @@ class Framework
 	    return null;
     }
 	
-	static public function action( $controller, $action, $queryString = null, $render = 0 )
+	public static function action( $controller, $action, $queryString = null, $render = 0 )
 	{
 		$controllerName = ucfirst( $controller ) . 'Controller';
 		$dispatch = new $controllerName( $controller, $action, $render );

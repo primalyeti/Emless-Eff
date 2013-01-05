@@ -1,7 +1,7 @@
 <?
 class Tracker
 {	
-	static function add( $path, $url )
+	public static function add( $path, $url )
 	{
 		if( TRACKER_ISON === false )
 		{
@@ -57,7 +57,7 @@ class Tracker
 		self::save( $file_name, $tracker );
 	}
 	
-	static function change_owner( $id, $email = "", $amount = "", $tracker = null )
+	public static function change_owner( $id, $email = "", $amount = "", $tracker = null )
 	{
 		if( TRACKER_ISON === false )
 		{
@@ -109,7 +109,7 @@ class Tracker
 		self::save( $file_name, $tracker );
 	}
 		
-	static function has_tracker( $file_name )
+	public static function has_tracker( $file_name )
 	{
 		return file_exists( self::filepath( $file_name ) );
 	}
