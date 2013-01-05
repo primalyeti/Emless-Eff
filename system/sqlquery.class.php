@@ -32,8 +32,14 @@ class SQLQuery
 		return $this->_dbObj->clean( $string, $type );
 	}
 	
-	public function query( $query, $params = null )
+	public function query( $query )
 	{
+		$params = null;
+		if( func_get_args() > 1 )
+		{
+			$params = func_get_args();
+			array_shift( $params );
+		}
 		return $this->_dbObj->query( $query, $params );
 	}
 	
@@ -42,14 +48,19 @@ class SQLQuery
 		return $this->_dbObj->id();
 	}
 	
+	public function error()
+	{
+		return $this->_dbObj->error();
+	}
+	
 	public function errno()
 	{
 		return $this->_dbObj->errno();
 	}
 	
-	public function error()
+	public function errdesc()
 	{
-		return $this->_dbObj->error();
+		return $this->_dbObj->errdesc();
 	}
 }
 
@@ -60,8 +71,9 @@ interface SQLConn
 	function clean( $string );
 	function query( $query, $params );
 	function id();
-	function errno();
 	function error();
+	function errno();
+	function errdesc();
 }
 
 abstract class SQLHandle implements SQLConn
@@ -88,7 +100,8 @@ abstract class SQLHandle implements SQLConn
 		}
 		else
 		{
-			echo $msg;
+			error_log( $msg );
+			#echo $msg;
 		}
 		
 		return;
@@ -131,7 +144,7 @@ class MySQLConn extends SQLHandle
 		return $toReturn;
 	}
 
-	public function query( $query, $params = null )
+	public function query( $query, $params )
 	{
 		$query = trim( $query );
 		
@@ -186,12 +199,17 @@ class MySQLConn extends SQLHandle
 
     /** Get error string **/
     public function error() {
-        return mysql_error( $this->_dbHandle );
+        return ( mysql_errno( $this->_dbHandle ) != 0 );
     }
     
      /** Get error numer **/
     public function errno() {
         return mysql_errno( $this->_dbHandle );
+    }
+    
+     /** Get error numer **/
+    public function errdesc() {
+        return mysql_error( $this->_dbHandle );
     }
 }
 
@@ -235,7 +253,7 @@ class PDOConn extends SQLHandle
 		return $toReturn;
 	}
 
-	public function query( $query, $params = null )
+	public function query( $query, $params )
 	{
 		$query = trim( $query );
 		
@@ -354,12 +372,18 @@ class PDOConn extends SQLHandle
     /** Get error string **/
     public function error()
     {
-        return print_r( $this->_dbHandle->errorInfo(), true );
+        return ( $this->_dbHandle->errorCode() != "00000" );
     }
     
-     /** Get error numer **/
+    /** Get error numer **/
     public function errno()
     {
-        return ( $this->_dbHandle->errorCode() == "00000" ? false : $this->_dbHandle->errorCode() );
+        return $this->_dbHandle->errorCode();
+    }
+    
+    /** Get error desc **/
+    public function errdesc()
+    {
+         return print_r( $this->_dbHandle->errorInfo(), true );
     }
 }
