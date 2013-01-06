@@ -94,7 +94,7 @@ class Framework
 			echo $controllerName . " C: " . $controller . " A: " . $action . "<br>";
 		}
 		
-		$dbh = new SQLQuery();
+		$dbh = new SQLQuery( DB_TYPE, DB_HOST, DB_USER, DB_PASSWORD, DB_NAME );
 		Registry::set( "dbh", $dbh, true );
 		
 		$dispatch = new $controllerName( $controller, $action );
