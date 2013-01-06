@@ -22,7 +22,7 @@ class Template
 		$this->_views = $arr;
 	}
 	
-	final public public function load()
+	final public function load()
 	{
 		return $this->framework->load();
 	}
