@@ -478,7 +478,7 @@ AddCharset utf-8 .css .js .xml .json .rss .atom
 	RewriteRule ^$ public/ [L]
 	
 	# if its not a script, file, ticket or mail, go to public
-	RewriteCond %{REQUEST_URI} !^/scripts/(.*)$
+	#RewriteCond %{REQUEST_URI} !^/scripts/(.*)$
 	RewriteCond %{REQUEST_URI} !^/files/(.*)$
 	RewriteRule (.*) public/$1 [L]
 </IfModule>

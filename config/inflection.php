@@ -1,9 +1,14 @@
 <?
-/** Irregular Words
-$irregularWords = array(
-	'singular' => 'plural' 
-);
-**/
+/**
+ *
+ * Irregular Word List
+ *
+ * This list helps map irregular words to their plural form, for controller mapping
+ *
+ * 'singular' => 'plural' 
+ *
+ */
+
 $irregularWords = array(
 	"admin"		=>	"admin",
 	"cart"		=>	"cart",

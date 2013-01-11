@@ -1,4 +1,16 @@
 <?
+/** Honey pot trigger url (trap) */
+define( 'HONEYPOT_URL', "scripts/honeypot.bottrap.php" );
+
+/** Honey Pot trapped url */
+define( 'HONEYPOT_TRAPPED_URL', "scripts/honeypot.trapped.php" );
+
+/** Honey Pot Robot List Filename */
+define( 'HONEYPOT_FILENAME', "honeypot.xml" );
+
+/** Honey Pot Session Variable Name */
+define( 'HONEYPOT_SESSION_VAR', "framework_honeypot" );
+
 function bot_honey_trap_is_active()
 {
 	return HONEYPOT_ACTIVE;

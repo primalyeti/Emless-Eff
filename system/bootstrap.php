@@ -1,11 +1,5 @@
 <?
-require_once( ROOT . DS . 'config' . DS . 'config.php' );
-require_once( ROOT . DS . 'config' . DS . 'vars.php' );
-require_once( ROOT . DS . 'config' . DS . 'routing.php' );
-require_once( ROOT . DS . 'config' . DS . 'inflection.php' );
-require_once( ROOT . DS . 'system' . DS . 'functions.include.php' );
-
-session_start();
+//require_once( 'bootstrap.inc.php' );
 
 $framework = New Framework();
 Registry::set( "framework", $framework, true );

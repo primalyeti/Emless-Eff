@@ -1,74 +1,161 @@
 <?
-/** READ ME **/
-#	Config file hosts all the variables used by the frame work.
-#	please add all custom variables to vars.php file
+/**
+ *
+ * Base configuration file for Emless-F framework.
+ *
+ * This config file allows you to configure the following, MySQL settings,
+ * directory names, environment and development settings, site variables 
+ * and miscellaneous functions\
+ *
+ */
 
-/** PATH VARIABLES **/
-define( 'FILE_DIR', "files/" );							# uploaded files
-define( 'FILE_TEMP_DIR', FILE_DIR . "temp/" );			# temporary uplaoded file directory
-define( 'TEMP_DIR', "tmp/" );							# directory for all temporary files
-define( 'CACHE_DIR', TEMP_DIR . "cache/" );				# directory for all cache files
-define( 'LOGS_DIR', TEMP_DIR . "logs/" );				# directory for all log files
-define( 'SESSION_DIR', TEMP_DIR . "sessions/" );		# directory for all session files
-define( 'TRACKER_DIR', TEMP_DIR . "trackers/" );		# directory for all tracker files
+// ** ENVIRONMENT and MySQL SETTINGS - Set up local, dev, test and live environments, base paths and their MySQL settings ** //
+/**
+ *
+ * Switches between all domain names, ex: www.example.com, text.example.com, dev.example.com and local.example.com
+ * Lets you set up different MySQL and environment setting depending on what server/domain we're on
+ * 
+ * Supported environments are:
+ * LOCAL	- testing on local machine, good for use with MAMP
+ * DEV		- on a test server, not your machine, but not the final server either
+ * TEST		- on live server, but not visible to public. Good for testing near final build
+ * LIVE		- live server, visible to public
+ *
+ */
 
-/** ENVIRONMENT  **/
-#	Supported environments are:
-#	LOCAL	- testing on local machine, good for use with MAMP
-#	DEV		- on a test server, not your machine, but not the final server either
-#	TEST	- on live server, but not visible to public. Good for testing near final build
-#	LIVE	- live server, visible to public
-
-switch( $_SERVER["SERVER_NAME"] )			# what environment are we in
-{
-	default:
-		define( 'ENVIRONMENT', 'LOCAL' );		# define environment
-		
-		define( 'BASE_PATH', '/' );								# website base path, all files located past this point
-		
-		define( 'DB_TYPE',		'PDO' );		# database connection type. Valid values are "PDO", "MYSQL"
-		define( 'DB_NAME', 		'' );		# database name
-		define( 'DB_USER', 		'' );		# database user
-		define( 'DB_PASSWORD', 	'' );		# database password
-		define( 'DB_HOST', 		'' );		# database host (typically localhost)
-		
-		define( 'DOMAIN', 'http://' . BASE_PATH );			# nonsecure domain
-		define( 'DOMAIN_SECURE', 'http://' . BASE_PATH );	# secure domain url
-}
-
-/** DEBUG VARIABLES **/
-define( 'DEVELOPMENT_ENVIRONMENT', false );
-define( 'PRINT_GLOBALS', false );
-define( 'DEVELOPMENT_SHOW_CONTROLLER', false );
-
-/** LOG VARIABLES **/
-define( 'LOG_FILE_NAME', 'error.log' );
-define( 'LOG_CUST_ERR_FILE_NAME', 'cust.error.log' );
-
-/** CACHING VARIABLES **/
-define( 'CACHE_ISON', false );					# is caching on
-define( 'CACHE_DEFAULT_LIFESPAN', 5 * 60 );		# how long before cache is refreshed
-
-/** TRACKING VARIABLES **/
-define( 'TRACKER_ISON', false );				# is tracking on	
-
-/** HONEY POT VARIABLES **/
-define( 'HONEYPOT_ACTIVE', false );
-define( 'HONEYPOT_URL', "trix/cereal" );
-define( 'HONEYPOT_TRAPPED_URL', "trix/sillyrabbit" );
-define( 'HONEYPOT_FILENAME', "honeypot.xml" );
-define( 'HONEYPOT_SESSION_VAR', "framework_honeypot" );
-
-// set default timezone for date() method
-date_default_timezone_set( 'America/Vancouver' );
-
-/** Site Variables **/
+/** Site Title */
 define( 'SITE_TITLE', '' );
+
+/** Meta Title Content */
 define( 'META_TITLE', "");
+
+/** Meta Description */
 define( 'META_DESCRIPTION', "" );
+
+/** Meta Search Categories */
 define( 'META_SEARCH_CATEGORIES', "" );
+
+/** Meta Image */
 define( 'META_IMAGE', "" );
 
-/** ADMIN VARIABLES **/
-define( 'ADMIN_SESSION_VAR', "admin" );			# admin session variable
-define( 'ADMIN_ALIAS', 'backdoor' );			# url where admin section can be found. RECOMMENDED YOU CHANGE
+/** Default Timezone */
+date_default_timezone_set( 'America/Vancouver' );
+
+/** Switch between domains */
+switch( $_SERVER["SERVER_NAME"] )
+{
+	//case "www.example.com":
+	//case "test.example.com":
+	//case "dev.example.com":
+	//case "local.example.com":
+	
+	default:
+		/** Environment Mode, see supported environment values */
+		define( 'ENVIRONMENT', 'LOCAL' );
+		
+		/** Change if framework is installed in a subdirectory */
+		define( 'BASE_PATH', '/' );	
+		
+		/** Database Connection Type, supports PDO and MySQL */
+		define( 'DB_TYPE',		'PDO' );		# database connection type. Valid values are "PDO", "MYSQL"
+		
+		/** Database Name */
+		define( 'DB_NAME', 		'' );
+		
+		/** Database Login Username */
+		define( 'DB_USER', 		'' );
+		
+		/** Database Login Password */
+		define( 'DB_PASSWORD', 	'' );
+		
+		/** Database Host */
+		define( 'DB_HOST', 		'' );
+}
+
+/** Standard Domain */
+define( 'DOMAIN', 'http://' . $_SERVER["SERVER_NAME"] . BASE_PATH );
+
+/** Secure Domain, uses HTTPS */
+define( 'DOMAIN_SECURE', 'http://' . $_SERVER["SERVER_NAME"] . BASE_PATH );
+
+/** Authentication key */
+define( 'AUTH_KEY', 'put your unique phrase here' );
+
+/** ##### */
+
+// ** PATH VARIABLES - Where are folders located on your server, relative to the root index.php file ** //
+/**
+ *
+ */
+ 
+/** User uploaded files */
+define( 'FILE_DIR', "files/" );
+
+/** Temporary user uploaded files */
+define( 'FILE_TEMP_DIR', FILE_DIR . "temp/" );
+
+/** Temporary framework files */
+define( 'TEMP_DIR', "tmp/" );
+
+/** Cache files */
+define( 'CACHE_DIR', TEMP_DIR . "cache/" );
+
+/** Log files */
+define( 'LOGS_DIR', TEMP_DIR . "logs/" );
+
+/** Session files (unused at this time) */
+define( 'SESSION_DIR', TEMP_DIR . "sessions/" );
+
+/** Tracker files (experimental) */
+define( 'TRACKER_DIR', TEMP_DIR . "trackers/" );
+
+/** ##### */
+
+// ** DEVELOPMENT VARIABLES - Enable debug mode ** //
+/**
+ *
+ */
+
+/** Eanble Development Environment */
+define( 'DEVELOPMENT_ENVIRONMENT', false );
+
+/** Eanble Printing Globals on Page Load */
+define( 'PRINT_GLOBALS', false );
+
+/** Enable Showing the Currently Loaded Controller */
+define( 'DEVELOPMENT_SHOW_CONTROLLER', false );
+
+
+/** Error Log Name */
+define( 'LOG_FILE_NAME', 'error.log' );
+
+/** Additional Error Log Name */
+define( 'LOG_CUST_ERR_FILE_NAME', 'cust.error.log' );
+
+/** ##### */
+
+// ** MISCELLANEOUS VARIABLES - Misc functions ettings ** //
+/**
+ *
+ */
+
+/** Is caching enabled */
+define( 'CACHE_ISON', false );
+
+/** Default cache lifetime */
+define( 'CACHE_DEFAULT_LIFESPAN', 5 * 60 );
+
+
+/** Is tracking enabled EXPERIMENTAL */
+define( 'TRACKER_ISON', false );
+
+
+/** Is honey pot enabled, to catch bots (in development) */
+define( 'HONEYPOT_ACTIVE', false );
+
+
+/** Admin Session Variable Name */
+define( 'ADMIN_SESSION_VAR', "admin" );
+
+/** Admin URL Alias */
+define( 'ADMIN_ALIAS', 'backdoor' );

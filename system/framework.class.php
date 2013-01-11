@@ -62,6 +62,18 @@ class Framework
 					array_shift( $urlArray );
 				}
 			}
+			/*
+			else if( $controller == "scripts" )
+			{
+				array_shift( $urlArr );
+				$include = implode( "/", $urlArr );
+				unset( $urlArr );
+				if( file_exists( ROOT . DS . 'scripts' . DS . $include  ) && is_file( ROOT . DS . 'scripts' . DS . $include ) )
+				{
+					require_once( ROOT . DS . 'scripts' . DS . $include );
+				}
+			}
+			*/
 			
 			// get action
 			if( isset( $urlArray[0] ) )
