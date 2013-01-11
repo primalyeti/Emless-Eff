@@ -1,14 +1,14 @@
-*Change Log
+*Change Log*
 -----------
 
-*Panned Changes
+*Panned Changes*
 ---------------
 * Namespace framework
 * Add MySQLi profiler
 * Improve SQLQuery class, find a way to merge addition joined rows when the main one is the same
 
 
-*Version Beta 0.9
+*Version Beta 0.9*
 -----------------
 Release Date: January 11th, 2012
 
