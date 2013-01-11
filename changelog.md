@@ -14,12 +14,10 @@ Release Date: January 11th, 2012
 
 * New
 	* Initial logging of framework
-<dl>
-	<dd>Added license file</dd>
-	<dd>Added userguide file</dd>
-	<dd>Added changelog file</dd>
-	<dt>Updated</dt>
-	<dd>Updated readme, is actually a read me now</dd>	
-</dl>
+	* Added license file
+	* Added userguide file
+	* Added changelog file
+* Updated
+	* Updated readme, is actually a read me now
 
 
