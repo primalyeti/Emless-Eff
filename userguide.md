@@ -1,5 +1,5 @@
-*User Guide*
------------
+User Guide
+==========
 
 <dl>
 	<dt>Table of Contents</dt>
