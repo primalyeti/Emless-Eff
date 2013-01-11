@@ -21,22 +21,22 @@ Changelog and New Features
 --------------------------
 
 ### Planned Changed
-* Namespace framework
-* Add MySQLi profiler
-* Improve SQLQuery class, find a way to merge addition joined rows when the main one is the same
-* Improve Administration tools
+(in order of priority)
+
+* Add namespacing to system
 * Add support for files downloading (similar to ajax and script function)
+* Add MySQLi profiler to system
+* Improve SQLQuery class, merge addition joined rows when the main one is the same
+* Improve Administration tools
+
 
 ### Version Beta 0.9
 Release Date: January 11th, 2012
 
 * New
-	* Initial logging of framework
-	* Added license file
-	* Added userguide file
-	* Added changelog file
+	* Added framework documentation
 * Updated
-	* Updated readme, is actually a read me now
+	* Seperated application and system logic for easier updating and management
 
 
 License
