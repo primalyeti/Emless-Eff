@@ -1,4 +1,15 @@
 <?
+/**
+ *
+ * Routing List
+ *
+ * Used to route words to specific controllers. Perfect for hiding real controller names.
+ *
+ * Ex:
+ * '/^homes/i' => 'pages/index' 
+ *
+ */
+ 
 $routing = array(
 	/** ADMIN **/
 		'/^admin(istrator)?(\/)?/i'						=> 'index/index',
@@ -6,10 +17,6 @@ $routing = array(
 	/** HOME **/
 		'/^home/i'										=> 'pages/index',	# home
 		
-	/** HONEY POT **/
-		'/^trix\/cereal/i'								=> 'systems/bottrap',	# bot trap
-		'/^trix\/sillyrabbit/i'							=> 'systems/bottrapped',	# bot trap
-
 );
 
 $default['controller'] 			= 'pages';
