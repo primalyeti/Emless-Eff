@@ -1,5 +1,5 @@
 What is Emless-Eff
-===================
+------------------
 Emless-Eff (M-F) is an Application Development Framework for people who build websites using PHP. M-F follows an MVC design idea with one major difference, it dropped the M, that is, it does not contain
 a model. Removing the model adds a lot of freedom to your development, but you trade predictabilty and regidity for freedom. M-F enables toyu to develop projects must faster than you coul dif you were 
 writing it from scratch. M-F provides many libraries to help standardize and speed up commonly done tasks, by both the designer and devolper, on your project. M-F helps you stay on task and rapidly
