@@ -1,5 +1,6 @@
 Emless-Eff
 ==========
+a model. Removing the model adds a lot of freedom to your development, but you trade predictabilty and regidity for freedom. M-F enables toyu to develop projects must faster than you coul dif you were 
 
 PHP Framework
 
