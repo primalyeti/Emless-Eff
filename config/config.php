@@ -26,20 +26,8 @@
 /** Site Title */
 define( 'SITE_TITLE', '' );
 
-/** Meta Title Content */
-define( 'META_TITLE', "");
-
-/** Meta Description */
-define( 'META_DESCRIPTION', "" );
-
-/** Meta Search Categories */
-define( 'META_SEARCH_CATEGORIES', "" );
-
-/** Meta Image */
-define( 'META_IMAGE', "" );
-
 /** Default Timezone */
-date_default_timezone_set( 'America/Vancouver' );
+define( 'TIMEZONE', 'America/Vancouver' );
 
 /** Switch between domains */
 switch( $_SERVER["SERVER_NAME"] )
@@ -79,7 +67,30 @@ define( 'DOMAIN', 'http://' . $_SERVER["SERVER_NAME"] . BASE_PATH );
 define( 'DOMAIN_SECURE', 'http://' . $_SERVER["SERVER_NAME"] . BASE_PATH );
 
 /** Authentication key */
-define( 'AUTH_KEY', 'put your unique phrase here' );
+define( 'AUTH_KEY', '' );
+
+/** ##### */
+
+// ** DEVELOPMENT VARIABLES - Enable debug mode ** //
+/**
+ *
+ */
+
+/** Eanble Development Environment */
+define( 'DEVELOPMENT_ENVIRONMENT', true );
+
+/** Eanble Printing Globals on Page Load */
+define( 'DEVELOPMENT_PRINT_GLOBALS', false );
+
+/** Enable Showing the Currently Loaded Controller */
+define( 'DEVELOPMENT_SHOW_CONTROLLER', false );
+
+
+/** Error Log Name */
+define( 'LOG_FILE_NAME', 'error.log' );
+
+/** Additional Error Log Name */
+define( 'LOG_CUST_ERR_FILE_NAME', 'cust.error.log' );
 
 /** ##### */
 
@@ -111,29 +122,6 @@ define( 'TRACKER_DIR', TEMP_DIR . "trackers/" );
 
 /** ##### */
 
-// ** DEVELOPMENT VARIABLES - Enable debug mode ** //
-/**
- *
- */
-
-/** Eanble Development Environment */
-define( 'DEVELOPMENT_ENVIRONMENT', false );
-
-/** Eanble Printing Globals on Page Load */
-define( 'PRINT_GLOBALS', false );
-
-/** Enable Showing the Currently Loaded Controller */
-define( 'DEVELOPMENT_SHOW_CONTROLLER', false );
-
-
-/** Error Log Name */
-define( 'LOG_FILE_NAME', 'error.log' );
-
-/** Additional Error Log Name */
-define( 'LOG_CUST_ERR_FILE_NAME', 'cust.error.log' );
-
-/** ##### */
-
 // ** MISCELLANEOUS VARIABLES - Misc functions ettings ** //
 /**
  *
@@ -157,5 +145,11 @@ define( 'HONEYPOT_ACTIVE', false );
 /** Admin Session Variable Name */
 define( 'ADMIN_SESSION_VAR', "admin" );
 
-/** Admin URL Alias */
+/** Admin URL Alias, update routing also */
 define( 'ADMIN_ALIAS', 'backdoor' );
+
+/** Scripts URL Alias */
+define( 'SCRIPTS_ALIAS', 'scripts' );
+
+/** AJAX Alias */
+define( 'AJAX_ALIAS', 'ajax' );

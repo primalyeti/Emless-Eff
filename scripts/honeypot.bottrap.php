@@ -1,6 +1,4 @@
 <?
-require_once( ROOT . DS . 'helpers' . DS . 'bot_honey_trap.php' );
-
 $blacklistPath = ROOT . DS . FILE_DIR . HONEYPOT_FILENAME;
 $ip = $_SERVER['REMOTE_ADDR'];
 $uagent = $_SERVER['HTTP_USER_AGENT'];

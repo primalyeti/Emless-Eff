@@ -18,12 +18,8 @@ class SQLQuery
 		
 		if( $this->_dbObj->isValid() == false )
 		{
-			if( ENVIRONMENT == "LIVE" )
-			{
-				throw new Exception( "Could not connect to DB" );
-				return;
-			}
-			throw new Exception( $this->_dbhObj->error() );
+			echo "Could not connect to DB";
+			return;
 		}
 	}
 	
@@ -101,7 +97,7 @@ abstract class SQLHandle implements SQLConn
 		else
 		{
 			error_log( $msg );
-			#echo $msg;
+			echo $msg;
 		}
 		
 		return;
@@ -122,6 +118,8 @@ class MySQLConn extends SQLHandle
 
 			$this->_isConn = true;
 		}
+		
+		return $link;
     }
 
 	public function clean( $string, $type = "str" )
@@ -221,14 +219,15 @@ class PDOConn extends SQLHandle
 		try
 		{
 			$this->_dbHandle = new PDO('mysql:host=' . $host . ';dbname=' . $dbname, $username, $password );
-		    $this->_dbHandle->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
-		    $this->_dbHandle->setAttribute( PDO::ATTR_EMULATE_PREPARES, false );
 		}
 		catch( PDOException $e )
 		{
 			$this->put_error( $e->getMessage() );
 			return false;
 		}
+		
+		$this->_dbHandle->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
+	    $this->_dbHandle->setAttribute( PDO::ATTR_EMULATE_PREPARES, false );
 		
 		$this->_isConn = true;
     }

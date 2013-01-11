@@ -8,11 +8,19 @@ class Framework
 	{
 		global $url;
 		
+		if( !$this->verify_settings() )
+		{
+			die();
+		}
+		
+		// set url in registry
 		Registry::set( "url", $url, true );
 		
+		// set class vars and init loader
 		$this->_url 	= $url;
 		$this->_loader 	= new Loader();
 		
+		// clean and prep everything
 		$this->set_reporting();
 		$this->remove_magic_quotes();
 		$this->register_globals_to_framework();
@@ -21,18 +29,22 @@ class Framework
 	
 	public function init()
 	{
+		// load defaults
 		global $default;
-	
+		
 		$queryString = array();
 		
 		$controller = $default['controller'];
 		$action 	= $default['action'];
 		
+		// if its not defaults
 		if( isset( $this->_url ) )
 		{
-			$url = $this->routeURL( $this->_url );
+			// route the url
+			$url = $this->route_url( $this->_url );
 			$urlArray = explode( "/", $url );
 			
+			//clear all bogus ones
 			for( $i = 0; $i < count( $urlArray ); $i++ )
 			{
 				if( empty( $urlArray[$i] ) )
@@ -45,35 +57,38 @@ class Framework
 			if( isset( $urlArray[0] ) )
 			{
 				$controller = $urlArray[0];
-				array_shift( $urlArray );
-			}
-			
-			// if is admin
-			if( $controller == ADMIN_ALIAS )
-			{
-				Registry::set( "isAdmin", true, true );
-				$controller = $default['admin']['controller'];
-				$action 	= $default['admin']['action'];
 				
-				// get controller
-				if( isset( $urlArray[0] ) )
+				// pop off for action call
+				array_shift( $urlArray );
+			
+				// if is admin
+				if( $controller == ADMIN_ALIAS )
 				{
-					$controller = $urlArray[0];
-					array_shift( $urlArray );
+					// set in registry
+					Registry::set( "isAdmin", true, true );
+					
+					// load default admin
+					$controller = $default['admin']['controller'];
+					$action 	= $default['admin']['action'];
+				}
+				else if( $controller == AJAX_ALIAS )
+				{
+					// set in registry
+					Registry::set( "isAjax", true, true );
+					
+					$controller = $default['controller'];
+				}
+				
+				if( Registry::get( "isAdmin"  ) || Registry::get( "isAjax"  ) )
+				{
+					// get admin controller
+					if( isset( $urlArray[0] ) )
+					{
+						$controller = $urlArray[0];
+						array_shift( $urlArray );
+					}
 				}
 			}
-			/*
-			else if( $controller == "scripts" )
-			{
-				array_shift( $urlArr );
-				$include = implode( "/", $urlArr );
-				unset( $urlArr );
-				if( file_exists( ROOT . DS . 'scripts' . DS . $include  ) && is_file( ROOT . DS . 'scripts' . DS . $include ) )
-				{
-					require_once( ROOT . DS . 'scripts' . DS . $include );
-				}
-			}
-			*/
 			
 			// get action
 			if( isset( $urlArray[0] ) )
@@ -86,7 +101,28 @@ class Framework
 			$queryString = $urlArray;
 		}
 		
+		// set admin
 		Registry::set( "isAdmin", false );
+		
+		// init dbh
+		$dbh = new SQLQuery( DB_TYPE, DB_HOST, DB_USER, DB_PASSWORD, DB_NAME );
+		Registry::set( "dbh", $dbh, true );
+		
+		
+		// is script
+		if( $controller == SCRIPTS_ALIAS )
+		{
+			if( file_exists( ROOT . DS . 'scripts' . DS . $action  ) && is_file( ROOT . DS . 'scripts' . DS . $action ) )
+			{
+				require_once( ROOT . DS . 'scripts' . DS . $action );
+			}
+			else
+			{
+				echo "Script not found";
+			}
+			exit;
+		}
+		
 		
 		$controllerName = ucfirst( $controller ) . 'Controller';
 		if( ENVIRONMENT != "LIVE" && DEVELOPMENT_ENVIRONMENT == true && DEVELOPMENT_SHOW_CONTROLLER == true )
@@ -103,13 +139,11 @@ class Framework
 		
 		if( ENVIRONMENT != "LIVE" && DEVELOPMENT_ENVIRONMENT == true && DEVELOPMENT_SHOW_CONTROLLER == true )
 		{
-			echo $controllerName . " C: " . $controller . " A: " . $action . "<br>";
+			echo "After Check: " . $controllerName . " C: " . $controller . " A: " . $action . "<br>";
 		}
 		
-		$dbh = new SQLQuery( DB_TYPE, DB_HOST, DB_USER, DB_PASSWORD, DB_NAME );
-		Registry::set( "dbh", $dbh, true );
-		
-		$dispatch = new $controllerName( $controller, $action );
+		// init controller, if its an ajax call, do not render
+		$dispatch = new $controllerName( $controller, $action, !Registry::get( "isAjax"  ) );
 		
 		if( !is_null( Registry::get( "framework" ) ) && file_exists( ROOT . DS . 'config' . DS . "init_hooks.php" ) )
 		{
@@ -226,7 +260,7 @@ class Framework
 	}
 	
 	/** Routing **/
-	protected function routeURL( $url )
+	protected function route_url( $url )
 	{
 		global $routing;
 		
@@ -240,4 +274,107 @@ class Framework
 	
 		return $url;
 	}
+	
+	/** Check Constants **/
+	protected function verify_settings()
+	{
+		$vars = array(
+			// ** ENVIRONMENT and MySQL SETTINGS ** //
+			"SITE_TITLE" => array( "", "%" ),
+			"TIMEZONE" => array( "%" ),
+			"ENVIRONMENT" => array( "LOCAL", "DEV", "TEST", "LIVE" ),
+			"BASE_PATH" => array( "%" ),
+			
+			"DB_TYPE" => array( "PDO", "MYSQL" ),
+			"DB_NAME" => array( "", "%" ),
+			"DB_USER" => array( "", "%" ),
+			"DB_PASSWORD" => array( "", "%" ),
+			"DB_HOST" => array( "", "%" ),
+			"DOMAIN" => array( "%" ),
+			"DOMAIN_SECURE" => array( "", "%" ),
+			"AUTH_KEY" => array( "", "%" ),
+			
+			// ** DEVELOPMENT VARIABLES ** //
+			"DEVELOPMENT_ENVIRONMENT" => array( true, false ),
+			"DEVELOPMENT_PRINT_GLOBALS" => array( true, false ),
+			"DEVELOPMENT_SHOW_CONTROLLER" => array( true, false ),
+			"LOG_FILE_NAME" => array( "%" ),
+			"LOG_CUST_ERR_FILE_NAME" => array( "%" ),
+			
+			// ** PATH VARIABLES ** //
+			"FILE_DIR" => array( "%" ),
+			"FILE_TEMP_DIR" => array( "%" ),
+			"TEMP_DIR" => array( "%" ),
+			"CACHE_DIR" => array( "%" ),
+			"LOGS_DIR" => array( "%" ),
+			"SESSION_DIR" => array( "%" ),
+			"TRACKER_DIR" => array( "%" ),
+			
+			// ** MISCELLANEOUS VARIABLES ** //
+			"CACHE_ISON" => array( true, false ),
+			"CACHE_DEFAULT_LIFESPAN" => array( "%" ),
+			"TRACKER_ISON" => array( true, false ),
+			"HONEYPOT_ACTIVE" => array( true, false ),
+			"ADMIN_SESSION_VAR" => array( "%" ),
+			"ADMIN_ALIAS" => array( "%" ),
+			"SCRIPTS_ALIAS" => array( "%" ),
+			"AJAX_ALIAS" => array( "%" ),
+		);
+		
+		$valid = true;
+		foreach( $vars as $var => $rules )
+		{
+			if( !defined( $var ) )
+			{
+				echo $var . " is not defined<br>";
+				$valid = false;
+				continue;
+			}
+			
+			// "" is allowed to be empty
+			// "%" is allowed to be anything
+			// "wtv" needs to be that 
+			
+			$constVal = constant( $var );
+			
+			// var is blank, and has blank rule
+			if( empty( $constVal ) && in_array( "", $rules ) )
+			{
+				continue;
+			}
+			
+			// var is not empty but has anythign rule, we're good
+			if( !empty( $constVal ) && in_array( "%", $rules ) )
+			{
+				continue;
+			}
+			
+			// var is not empty and has specific values
+			if( in_array( $constVal, $rules ) )
+			{
+				continue;
+			}
+			
+			// it failed
+			echo $var . " does not have a valid value<br>";
+			$valid = false;
+		}
+		
+		if( !$valid )
+		{
+			echo "One or more required config settings were missing. Cannot run framework.";
+		}
+		
+		return $valid;
+	}
 }
+
+
+
+
+
+
+
+
+
+

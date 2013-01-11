@@ -30,7 +30,7 @@ Class Registry
 	
 	public static function set( $key, $instance, $locked = false )
 	{
-		if( self::singleton()->get_lock( $key ) == NULL )
+		if( self::singleton()->get_lock( $key ) == false )
 		{
 			if( $locked )
 			{
@@ -40,7 +40,7 @@ Class Registry
 			return self::singleton()->setter( $key, $instance );
 		}
 		
-		return NULL;
+		return false;
     }
     
     protected function get_lock( $key )
@@ -50,7 +50,7 @@ Class Registry
 		    return true;
 	    }
 	    
-	    return NULL;
+	    return false;
     }
     
     protected function set_lock( $key )
@@ -65,14 +65,11 @@ Class Registry
 			return self::$objects[$key];
         }
         
-		return NULL;
+		return false;
 	}
 	
 	protected function setter( $key, $val )
 	{
 		self::$objects[$key] = $val;
-	}
-	
-	
-	
+	}	
 }

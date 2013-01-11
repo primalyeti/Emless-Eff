@@ -61,7 +61,7 @@ class Template
 		
 		extract( $this->_vars );
 		
-		if( PRINT_GLOBALS )
+		if( DEVELOPMENT_PRINT_GLOBALS )
 		{
 			echo "<br><pre>" . print_r( $_SESSION, true ) . "</pre><br />";
 			echo "<pre>" . print_r( $_COOKIE, true ) . "</pre><br />";
