@@ -133,7 +133,7 @@ class Tracker
 	
 	protected function filepath( $file_name )
 	{
-		return ROOT . DS . TRACKER_DIR . $file_name . ".xml";
+		return ROOT . DS . 'application' . DS . TRACKER_DIR . $file_name . ".xml";
 	}
 	
 	protected function open( $file_name )

@@ -6,7 +6,8 @@ Planned Changed
 * Namespace framework
 * Add MySQLi profiler
 * Improve SQLQuery class, find a way to merge addition joined rows when the main one is the same
-
+* Improve Administration tools
+* Add support for files downloading (similar to ajax and script function)
 
 Version Beta 0.9
 -----------------

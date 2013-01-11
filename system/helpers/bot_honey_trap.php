@@ -62,7 +62,7 @@ function bot_honey_trap_scan()
 		return;
 	}
 	
-	$blacklistPath = ROOT . DS . FILE_DIR . HONEYPOT_FILENAME;
+	$blacklistPath = ROOT . DS . 'application' . FILE_DIR . HONEYPOT_FILENAME;
 	$ip = $_SERVER['REMOTE_ADDR'];
 	$uagent = $_SERVER['HTTP_USER_AGENT'];
 	

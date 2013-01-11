@@ -14,17 +14,17 @@ Requirements
 
 Installation
 ------------
-Please see the Installation section of userguide.md
+Please see the Installation section of documentation/userguide.md
 
 
 Changelog and New Features
 --------------------------
-Please see changelog.md
+Please see documentation/changelog.md
 
 
 License
 -------
-Please see license.txt
+Please see documentation/license.txt
 
 
 Acknowledgement

@@ -105,16 +105,16 @@ class Framework
 		Registry::set( "isAdmin", false );
 		
 		// init dbh
-		$dbh = new SQLQuery( DB_TYPE, DB_HOST, DB_USER, DB_PASSWORD, DB_NAME );
-		Registry::set( "dbh", $dbh, true );
+		#$dbh = new SQLQuery( DB_TYPE, DB_HOST, DB_USER, DB_PASSWORD, DB_NAME );
+		#Registry::set( "dbh", $dbh, true );
 		
 		
 		// is script
 		if( $controller == SCRIPTS_ALIAS )
 		{
-			if( file_exists( ROOT . DS . 'scripts' . DS . $action  ) && is_file( ROOT . DS . 'scripts' . DS . $action ) )
+			if( file_exists( ROOT . DS . 'application' . DS . 'scripts' . DS . $action  ) && is_file( ROOT . DS . 'application' . DS . 'scripts' . DS . $action ) )
 			{
-				require_once( ROOT . DS . 'scripts' . DS . $action );
+				require_once( ROOT . DS . 'application' . DS . 'scripts' . DS . $action );
 			}
 			else
 			{
@@ -145,10 +145,7 @@ class Framework
 		// init controller, if its an ajax call, do not render
 		$dispatch = new $controllerName( $controller, $action, !Registry::get( "isAjax"  ) );
 		
-		if( !is_null( Registry::get( "framework" ) ) && file_exists( ROOT . DS . 'config' . DS . "init_hooks.php" ) )
-		{
-			include( ROOT . DS . "config" . DS . "init_hooks.php" );
-		}
+		require_once( ROOT . DS . 'application' . DS . "config" . DS . "init_hooks.php" );
 		
 		if( (int) method_exists( $controllerName, $action ) )
 		{
@@ -174,7 +171,7 @@ class Framework
 		    return $this->$name;
 	    }
 	    
-	    return null;
+	    return false;
     }
 	
 	public static function action( $controller, $action, $queryString = null, $render = 0 )
@@ -198,7 +195,7 @@ class Framework
 		{
 			ini_set( 'display_errors', 'Off' );
 			ini_set( 'log_errors', 'On' );
-			ini_set( 'error_log', ROOT . DS . LOGS_DIR . LOG_FILE_NAME );
+			ini_set( 'error_log', ROOT . DS . 'application' . DS . LOGS_DIR . LOG_FILE_NAME );
 		}
 	}
 	

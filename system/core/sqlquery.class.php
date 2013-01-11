@@ -97,7 +97,6 @@ abstract class SQLHandle implements SQLConn
 		else
 		{
 			error_log( $msg );
-			echo $msg;
 		}
 		
 		return;

@@ -147,7 +147,7 @@ class Form_manager
 		
 		if( empty( $data ) )
 		{
-			return null;
+			return true;
 		}
 		
 		$isValid = 1;

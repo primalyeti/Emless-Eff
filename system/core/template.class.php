@@ -35,23 +35,23 @@ class Template
 			return $this->_vars[$name];
 		}
 		
-		return null;
+		return false;
 	}
 	
 	public function __get( $name )
     {
 	    $val = Registry::get( $name );
-	    if( $val !== NULL )
+	    if( $val !== false )
 	    {
 		    return $val;
 		}
 		
-		if( $this->load()->$name != null )
+		if( $this->load()->$name != false )
 		{
 			return $this->load()->$name;
 		}
 		
-		return null;
+		return true;
     }
     
 	/** Display Template **/
@@ -73,12 +73,8 @@ class Template
 			
 			if( count( $pathItems ) == 1 )
 			{
-				$path = ROOT . DS . 'application' . DS . 'views' . DS . $this->_controller . DS . $view . '.php';
-				if( $this->isAdmin == true )
-				{
-					$path = ROOT . DS . 'admin' . DS . 'views' . DS . $this->_controller . DS . $view . '.php';
-				}
-				
+				$path = ROOT . DS . 'application' . DS . ( Registry::get("isAdmin") == true ? 'admin' . DS : "" ) . 'views' . DS . $this->_controller . DS . $view . '.php';
+
 				if( file_exists( $path ) )
 				{
 					include( $path );
@@ -88,11 +84,7 @@ class Template
 			
 			if( count( $pathItems ) > 1 )
 			{
-				$path = ROOT . DS . 'application' . DS . 'views' . DS . $view . '.php';
-				if( $this->isAdmin == true )
-				{
-					$path = ROOT . DS . 'admin' . DS . 'views' . DS . $view . '.php';
-				}
+				$path = ROOT . DS . 'application' . DS . ( Registry::get("isAdmin") == true ? 'admin' . DS : "" ) . 'views' . DS . $view . '.php';
 				
 				if( file_exists( $path ) )
 				{
@@ -108,13 +100,16 @@ class Template
 	
 		extract( $this->_vars );
 		
-		if( file_exists( ROOT . DS . 'application' . DS . 'views' . DS . $this->_controller . DS . $file_name  ) )
+		$path = ROOT . DS . 'application' . DS . 'views' . DS . $this->_controller . DS . $file_name;
+		$pathUp = ROOT . DS . 'application' . DS . 'views' . DS . $file_name;
+		
+		if( file_exists( $path ) )
 		{
-			include( ROOT . DS . 'application' . DS . 'views' . DS . $this->_controller . DS . $file_name  );
+			include( $path  );
 		}
-		else if( file_exists( ROOT . DS . 'application' . DS . 'views' . DS . $file_name ) )
+		else if( file_exists( $pathUp ) )
 		{
-			include( ROOT . DS . 'application' . DS . 'views' . DS . $file_name );
+			include( $pathUp );
 		}
 	}
 	

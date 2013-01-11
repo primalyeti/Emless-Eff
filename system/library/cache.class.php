@@ -157,7 +157,7 @@ class Cache
 		
 	private function filename( $fileName )
 	{
-		return ROOT . DS . CACHE_DIR . $fileName . ".txt";
+		return ROOT . DS . 'application' . CACHE_DIR . $fileName . ".txt";
 	}
 	
 	private function isValid()

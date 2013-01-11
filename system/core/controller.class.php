@@ -46,12 +46,12 @@ class Controller
 	public function __get( $name )
     {
 	    $val = Registry::get( $name );
-	    if( $val !== NULL )
+	    if( $val !== false )
 	    {
 		    return $val;
 		}
 		
-		if( $this->load()->$name != null )
+		if( $this->load()->$name != false )
 		{
 			return $this->load()->$name;
 		}
@@ -61,7 +61,7 @@ class Controller
 		    return $this->$name;
 		}
 		
-		return null;
+		return false;
     }
     
     final public function enable_render()

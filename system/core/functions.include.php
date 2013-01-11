@@ -8,15 +8,15 @@ function forward( $url, $secure = 0, $external = 0 )
 
 function delete_cache_file( $file )
 {
-	if( file_exists( ROOT . DS . CACHE_DIR . $file ) )
+	if( file_exists( ROOT . DS . 'application' . DS . CACHE_DIR . $file ) )
 	{
-		unlink( ROOT . DS . CACHE_DIR . $file );
+		unlink( ROOT . DS . 'application' . DS . CACHE_DIR . $file );
 	}
 }
 
 function log_error( $error )
 {
-	$handle = fopen( ROOT . DS . LOGS_DIR . LOG_CUST_ERR_FILE_NAME, 'a+' );
+	$handle = fopen( ROOT . DS . 'application' . DS . LOGS_DIR . LOG_CUST_ERR_FILE_NAME, 'a+' );
 	if( $handle !== false )
 	{
 		fwrite( $handle, $error );
