@@ -78,8 +78,19 @@ class Framework
 					
 					$controller = $default['controller'];
 				}
+				else if( $controller == SCRIPTS_ALIAS )
+				{
+					Registry::set( "isScript", true, true );
+				}
+				else if( $controller == FILES_ALIAS )
+				{
+					// set in registry
+					Registry::set( "isFile", true, true );
+					
+					$controller = $default['controller'];
+				}
 				
-				if( Registry::get( "isAdmin"  ) || Registry::get( "isAjax"  ) )
+				if( Registry::get( "isAdmin"  ) || Registry::get( "isAjax"  ) || Registry::get( "isFile"  ) )
 				{
 					// get admin controller
 					if( isset( $urlArray[0] ) )
@@ -110,7 +121,7 @@ class Framework
 		
 		
 		// is script
-		if( $controller == SCRIPTS_ALIAS )
+		if( Registry::get( "isScript" ) )
 		{
 			if( file_exists( ROOT . DS . 'application' . DS . 'scripts' . DS . $action  ) && is_file( ROOT . DS . 'application' . DS . 'scripts' . DS . $action ) )
 			{
@@ -122,6 +133,25 @@ class Framework
 			}
 			exit;
 		}
+		
+		/*
+		// is script
+		if( Registry::get( "isFile" ) )
+		{
+			if( file_exists( ROOT . DS . 'application' . DS . 'files' . DS . $action  ) && is_file( ROOT . DS . 'application' . DS . 'files' . DS . $action ) )
+			{
+				$this->load()->library( "ajax" );
+				
+				$this->_loader->ajax->other( $contentType, $input, $return );
+				# ROOT . DS . 'application' . DS . 'scripts' . DS . $action
+			}
+			else
+			{
+				echo "File not found";
+			}
+			exit;
+		}
+		*/
 		
 		
 		$controllerName = ucfirst( $controller ) . 'Controller';
