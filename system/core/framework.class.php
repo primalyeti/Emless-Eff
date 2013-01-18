@@ -16,6 +16,10 @@ class Framework
 		// set url in registry
 		Registry::set( "url", $url, true );
 		
+		$profiler = new Profiler();
+		Registry::set( "profiler", $profiler, true );
+		Registry::get( "profiler" )->start_time( "page" );
+		
 		// set class vars and init loader
 		$this->_url 	= $url;
 		$this->_loader 	= new Loader();
@@ -25,6 +29,12 @@ class Framework
 		$this->remove_magic_quotes();
 		$this->register_globals_to_framework();
 		$this->unregister_globals();
+	}
+	
+	public function __destruct()
+	{
+		Registry::get("profiler")->stop_time( "page" );
+		Registry::get("profiler")->log_data();
 	}
 	
 	public function init()
@@ -82,15 +92,8 @@ class Framework
 				{
 					Registry::set( "isScript", true, true );
 				}
-				else if( $controller == FILES_ALIAS )
-				{
-					// set in registry
-					Registry::set( "isFile", true, true );
-					
-					$controller = $default['controller'];
-				}
 				
-				if( Registry::get( "isAdmin"  ) || Registry::get( "isAjax"  ) || Registry::get( "isFile"  ) )
+				if( Registry::get( "isAdmin"  ) || Registry::get( "isAjax"  ) )
 				{
 					// get admin controller
 					if( isset( $urlArray[0] ) )
@@ -133,26 +136,6 @@ class Framework
 			}
 			exit;
 		}
-		
-		/*
-		// is script
-		if( Registry::get( "isFile" ) )
-		{
-			if( file_exists( ROOT . DS . 'application' . DS . 'files' . DS . $action  ) && is_file( ROOT . DS . 'application' . DS . 'files' . DS . $action ) )
-			{
-				$this->load()->library( "ajax" );
-				
-				$this->_loader->ajax->other( $contentType, $input, $return );
-				# ROOT . DS . 'application' . DS . 'scripts' . DS . $action
-			}
-			else
-			{
-				echo "File not found";
-			}
-			exit;
-		}
-		*/
-		
 		
 		$controllerName = ucfirst( $controller ) . 'Controller';
 		if( ENVIRONMENT != "LIVE" && DEVELOPMENT_ENVIRONMENT == true && DEVELOPMENT_SHOW_CONTROLLER == true )
@@ -340,6 +323,7 @@ class Framework
 			// ** MISCELLANEOUS VARIABLES ** //
 			"CACHE_ISON" => array( true, false ),
 			"CACHE_DEFAULT_LIFESPAN" => array( "%" ),
+			"PROFILER_ISON" => array( true, false ),
 			"TRACKER_ISON" => array( true, false ),
 			"HONEYPOT_ACTIVE" => array( true, false ),
 			"ADMIN_SESSION_VAR" => array( "%" ),

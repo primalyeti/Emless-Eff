@@ -23,15 +23,23 @@ Changelog and New Features
 ### Planned Changed
 (in order of priority)
 
-* Add namespacing to system
-* Add support for files downloading (similar to ajax and script function)
-* Add MySQLi profiler to system
-* Improve SQLQuery class, merge addition joined rows when the main one is the same
 * Improve Administration tools
+* Create proper documentation
+* Improve SQLQuery class, merge addition joined rows when the main one is the same
 
+
+## Version 1.0
+Release Date: January 18th, 2013
+
+* New
+	* Added profiler class
+	* Added support for application level helpers and library files
+	* Added file linking support
+* Updated
+	* Moved files folder location
 
 ### Version Beta 0.9
-Release Date: January 11th, 2012
+Release Date: January 11th, 2013
 
 * New
 	* Added framework documentation

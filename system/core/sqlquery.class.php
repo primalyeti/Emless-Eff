@@ -36,7 +36,12 @@ class SQLQuery
 			$params = func_get_args();
 			array_shift( $params );
 		}
-		return $this->_dbObj->query( $query, $params );
+		
+		Registry::get("profiler")->start_time( "mysql" );
+		$return = $this->_dbObj->query( $query, $params );
+		Registry::get("profiler")->stop_time( "mysql", $query . "\nParams: \n" . print_r( $params, true ) );
+		
+		return $return;
 	}
 	
 	public function id()

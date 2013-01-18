@@ -133,6 +133,8 @@ define( 'CACHE_ISON', false );
 /** Default cache lifetime */
 define( 'CACHE_DEFAULT_LIFESPAN', 5 * 60 );
 
+/** Is caching enabled */
+define( 'PROFILER_ISON', false );
 
 /** Is tracking enabled EXPERIMENTAL */
 define( 'TRACKER_ISON', false );

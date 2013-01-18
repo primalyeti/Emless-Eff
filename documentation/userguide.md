@@ -14,6 +14,7 @@ Table of Contents
 	* Controllers
 	* Reserved Names
 	* Registry
+	* Profiler
 	* Views
 	* Helpers
 	* Libraries
@@ -56,6 +57,7 @@ Using Emless-Eff
 ### Controllers
 ### Reserved Names
 ### Registry
+### Profiler
 ### Views
 ### Helpers
 ### Libraries
