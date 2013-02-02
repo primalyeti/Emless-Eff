@@ -119,8 +119,8 @@ class Framework
 		Registry::set( "isAdmin", false );
 		
 		// init dbh
-		#$dbh = new SQLQuery( DB_TYPE, DB_HOST, DB_USER, DB_PASSWORD, DB_NAME );
-		#Registry::set( "dbh", $dbh, true );
+		$dbh = new SQLQuery( DB_TYPE, DB_HOST, DB_USER, DB_PASSWORD, DB_NAME );
+		Registry::set( "dbh", $dbh, true );
 		
 		
 		// is script
@@ -189,6 +189,11 @@ class Framework
 	
 	public static function action( $controller, $action, $queryString = null, $render = 0 )
 	{
+		if( $queryString === null )
+		{
+			$queryString = array();
+		}
+	
 		$controllerName = ucfirst( $controller ) . 'Controller';
 		$dispatch = new $controllerName( $controller, $action, $render );
 		return call_user_func_array( array( $dispatch, $action ), $queryString );
@@ -221,7 +226,7 @@ class Framework
 		}
 		else if ( is_array( $value ) )
 		{
-			$value = array_map( array( "this", "strip_slashes_deep" ), $value );
+			$value = array_map( array( "self", "strip_slashes_deep" ), $value );
 		}
 		else
 		{

@@ -91,13 +91,16 @@ class Form_manager
 	
 	public function get_error( $field, $newTags = array() )
 	{	
-		if( $this->fields[$field]["valid"] == 0 && !empty( $this->fields[$field]["message"] ) )
+		if( isset( $this->fields[$field]["valid"] ) )
 		{
-			$tags = ( count( $newTags ) == 2 ? $newTags : $this->tags );
-			echo $this->tags[0] . $this->fields[$field]["message"] . $this->tags[1];
+			if( $this->fields[$field]["valid"] == 0 && !empty( $this->fields[$field]["message"] ) )
+			{
+				$tags = ( count( $newTags ) == 2 ? $newTags : $this->tags );
+				echo $this->tags[0] . $this->fields[$field]["message"] . $this->tags[1];
+			}
 		}
 		
-		return 0;
+		return "";
 	}
 	
 	public function get_errors()
