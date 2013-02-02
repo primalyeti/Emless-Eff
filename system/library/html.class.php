@@ -127,13 +127,28 @@ class HTML
 		{
 			$attributes .= $a . '="' . addslashes( $k ) . '" ';
 		}
+		
+		$cache_prevension = "";
+		if( DEVELOPMENT_ENVIRONMENT == true )
+		{
+			$cache_prevension = "?d=" . uniqid();
+		}
+		else if( CACHE_ISON == true )
+		{
+			$cache_prevension = "?v=" . VERSION;
+		}
 	
-		return "<script type='text/javascript' src='" . BASE_PATH . "js/" . $file_name . ".js'"  . $attributes . "></script>" . "\r\n";
+		return "<script type='text/javascript' src='" . BASE_PATH . "js/" . $file_name . ".js" . $cache_prevension . "'"  . $attributes . "></script>" . "\r\n";
 	}
 	
 	public function jquery()
 	{
 		return $this->js( "jquery" );
+	}
+	
+	public function jquery_ui()
+	{
+		return $this->js( "jquery-ui" );
 	}
 	
 	public function modernizr()
@@ -151,7 +166,17 @@ class HTML
 			$attributes .= $a . '="' . addslashes( $k ) . '" ';
 		}
 		
-		return "<link type='text/css' rel='stylesheet' href='" . BASE_PATH . "css/" . $file_name . ".css'"  . $attributes . "/>";
+		$cache_prevension = "";
+		if( DEVELOPMENT_ENVIRONMENT == true )
+		{
+			$cache_prevension = "?d=" . uniqid();
+		}
+		else if( CACHE_ISON == true )
+		{
+			$cache_prevension = "?v=" . VERSION;
+		}
+		
+		return "<link type='text/css' rel='stylesheet' href='" . BASE_PATH . "css/" . $file_name . ".css" . $cache_prevension . "'"  . $attributes . "/>";
 	}
 	
 	public function img( $file_name, $options = array() )

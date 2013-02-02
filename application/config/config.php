@@ -69,6 +69,9 @@ define( 'DOMAIN_SECURE', 'http://' . $_SERVER["SERVER_NAME"] . BASE_PATH );
 /** Authentication key */
 define( 'AUTH_KEY', '' );
 
+/** Version Number **/
+define( 'VERSION', '' );
+
 /** ##### */
 
 // ** DEVELOPMENT VARIABLES - Enable debug mode ** //
