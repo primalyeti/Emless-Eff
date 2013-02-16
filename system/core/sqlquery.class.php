@@ -4,17 +4,9 @@ class SQLQuery
 	protected $_dbObj = false;
     protected $_result;
 
-	public function __construct( $db_type, $db_host, $db_user, $db_password, $db_name )
+	public function __construct( $db_host, $db_user, $db_password, $db_name )
 	{
-		if( $db_type == "" || $db_type == "PDO" )
-		{
-			$this->_dbObj = new PDOConn( $db_host, $db_user, $db_password, $db_name );
-		}
-		
-		if( $db_type == "MYSQL" || $this->_dbObj->isValid() == false )
-		{	
-			$this->_dbObj = new MySQLConn( $db_host, $db_user, $db_password, $db_name );
-		}
+		$this->_dbObj = new PDOConn( $db_host, $db_user, $db_password, $db_name );
 		
 		if( $this->_dbObj->isValid() == false )
 		{
@@ -108,113 +100,6 @@ abstract class SQLHandle implements SQLConn
     }
 }
 
-class MySQLConn extends SQLHandle
-{
-    /** Connects to database **/
-    public function connect( $host, $username, $password, $dbname )
-	{
-		$link = mysql_connect( $host, $username, $password );
-		
-		if( $link !== false )
-		{	
-			$this->_dbHandle = $link;
-			mysql_select_db( $dbname, $this->_dbHandle );
-
-			$this->_isConn = true;
-		}
-		
-		return $link;
-    }
-
-	public function clean( $string, $type = "str" )
-	{
-		$toReturn = mysql_real_escape_string( $string, $this->_dbHandle );
-	
-		switch( $type )
-		{
-			case "bool":
-			case "null":
-			case "int":
-				$toReturn = $toReturn;
-				break;
-			default:
-			case "str":
-				$toReturn = "'" . $toReturn . "'";
-				break;
-		}
-		
-		return $toReturn;
-	}
-
-	public function query( $query, $params )
-	{
-		$query = trim( $query );
-		
-		// no query called
-		if( $query == "" || !is_string( $query ) || $this->_dbHandle == null )
-		{
-			return false;
-		}
-		
-		$result = array();
-		$table = array();
-		$field = array();
-		$tempResults = array();
-		
-		$this->_result = mysql_query( $query, $this->_dbHandle );
-				
-		if( !is_resource( $this->_result ) ) # substr_count( strtoupper( $query ), "SELECT " ) > 0
-		{
-			$this->put_error( $this->error() . " SQL STATEMENT:" . $query );
-			return false;
-		}
-		else
-		{
-			if( mysql_num_rows( $this->_result ) > 0 )
-			{
-				$numOfFields = mysql_num_fields( $this->_result );
-				for( $i = 0; $i < $numOfFields; ++$i )
-				{
-					array_push( $table, mysql_field_table( $this->_result, $i ) );
-					array_push( $field, mysql_field_name( $this->_result, $i ) );
-				}
-				while( $row = mysql_fetch_row( $this->_result ) )
-				{
-					for( $i = 0;$i < $numOfFields; ++$i )
-					{
-						$table[$i] = Inflection::singularize( $table[$i] );
-						$tempResults[$table[$i]][$field[$i]] = $row[$i];
-					}
-					array_push( $result, $tempResults );
-				}
-			}
-			mysql_free_result( $this->_result );
-		}	
-		
-		return $result;
-	}
-	
-	public function id()
-	{
-		return mysql_insert_id( $this->_dbHandle );
-	}
-
-    /** Get error string **/
-    public function error() {
-        return ( mysql_errno( $this->_dbHandle ) != 0 );
-    }
-    
-     /** Get error numer **/
-    public function errno() {
-        return mysql_errno( $this->_dbHandle );
-    }
-    
-    /** Get error string **/
-    public function errdesc() {
-        return mysql_error( $this->_dbHandle );
-    }
-}
-
 class PDOConn extends SQLHandle
 {
     /** Connects to database **/
@@ -260,16 +145,20 @@ class PDOConn extends SQLHandle
 		
 		return $toReturn;
 	}
-
-	public function query( $query, $params )
+	
+	public function query( $query, $params, $asObj = false )
 	{
 		$query = trim( $query );
+		
+		$results = new SQLResult();
 		
 		// no query called
 		if( $query == "" || !is_string( $query ) || $this->_dbHandle == null )
 		{
-			return false;
+			return ( $asObj == false ? false : $results );
 		}
+		
+		$results->set_query( $query, $params );
 		
 		try
 		{
@@ -278,8 +167,10 @@ class PDOConn extends SQLHandle
 		catch( PDOException $e )
 		{
 			$this->put_error( $e->getMessage() . " SQL STATEMENT:" . $query );
-			return false;
+			return ( $asObj == false ? false : $results );
 		}
+		
+		$results->set_stmt( $stmt );
 		
 		if( $params != null && is_array( $params ) && !empty( $params ) )
 		{
@@ -290,7 +181,7 @@ class PDOConn extends SQLHandle
 				if( !array( $param ))
 				{
 					$this->put_error( "Parameter " . $key . " is not an array. SQL STATEMENT:" . $query );
-					return false;
+					return ( $asObj == false ? false : $results );
 				}
 				array_push( $lens, count( $param ) );
 			}
@@ -300,7 +191,7 @@ class PDOConn extends SQLHandle
 			if( count( $lens ) != 1 )
 			{
 				$this->put_error( "Statement contains both question mark and named placeholders. SQL STATEMENT:" . $query );
-				return false;
+				return ( $asObj == false ? false : $results );
 			}
 			$len = $lens[0];
 			
@@ -325,22 +216,22 @@ class PDOConn extends SQLHandle
 					}
 				}
 				
-				if( $stmt->bindValue( $parameter, $value, constant( "PDO::PARAM_" . strtoupper( $data_type ) ) ) === false )
+				if( $results->get_stmt()->bindValue( $parameter, $value, constant( "PDO::PARAM_" . strtoupper( $data_type ) ) ) === false )
 				{
 					$this->put_error( "Statement parameter " . $parameter . " ( " . $parameter . "," . $value . "," . $data_type . " ) is invalid. SQL STATEMENT:" . $query );
-					return false;
+					return ( $asObj == false ? false : $results );
 				}
 			}	
 		}
 		
 		try
 		{
-			$stmt->execute();
+			$results->get_stmt()->execute();
 		}
 		catch( PDOException $e )
 		{
 			$this->put_error( $e->getMessage() . " SQL STATEMENT:" . $query );
-			return false;
+			return ( $asObj == false ? false : $results );
 		}
 		
 		$result = array();
@@ -348,17 +239,17 @@ class PDOConn extends SQLHandle
 		$field = array();
 		$tempResults = array();
 				
-		if( preg_match( "/^select/im", $query ) && $stmt->rowCount() > 0 )
+		if( preg_match( "/^select/im", $query ) && $results->get_stmt()->rowCount() > 0 )
 		{
-			$numOfFields = $stmt->columnCount();
+			$numOfFields = $results->get_stmt()->columnCount();
 			for( $i = 0; $i < $numOfFields; ++$i )
 			{
-				$meta = $stmt->getColumnMeta( $i );
+				$meta = $results->get_stmt()->getColumnMeta( $i );
 				array_push( $table, $meta['table'] );
 				array_push( $field, $meta['name'] );
 			}
 			
-			while( $row = $stmt->fetch( PDO::FETCH_NUM ) )
+			while( $row = $results->get_stmt()->fetch( PDO::FETCH_NUM ) )
 			{
 				for( $i = 0; $i < $numOfFields; ++$i )
 				{
@@ -369,7 +260,7 @@ class PDOConn extends SQLHandle
 			}
 		}
 		
-		return $result;
+		return ( $asObj == false ? $results->as_array() : $results );
 	}
 	
 	public function id()
@@ -394,4 +285,185 @@ class PDOConn extends SQLHandle
     {
          return print_r( $this->_dbHandle->errorInfo(), true );
     }
+}
+
+class SQLResult
+{
+	protected $_isValid = false;
+	protected $_query 	= null;
+	protected $_params 	= null;
+	protected $_stmt 	= null;
+	protected $_results	= array();
+	protected $_pos 	= -1;
+	
+	public function __construct(){}
+	
+	/**
+	* 
+	* PUBLIC USE
+	* 
+	**/
+	public function isValid()
+	{
+		return $this->_isValid;
+	}
+
+	public function first()
+	{
+		if( !isset( $this->_results[0] ) )
+		{
+			return false;
+		}
+		
+		return $this->row_as_object( 0 );
+	}
+	
+	public function last()
+	{
+		if( $this->length() == 0 )
+		{
+			return false;
+		}
+		
+		return $this->row_as_object( $this->length()-1 );
+	}
+
+	public function curr()
+	{
+		if( !isset( $this->_results[$this->_pos] ) )
+		{
+			return false;
+		}
+		
+		return $this->row_as_object( $this->_pos );
+	}
+	
+	public function next()
+	{
+		if( !isset( $this->_results[$this->_pos+1] ) )
+		{
+			return false;
+		}
+		
+		return $this->row_as_object( ++$this->_pos );
+	}
+	
+	public function prev()
+	{
+		if( !isset( $this->_results[$this->_pos-1] ) )
+		{
+			return false;
+		}
+		
+		return $this->row_as_object( --$this->_pos );
+	}
+	
+	public function reset()
+	{
+		if( empty( $this->_results ) )
+		{
+			$this->_pos = -1;
+			return true;
+		}
+	
+		$this->_pos = 0;
+		return true;
+	}
+
+	public function length()
+	{
+		return count( $this->_results );
+	}
+
+	public function error()
+	{
+		if( is_null( $this->_stmt ) )
+		{
+			return true;
+		}
+		
+		return ( $this->_stmt->errorCode() != "00000" );
+	}
+	
+	public function errno()
+	{
+		if( is_null( $this->_stmt ) )
+		{
+			return -1;
+		}
+		
+		return $this->_stmt->errorCode();
+	}
+	
+	public function errdesc()
+	{
+		if( is_null( $this->_stmt ) )
+		{
+			return "";
+		}
+		
+		return print_r( $this->_stmt->errorInfo(), true );
+	}
+	
+	public function as_array()
+	{
+		return $this->_results;
+	}
+	
+	/**
+	* 
+	* SETTERS
+	* 
+	**/
+	public function set_query( $query, $params )
+	{
+		$this->_query = $query;
+		$this->_params = $params;
+	}
+	
+	public function set_stmt( $stmt )
+	{
+		if( get_class( $stmt ) != "PDOStatement" )
+		{
+			throw new Exception( "SQLResult: not a valid PDOStatement object" );
+		}
+		
+		$this->_stmt = $stmt;
+	}
+
+	public function set_results( $results )
+	{
+		if( !is_array( $results ) )
+		{
+			throw new Exception( "SQLResult: not a valid result array" );
+		}
+		
+		$this->_results = $results;
+		$this->_isValid = true;
+	}
+	
+	/**
+	* 
+	* GETTERS
+	* 
+	**/
+	public function get_query()
+	{
+		return $this->_query . " - Params: " . print_r( $params, true );
+	}
+	
+	public function get_stmt()
+	{
+		return $this->_stmt;
+	}
+	
+	/**
+	*
+	* PRIVATE
+	* 
+	**/
+	protected function row_as_object( $key )
+	{
+		return (object) $this->_results[$key];
+	}
 }

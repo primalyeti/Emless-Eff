@@ -28,6 +28,16 @@ class Profiler
 	
 	/**
 	*
+	* Sets to Profile variable
+	*
+	**/
+	public function set_profiler( $switch )
+	{
+		$this->_toProfile = $switch;
+	}
+	
+	/**
+	*
 	* checks if the point provided is supported
 	*
 	**/

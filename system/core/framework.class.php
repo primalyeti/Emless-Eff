@@ -15,13 +15,12 @@ class Framework
 		
 		// set url in registry
 		Registry::set( "url", $url, true );
-		
-		$profiler = new Profiler();
-		Registry::set( "profiler", $profiler, true );
-		Registry::get( "profiler" )->start_time( "page" );
-		
-		// set class vars and init loader
 		$this->_url 	= $url;
+		
+		// start profiling
+		$this->set_profiler();
+		
+		// set loader
 		$this->_loader 	= new Loader();
 		
 		// clean and prep everything
@@ -288,6 +287,21 @@ class Framework
 		}
 	
 		return $url;
+	}
+	
+	public function set_profiler()
+	{
+		global $profiler_ignore_list;
+		
+		$profiler = new Profiler();
+		Registry::set( "profiler", $profiler, true );
+		
+		if( in_array( Registry::get( "url" ), $profiler_ignore_list ) )
+		{
+			Registry::get( "profiler" )->set_profiler( false );
+		}
+		
+		Registry::get( "profiler" )->start_time( "page" );
 	}
 	
 	/** Check Constants **/

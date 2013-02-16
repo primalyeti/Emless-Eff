@@ -20,13 +20,22 @@ Please see the Installation section of documentation/userguide.md
 Changelog and New Features
 --------------------------
 
-### Planned Changed
-(in order of priority)
+## Planned Changes
+* Major Changes
+	* Improve Administration tools
+	* Create proper documentation
 
-* Improve Administration tools
-* Create proper documentation
-* Improve SQLQuery class, merge addition joined rows when the main one is the same
 
+## Version 1.0.1
+Release Date: February 15th, 2013
+
+* New
+	* Added SQLResult class
+	* Added Profiler Ignore List file
+* Updated
+	* SQLQuery class, removed MySQL PHP support in favor of PDO
+	* SQLQuery query method, now supports returning an SQLResult object
+	* Profiler, added support for ignored pages
 
 ## Version 1.0
 Release Date: January 18th, 2013

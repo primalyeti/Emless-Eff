@@ -1,6 +1,4 @@
 <?
-//require_once( 'bootstrap.inc.php' );
-
 $framework = New Framework();
 Registry::set( "framework", $framework, true );
 $framework->init();
