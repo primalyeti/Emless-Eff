@@ -25,6 +25,13 @@ Changelog and New Features
 	* Improve Administration tools
 	* Create proper documentation
 
+## Version 1.0.2
+Release Date: February 18th, 2013
+
+* Updated
+	* Template module method now accepts query string paramters
+	* HTML meta method now accepts options parameter
+	* HTML icon method now accepts options parameter
 
 ## Version 1.0.1
 Release Date: February 15th, 2013
