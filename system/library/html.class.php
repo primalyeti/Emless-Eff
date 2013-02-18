@@ -50,14 +50,31 @@ class HTML
 		return "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=" . $charset . "\" />";
 	}
 	
-	public function meta( $type, $content )
+	public function meta( $type, $content, $options = array() )
 	{
-		return "<meta name=\"" . $type . "\" content=\"" . $content . "\" />";
+		$attributes = " ";
+		foreach( $options as $a => $k )
+		{
+			$attributes .= $a . '="' . addslashes( $k ) . '" ';
+		}
+		
+		return "<meta name=\"" . $type . "\" content=\"" . $content . "\"" . $attributes . " />";
 	}
 	
-	public function icon( $url, $type )
+	public function icon( $url, $type = "", $options = array() )
 	{
-		return "<link rel=\"icon\" type=\"" . $type . "\" href=\"" . BASE_PATH . $url . "\" />";
+		$defaults = array(
+			"rel" => "icon",
+		);
+		
+		$options = array_merge( $defaults, $options );
+		$attributes = "";
+		foreach( $options as $a => $k )
+		{
+			$attributes .= $a . '="' . addslashes( $k ) . '" ';
+		}
+	
+		return "<link " . $attributes . " type=\"" . $type . "\" href=\"" . BASE_PATH . $url . "\" />";
 	}
 	
 	public function author( $url = "humans.txt" )

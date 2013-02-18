@@ -113,8 +113,8 @@ class Template
 		}
 	}
 	
-	final public function module( $controller, $action )
+	final public function module( $controller, $action, $query = null )
 	{	
-		return Framework::action( $controller, $action, array(), 1 );
+		return Framework::action( $controller, $action, $query, 1 );
 	}
 }

@@ -307,7 +307,7 @@ class SQLResult
 	{
 		return $this->_isValid;
 	}
-
+	
 	public function first()
 	{
 		if( !isset( $this->_results[0] ) )
