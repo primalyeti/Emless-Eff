@@ -276,6 +276,8 @@ class PDOConn extends SQLHandle
 			}
 		}
 		
+		$results->set_results( $result );
+		
 		return ( $asObj == false ? $results->as_array() : $results );
 	}
 	
