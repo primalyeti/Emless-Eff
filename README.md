@@ -38,10 +38,10 @@ Release Date: February 15th, 2013
 
 * New
 	* Added SQLResult class
+	* Added query_obj method to SQLQuery, now supports returning an SQLResult object
 	* Added Profiler Ignore List file
 * Updated
 	* SQLQuery class, removed MySQL PHP support in favor of PDO
-	* SQLQuery query method, now supports returning an SQLResult object
 	* Profiler, added support for ignored pages
 
 ## Version 1.0

@@ -20,6 +20,22 @@ class SQLQuery
 		return $this->_dbObj->clean( $string, $type );
 	}
 	
+	public function query_obj( $query )
+	{
+		$params = null;
+		if( func_get_args() > 1 )
+		{
+			$params = func_get_args();
+			array_shift( $params );
+		}
+		
+		Registry::get("profiler")->start_time( "mysql" );
+		$return = $this->_dbObj->query( $query, true, $params );
+		Registry::get("profiler")->stop_time( "mysql", $query . "\nParams: \n" . print_r( $params, true ) );
+		
+		return $return;
+	}
+	
 	public function query( $query )
 	{
 		$params = null;
@@ -30,7 +46,7 @@ class SQLQuery
 		}
 		
 		Registry::get("profiler")->start_time( "mysql" );
-		$return = $this->_dbObj->query( $query, $params );
+		$return = $this->_dbObj->query( $query, false, $params );
 		Registry::get("profiler")->stop_time( "mysql", $query . "\nParams: \n" . print_r( $params, true ) );
 		
 		return $return;
@@ -62,7 +78,7 @@ interface SQLConn
 	function connect( $host, $username, $password, $dbname );
 	function isValid();
 	function clean( $string );
-	function query( $query, $params );
+	function query( $query, $isObj, $params );
 	function id();
 	function error();
 	function errno();
@@ -145,8 +161,8 @@ class PDOConn extends SQLHandle
 		
 		return $toReturn;
 	}
-	
-	public function query( $query, $params, $asObj = false )
+		
+	public function query( $query, $asObj, $params )
 	{
 		$query = trim( $query );
 		
@@ -327,7 +343,7 @@ class SQLResult
 		
 		return $this->row_as_object( $this->length()-1 );
 	}
-
+	
 	public function curr()
 	{
 		if( !isset( $this->_results[$this->_pos] ) )

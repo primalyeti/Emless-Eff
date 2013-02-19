@@ -118,7 +118,7 @@ class Framework
 		Registry::set( "isAdmin", false );
 		
 		// init dbh
-		$dbh = new SQLQuery( DB_TYPE, DB_HOST, DB_USER, DB_PASSWORD, DB_NAME );
+		$dbh = new SQLQuery( DB_HOST, DB_USER, DB_PASSWORD, DB_NAME );
 		Registry::set( "dbh", $dbh, true );
 		
 		
