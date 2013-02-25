@@ -167,6 +167,8 @@ class Framework
 				$controllerName = "ErrorsController";
 				$controller 	= "errors";
 				$action 		= "index";
+				
+				Registry::get("tracker")->set_enabled( false );
 			}
 			
 			if( ENVIRONMENT != "LIVE" && DEVELOPMENT_ENVIRONMENT == true && DEVELOPMENT_SHOW_CONTROLLER == true )

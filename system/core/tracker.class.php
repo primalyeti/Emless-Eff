@@ -3,41 +3,50 @@ class Tracker
 {
 	protected $_locs = null;
 	protected $_maxItems = 5;
+	protected $_loc = null;
+	protected $_enabled = null;
 	
 	final public function __construct()
 	{
+		$this->_locs = array();
 		if( isset( $_SESSION[TRACKER_SESSION_VAR] ) )
 		{
 			$this->_locs = $_SESSION[TRACKER_SESSION_VAR];
-			return;
 		}
 		
-		$this->_locs = array();
+		$this->set_enabled( TRACKER_ISON );	
 	}
 	
 	public function __destruct()
 	{
-		$_SESSION[TRACKER_SESSION_VAR] = $this->_locs;
+		if( $this->is_set() )
+		{
+			array_unshift( $this->_locs, $this->_loc );
+	
+			if( $this->length() > $this->_maxItems )
+			{
+				array_pop( $this->_locs );
+			}
+			
+			$_SESSION[TRACKER_SESSION_VAR] = $this->_locs;
+		}
 	}
 	
 	final public function push( $loc )
 	{
-		if( !$this->isEnabled() || $this->last() === $loc )
+		if( !$this->is_enabled() || $this->is_set() || $this->last() === $loc )
 		{
 			return false;
 		}
 		
-		array_unshift( $this->_locs, $loc );
-	
-		if( $this->length() > $this->_maxItems )
-		{
-			array_pop( $this->_locs );
-		}
+		$this->_loc = $loc;
+		
+		return true;
 	}
 	
 	final public function last()
 	{
-		if( !$this->isEnabled() )
+		if( !$this->is_enabled() )
 		{
 			return false;
 		}
@@ -52,7 +61,7 @@ class Tracker
 	
 	final public function get( $key )
 	{
-		if( !$this->isEnabled() )
+		if( !$this->is_enabled() )
 		{
 			return false;
 		}
@@ -65,9 +74,19 @@ class Tracker
 		return false;
 	}
 	
-	final protected function isEnabled()
+	final public function set_enabled( $val )
 	{
-		return TRACKER_ISON;
+		$this->_enabled = $val;
+	}
+	
+	final protected function is_set()
+	{
+		return !( $this->_loc === null );
+	}
+	
+	final protected function is_enabled()
+	{
+		return $this->_enabled;
 	}
 	
 	final protected function length()

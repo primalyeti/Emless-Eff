@@ -21,6 +21,12 @@ class Controller
 		$this->render = $render;
 		$this->render_header = 1;
 		$this->render_footer = 1;
+		
+		// track user
+		if( TRACKER_TYPE == 'CONTROLLER' )
+		{
+			Registry::get("tracker")->push( Registry::get( "url" ) );
+		}
 	}
 	
 	final public function view( $view )
@@ -111,7 +117,7 @@ class Controller
 		if( $this->render )
 		{
 			// track user
-			if( $this->_controller != "errors" && TRACKER_TYPE == 'TEMPLATE' )
+			if( TRACKER_TYPE == 'TEMPLATE' )
 			{
 				Registry::get("tracker")->push( Registry::get( "url" ) );
 			}
@@ -132,18 +138,6 @@ class Controller
 			$this->_template->set_views( $this->_views );
 			
 			$this->_template->render();
-		}
-		
-		// track user
-		if( 
-			$this->_controller != ucfirst( "errors" ) && 
-			(	
-				TRACKER_TYPE == 'CONTROLLER' ||
-				( TRACKER_TYPE == 'CONTROLLER' && $this->render )
-			)
-		)
-		{
-			Registry::get("tracker")->push( Registry::get( "url" ) );
 		}
 	}
 }
