@@ -135,6 +135,42 @@ class HTML
 		return '<a href="' . addslashes( $href ) . urlencode( $query ) . '"' . $attributes . ">" . $text . "</a>";
 	}
 	
+	public function link_open( $url, $options = array() )
+	{
+		$url = ( is_array( $url ) ? $url : array( 0 => $url ) );
+		$options = ( is_array( $options ) ? $options : array( 0 => $options ) );
+
+		$href = BASE_PATH;
+		$query = "?";
+		$attributes = " ";
+		
+		foreach( $url as $n => $v )
+		{
+			if( !empty( $n ) )
+			{
+				$query .= $n . "=" . $v . "&";
+			}
+			else
+			{
+				$href .= $v . "/";
+			}
+		}
+		$query = substr( $query, 0, -1 );
+		$href = substr( $href, 0, -1 );
+		
+		foreach( $options as $a => $k )
+		{
+			$attributes .= $a . '="' . addslashes( $k ) . '" ';
+		}
+		
+		return '<a href="' . addslashes( $href ) . urlencode( $query ) . '"' . $attributes . ">";
+	}
+	
+	public function link_close()
+	{
+		return "</a>";
+	}
+	
 	public function js( $file_name, $options = array() )
 	{
 		$options = ( is_array( $options ) ? $options : array( 0 => $options ) );

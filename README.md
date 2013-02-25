@@ -25,6 +25,21 @@ Changelog and New Features
 	* Improve Administration tools
 	* Create proper documentation
 
+## Version 1.0.3
+Release Date: February 25th, 2013
+
+* Added
+	* Added Tracker class, tracks user around the framework
+* Updated
+	* Updated framework, added support for Tracker
+	* Updated controller, added support for Tracker
+	* Updated SQLQuery query_obj, rows without meta data now go to "fn" key
+	* Updated HTML library, added link_open and link_close methods to allow flexibilty for design
+* Fixed
+	* Fixed session issue making it inaccessible in config files
+* Removed
+	* Removed Tracker library
+
 ## Version 1.0.2
 Release Date: February 18th, 2013
 
@@ -36,7 +51,7 @@ Release Date: February 18th, 2013
 ## Version 1.0.1
 Release Date: February 15th, 2013
 
-* New
+* Added
 	* Added SQLResult class
 	* Added query_obj method to SQLQuery, now supports returning an SQLResult object
 	* Added Profiler Ignore List file
@@ -47,7 +62,7 @@ Release Date: February 15th, 2013
 ## Version 1.0
 Release Date: January 18th, 2013
 
-* New
+* Added
 	* Added profiler class
 	* Added support for application level helpers and library files
 	* Added file linking support
@@ -57,7 +72,7 @@ Release Date: January 18th, 2013
 ### Version Beta 0.9
 Release Date: January 11th, 2013
 
-* New
+* Added
 	* Added framework documentation
 * Updated
 	* Seperated application and system logic for easier updating and management

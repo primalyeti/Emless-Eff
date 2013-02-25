@@ -261,8 +261,17 @@ class PDOConn extends SQLHandle
 			for( $i = 0; $i < $numOfFields; ++$i )
 			{
 				$meta = $results->get_stmt()->getColumnMeta( $i );
-				array_push( $table, $meta['table'] );
+				
 				array_push( $field, $meta['name'] );
+				
+				if( $asObj && empty( $meta['table'] ) )
+				{
+					array_push( $table, "fn" );
+				}
+				else
+				{
+					array_push( $table, $meta['table'] );
+				}
 			}
 			
 			while( $row = $results->get_stmt()->fetch( PDO::FETCH_NUM ) )
@@ -483,5 +492,29 @@ class SQLResult
 	protected function row_as_object( $key )
 	{
 		return (object) $this->_results[$key];
+	}
+	
+	protected function result_row_to_obj( $arr )
+	{
+		if( is_array( $arr ) ) 
+		{
+			$arr = (object) $arr;
+		}
+		
+		if( is_object( $arr ) )
+		{
+			$new = new stdClass();
+			
+			foreach( $arr as $key => $val )
+			{
+				$new->{$key} = $this->result_row_to_obj( $val );
+			}
+		}
+		else
+		{
+			$new = $arr;
+		}
+		
+		return $new;
 	}
 }

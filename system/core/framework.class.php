@@ -4,13 +4,18 @@ class Framework
 	protected $_url;		# unparsed url
 	protected $_loader;
 	
-	public function __construct()
+	final public function __construct()
 	{
 		global $url;
 		
 		if( !$this->verify_settings() )
 		{
 			die();
+		}
+		
+		if( empty( $url ) )
+		{
+			$url = "";
 		}
 		
 		// set url in registry
@@ -23,6 +28,10 @@ class Framework
 		// set loader
 		$this->_loader 	= new Loader();
 		
+		// set tracker
+		$tracker = new Tracker();
+		Registry::set( "tracker", $tracker, true );
+		
 		// clean and prep everything
 		$this->set_reporting();
 		$this->remove_magic_quotes();
@@ -30,13 +39,15 @@ class Framework
 		$this->unregister_globals();
 	}
 	
-	public function __destruct()
+	final public function __destruct()
 	{
 		Registry::get("profiler")->stop_time( "page" );
 		Registry::get("profiler")->log_data();
+		
+		print_r( Registry::get("tracker") );
 	}
 	
-	public function init()
+	final public function init()
 	{
 		// load defaults
 		global $default;
@@ -56,7 +67,7 @@ class Framework
 			//clear all bogus ones
 			for( $i = 0; $i < count( $urlArray ); $i++ )
 			{
-				if( empty( $urlArray[$i] ) )
+				if( $urlArray[$i] == "" )
 				{
 					unset( $urlArray[$i] );
 				}
@@ -121,62 +132,74 @@ class Framework
 		$dbh = new SQLQuery( DB_HOST, DB_USER, DB_PASSWORD, DB_NAME );
 		Registry::set( "dbh", $dbh, true );
 		
-		
 		// is script
 		if( Registry::get( "isScript" ) )
 		{
-			if( file_exists( ROOT . DS . 'application' . DS . 'scripts' . DS . $action  ) && is_file( ROOT . DS . 'application' . DS . 'scripts' . DS . $action ) )
+			$newUrl = explode( "/", $this->_url );
+			array_shift( $newUrl );
+			
+			$scripts_dir = ROOT . DS . 'application' . DS . 'scripts' . DS;
+			$script_file = implode( "/", $newUrl );
+			$script_path = $scripts_dir . $script_file;
+			
+			if( file_exists( $script_path  ) && is_file( $script_path ) )
 			{
-				require_once( ROOT . DS . 'application' . DS . 'scripts' . DS . $action );
+				$pwd = getcwd();
+				chdir( dirname( $script_path ) );
+				
+				require_once( $script_path );
+				
+				chdir( $pwd );
 			}
 			else
 			{
-				echo "Script not found";
+				echo "Script not found ";
 			}
-			exit;
-		}
-		
-		$controllerName = ucfirst( $controller ) . 'Controller';
-		if( ENVIRONMENT != "LIVE" && DEVELOPMENT_ENVIRONMENT == true && DEVELOPMENT_SHOW_CONTROLLER == true )
-		{
-			echo "Original: " . $controllerName . " C: " . $controller . " A: " . $action . "<br>";
-		}
-			
-		if( !class_exists( $controllerName ) || !method_exists( $controllerName, $action ) )
-		{
-			$controllerName = "ErrorsController";
-			$controller 	= "errors";
-			$action 		= "index";
-		}
-		
-		if( ENVIRONMENT != "LIVE" && DEVELOPMENT_ENVIRONMENT == true && DEVELOPMENT_SHOW_CONTROLLER == true )
-		{
-			echo "After Check: " . $controllerName . " C: " . $controller . " A: " . $action . "<br>";
-		}
-		
-		// init controller, if its an ajax call, do not render
-		$dispatch = new $controllerName( $controller, $action, !Registry::get( "isAjax"  ) );
-		
-		require_once( ROOT . DS . 'application' . DS . "config" . DS . "init_hooks.php" );
-		
-		if( (int) method_exists( $controllerName, $action ) )
-		{
-			call_user_func_array( array( $dispatch, "beforeAction" ), $queryString );
-			call_user_func_array( array( $dispatch, $action ), $queryString );
-			call_user_func_array( array( $dispatch, "afterAction" ), $queryString );
 		}
 		else
 		{
-			die( "Error 0: Framework could not init" );
+			$controllerName = ucfirst( $controller ) . 'Controller';
+			if( ENVIRONMENT != "LIVE" && DEVELOPMENT_ENVIRONMENT == true && DEVELOPMENT_SHOW_CONTROLLER == true )
+			{
+				echo "Original: " . $controllerName . " C: " . $controller . " A: " . $action . " Q: " . implode( ",", $queryString ) . "<br>";
+			}
+				
+			if( !class_exists( $controllerName ) || !method_exists( $controllerName, $action ) )
+			{
+				$controllerName = "ErrorsController";
+				$controller 	= "errors";
+				$action 		= "index";
+			}
+			
+			if( ENVIRONMENT != "LIVE" && DEVELOPMENT_ENVIRONMENT == true && DEVELOPMENT_SHOW_CONTROLLER == true )
+			{
+				echo "After Check: " . $controllerName . " C: " . $controller . " A: " . $action . " Q: " . implode( ",", $queryString ) . "<br>";
+			}
+			
+			// init controller, if its an ajax call, do not render
+			$dispatch = new $controllerName( $controller, $action, !Registry::get( "isAjax"  ) );
+			
+			require_once( ROOT . DS . 'application' . DS . "config" . DS . "init_hooks.php" );
+			
+			if( (int) method_exists( $controllerName, $action ) )
+			{
+				call_user_func_array( array( $dispatch, "beforeAction" ), $queryString );
+				call_user_func_array( array( $dispatch, $action ), $queryString );
+				call_user_func_array( array( $dispatch, "afterAction" ), $queryString );
+			}
+			else
+			{
+				die( "Error 0: Framework could not init" );
+			}
 		}
 	}
 	
-	public function load()
+	final public function load()
 	{
 		return $this->_loader;
 	}
 	
-	public function __get( $name )
+	final public function __get( $name )
     {
 	    if( isset( $this->$name ) )
 	    {
@@ -186,7 +209,7 @@ class Framework
 	    return false;
     }
 	
-	public static function action( $controller, $action, $queryString = null, $render = 0 )
+	final public static function action( $controller, $action, $queryString = null, $render = 0 )
 	{
 		if( $queryString === null )
 		{
@@ -199,7 +222,7 @@ class Framework
 	}
 		
 	/** Check if environment is development and display errors **/
-	protected function set_reporting()
+	final protected function set_reporting()
 	{
 		error_reporting( E_ALL /* | E_STRICT */ );
 		#set_error_handler('exceptions_error_handler'); 
@@ -217,7 +240,7 @@ class Framework
 	}
 	
 	/** Check for Magic Quotes and remove them **/
-	protected function strip_slashes_deep( $value )
+	final protected function strip_slashes_deep( $value )
 	{
 		if( empty( $value ) )
 		{
@@ -235,7 +258,7 @@ class Framework
 		return $value;
 	}
 	
-	protected function register_globals_to_framework()
+	final protected function register_globals_to_framework()
 	{
 		Registry::set( "post", $_POST, true );
 		Registry::set( "get", $_GET, true );
@@ -244,7 +267,7 @@ class Framework
 		Registry::set( "files", $_FILES, true );
 	}
 	
-	protected function remove_magic_quotes()
+	final protected function remove_magic_quotes()
 	{
 		if( get_magic_quotes_gpc() )
 		{
@@ -255,7 +278,7 @@ class Framework
 	}
 	
 	/** Check register globals and remove them **/
-	protected function unregister_globals()
+	final protected function unregister_globals()
 	{
 	    if( ini_get( 'register_globals' ) )
 		{
@@ -274,7 +297,7 @@ class Framework
 	}
 	
 	/** Routing **/
-	protected function route_url( $url )
+	final protected function route_url( $url )
 	{
 		global $routing;
 		
@@ -286,10 +309,10 @@ class Framework
 			}
 		}
 	
-		return $url;
+		return preg_replace( "/[^a-z0-9\/]/i", "_", $url );
 	}
 	
-	public function set_profiler()
+	final public function set_profiler()
 	{
 		global $profiler_ignore_list;
 		
@@ -305,7 +328,7 @@ class Framework
 	}
 	
 	/** Check Constants **/
-	protected function verify_settings()
+	final protected function verify_settings()
 	{
 		$vars = array(
 			// ** ENVIRONMENT and MySQL SETTINGS ** //
@@ -344,6 +367,8 @@ class Framework
 			"CACHE_DEFAULT_LIFESPAN" => array( "%" ),
 			"PROFILER_ISON" => array( true, false ),
 			"TRACKER_ISON" => array( true, false ),
+			"TRACKER_TYPE" => array( 'CONTROLLER', 'TEMPLATE' ),
+			"TRACKER_SESSION_VAR" => array( "%" ),
 			"HONEYPOT_ACTIVE" => array( true, false ),
 			"ADMIN_SESSION_VAR" => array( "%" ),
 			"ADMIN_ALIAS" => array( "%" ),

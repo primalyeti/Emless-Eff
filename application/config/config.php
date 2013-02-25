@@ -139,9 +139,18 @@ define( 'CACHE_DEFAULT_LIFESPAN', 5 * 60 );
 /** Is caching enabled */
 define( 'PROFILER_ISON', false );
 
-/** Is tracking enabled EXPERIMENTAL */
-define( 'TRACKER_ISON', false );
+/** Is Page Tracking enabled */
+define( 'TRACKER_ISON', true );
 
+/** What should the tracker track
+* Supported tracking types are:
+* CONTROLLER	- track anything that requires a controller
+* TEMPLATE		- track anythign that requires a template
+*/
+define( 'TRACKER_TYPE', 'CONTROLLER' );
+
+/** Tracker Session Variable Name */
+define( 'TRACKER_SESSION_VAR', 'tracker' );
 
 /** Is honey pot enabled, to catch bots (in development) */
 define( 'HONEYPOT_ACTIVE', false );
