@@ -36,7 +36,7 @@ class Tracker
 		}
 	}
 	
-	final public function top()
+	final public function last()
 	{
 		if( !$this->isEnabled() )
 		{
