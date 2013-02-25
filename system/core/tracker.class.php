@@ -22,9 +22,8 @@ class Tracker
 	
 	final public function push( $loc )
 	{
-		if( !$this->isEnabled() || $this->top() === $loc )
+		if( !$this->isEnabled() || $this->last() === $loc )
 		{
-			echo "false";
 			return false;
 		}
 		
