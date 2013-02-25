@@ -43,8 +43,6 @@ class Framework
 	{
 		Registry::get("profiler")->stop_time( "page" );
 		Registry::get("profiler")->log_data();
-		
-		print_r( Registry::get("tracker") );
 	}
 	
 	final public function init()
