@@ -1,9 +1,9 @@
 <?
 class Cache
 {
-	protected static $_cacheHistory = array();
+	protected $_cacheHistory = array();
 	
-	public static function get( $name, $properties = null )
+	public function get( $name, $properties = null )
 	{
 		// cache is disables
 		if( CACHE_ISON === false )
@@ -19,7 +19,7 @@ class Cache
 		
 		$historyItem = array(
 			"name" => $name,
-			"properties" => self::initProperties(),
+			"properties" => $this->initProperties(),
 		);
 
 		if( is_array( $properties ) && !empty( $properties ) )
@@ -34,10 +34,10 @@ class Cache
 		}
 		
 		// set history
-		array_push( self::$_cacheHistory, $historyItem );
+		array_push( $this->_cacheHistory, $historyItem );
 		
 		// no file
-		$fileName = self::filename( $name );
+		$fileName = $this->filename( $name );
 		if( !file_exists( $fileName ) )
 		{	
 			return false;
@@ -61,23 +61,23 @@ class Cache
 			fclose( $handle );												
 
 			$unserialized = unserialize( $content );				# unserialize it, it might be an array
-			array_pop( self::$_cacheHistory );						# we got it, remove it from history
+			array_pop( $this->_cacheHistory );						# we got it, remove it from history
 			return $unserialized;									# return unserialized content
 		}
 		return false;
 	}
 	
-	public static function __callStatic( $method, $arguments )
+	public function __call( $method, $arguments )
 	{
 		if( $method == "set" )
 		{
 			switch( count( $arguments ) )
 			{
 				case 1:
-					return call_user_func_array( array( self, "setWithoutKey" ), $arguments );
+					return call_user_func_array( array( $this, "setWithoutKey" ), $arguments );
 					break;
 				case 2:
-					return call_user_func_array( array( self, "setWithKey" ), $arguments );
+					return call_user_func_array( array( $this, "setWithKey" ), $arguments );
 					break;
 			}
 		}
@@ -95,7 +95,7 @@ class Cache
 			return false;
 		}
 		
-		$handle = fopen( self::filename( $name ), "w" );	# open file
+		$handle = fopen( $this->filename( $name ), "w" );	# open file
 		
 		if( $handle == false )
 		{
@@ -126,10 +126,10 @@ class Cache
 			return false;
 		}
 		
-		$historyItem = array_pop( self::$_cacheHistory );
+		$historyItem = array_pop( $this->_cacheHistory );
 		$name = $historyItem["name"];
 		
-		$handle = fopen( self::filename( $name ), "w" );	# open file
+		$handle = fopen( $this->filename( $name ), "w+" );	# open file
 		
 		if( $handle == false )
 		{
@@ -157,12 +157,12 @@ class Cache
 		
 	private function filename( $fileName )
 	{
-		return ROOT . DS . 'application' . CACHE_DIR . $fileName . ".txt";
+		return ROOT . DS . 'application' . DS . CACHE_DIR . $fileName . ".txt";
 	}
 	
 	private function isValid()
 	{
-		$mdate = filemtime( self::filename() );
+		$mdate = filemtime( $this->filename() );
 		$now = time();
 		
 		return ( ( $now - $mdate ) < $expiry );
