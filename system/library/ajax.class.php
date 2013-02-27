@@ -20,7 +20,7 @@ class Ajax {
 		return;
 	}
 	
-	static public function xml( $input, $return = false )
+	public function xml( $input, $return = false )
 	{
 		if( $return == false )
 		{
@@ -36,7 +36,7 @@ class Ajax {
 		return self::handle_output( $output, $return );
 	}
 	
-	static public function json( $input, $return = false )
+	public function json( $input, $return = false )
 	{
 		if( $return == false )
 		{
@@ -49,7 +49,7 @@ class Ajax {
 		return self::handle_output( $output, $return );
 	}
 	
-	static public function plain( $input, $return = false )
+	public function plain( $input, $return = false )
 	{
 		if( $return == false )
 		{
@@ -62,7 +62,7 @@ class Ajax {
 		return self::handle_output( $output, $return );
 	}
 	
-	static public function html( $input, $return = false )
+	public function html( $input, $return = false )
 	{
 		if( $return == false )
 		{
@@ -75,7 +75,7 @@ class Ajax {
 		return self::handle_output( $output, $return );
 	}
 	
-	static public function other( $contentType, $input, $return )
+	public function other( $contentType, $input, $return )
 	{
 		if( $return == false )
 		{

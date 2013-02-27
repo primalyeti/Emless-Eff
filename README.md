@@ -25,6 +25,16 @@ Changelog and New Features
 	* Improve Administration tools
 	* Create proper documentation
 
+## Version 1.0.4
+Release Date: February 27th, 2013
+* Updated
+	* Cache library is no longer static
+	* AJAX library is no longer static
+	* Link and Form HTML methods now have secure alternatives
+	* Loader library method now returns a reference to the library 
+* Fixed
+	* Fixed incorrect path for cache files
+
 ## Version 1.0.3
 Release Date: February 25th, 2013
 
