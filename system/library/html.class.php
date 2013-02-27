@@ -101,46 +101,47 @@ class HTML
 		curl_setopt( $ch, CURLOPT_CONNECTTIMEOUT, $timeout ); 
 		$data = curl_exec( $ch ); 
 		curl_close( $ch ); 
-		return self::_link( $data, $data, "", true );
+		return $this->link( $data, $data, array( "target" => "_blank" ) );
 	}
 	
 	public function link( $url, $text = "", $options = array() )
 	{
-		$url = ( is_array( $url ) ? $url : array( 0 => $url ) );
-		$options = ( is_array( $options ) ? $options : array( 0 => $options ) );
-
-		$href = BASE_PATH;
-		$query = "?";
-		$attributes = " ";
-		
-		foreach( $url as $n => $v )
-		{
-			if( !empty( $n ) )
-			{
-				$query .= $n . "=" . $v . "&";
-			}
-			else
-			{
-				$href .= $v . "/";
-			}
-		}
-		$query = substr( $query, 0, -1 );
-		$href = substr( $href, 0, -1 );
-		
-		foreach( $options as $a => $k )
-		{
-			$attributes .= $a . '="' . addslashes( $k ) . '" ';
-		}
-		
-		return '<a href="' . addslashes( $href ) . urlencode( $query ) . '"' . $attributes . ">" . $text . "</a>";
+		$url = $this->link_form( $url, $options, 0 );
+		return $url  . $text . "</a>";
+	}
+	
+	public function link_secure( $url, $text = "", $options = array() )
+	{
+		$url = $this->link_form( $url, $options, 1 );
+		return $url  . $text . "</a>";
 	}
 	
 	public function link_open( $url, $options = array() )
 	{
+		return $this->link_form( $url, $options, 0 );
+	}
+	
+	public function link_secure_open( $url, $options = array() )
+	{
+		return $this->link_form( $url, $options, 1 );
+	}
+	
+	public function link_close()
+	{
+		return "</a>";
+	}
+	
+	public function link_secure_close()
+	{
+		return $this->link_close();
+	}
+	
+	protected function link_form( $url, $options, $secure )
+	{
 		$url = ( is_array( $url ) ? $url : array( 0 => $url ) );
 		$options = ( is_array( $options ) ? $options : array( 0 => $options ) );
 
-		$href = BASE_PATH;
+		$href = ( $secure ? DOMAIN_SECURE : BASE_PATH );
 		$query = "?";
 		$attributes = " ";
 		
@@ -149,11 +150,11 @@ class HTML
 			if( !empty( $n ) )
 			{
 				$query .= $n . "=" . $v . "&";
+				continue;
 			}
-			else
-			{
-				$href .= $v . "/";
-			}
+			
+			$href .= $v . "/";
+			
 		}
 		$query = substr( $query, 0, -1 );
 		$href = substr( $href, 0, -1 );
@@ -164,11 +165,6 @@ class HTML
 		}
 		
 		return '<a href="' . addslashes( $href ) . urlencode( $query ) . '"' . $attributes . ">";
-	}
-	
-	public function link_close()
-	{
-		return "</a>";
 	}
 	
 	public function js( $file_name, $options = array() )
@@ -247,6 +243,42 @@ class HTML
 	
 	public function form_open( $action = "", $options = array() )
 	{
+		return $this->form_form( $action, $options, 0 );
+	}
+	
+	public function form_secure_open( $action = "", $options = array() )
+	{
+		return $this->form_form( $action, $options, 1 );
+	}
+	
+	public function form_open_multipart( $action, $options = array() )
+	{
+		$options = ( is_array( $options ) ? $options : array( 0 => $options ) );
+		$options = array_merge( array( "enctype" => "multipart/form-data" ), $options );
+		
+		return $this->form_form( $action, $options, 0 );
+	}
+	
+	public function form_secure_open_multipart( $action, $options = array() )
+	{
+		$options = ( is_array( $options ) ? $options : array( 0 => $options ) );
+		$options = array_merge( array( "enctype" => "multipart/form-data" ), $options );
+		
+		return $this->form_form( $action, $options, 1 );
+	}
+	
+	public function form_close()
+	{
+		return "</form>";
+	}
+	
+	public function form_secure_close()
+	{
+		return $this->form_close();
+	}
+		
+	protected function form_form( $action, $options, $secure )
+	{
 		$options = ( is_array( $options ) ? $options : array( 0 => $options ) );
 		$defaults = array(
 			"method" => "post",
@@ -266,26 +298,6 @@ class HTML
 			$action = $this->url;
 		}
 		
-		$form = "<form action='" . BASE_PATH . $action . "'" . $attributes . ">";
-		
-		if( !empty( $formElemets ) )
-		{
-			$form .= $this->form_expand( $formElemets );
-		}
-		
-		return $form;
-	}
-	
-	public function form_open_multipart( $action, $options = array(), $formElemets = array() )
-	{
-		$options = ( is_array( $options ) ? $options : array( 0 => $options ) );
-		$options = array_merge( array( "enctype" => "multipart/form-data" ), $options );
-		
-		return $this->form_open( $action, $options, $formElemets );
-	}
-	
-	public function form_close()
-	{
-		return "</form>";
+		return "<form action='" . ( $secure ? DOMAIN_SECURE : BASE_PATH ) . $action . "'" . $attributes . ">";
 	}
 }

@@ -46,13 +46,24 @@ class Loader
 				if( class_exists( $class ) )
 				{
 					$this->loaded[strtolower($class)] = new $class();
-					return true;
+					return $this->loaded[strtolower($class)];
 				}
 			}
 		}
 		
 		return false;
 	}
+	
+	public function unload( $key )
+    {
+	    if( isset( $this->loaded[$name] ) )
+	    {
+		    unset( $this->loaded[$name] );
+		    return true;
+	    }
+	    
+	    return false;
+    }
 	
 	public function __get( $name )
     {
