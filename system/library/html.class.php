@@ -55,7 +55,7 @@ class HTML
 		$attributes = " ";
 		foreach( $options as $a => $k )
 		{
-			$attributes .= $a . '="' . addslashes( $k ) . '" ';
+			$attributes .= $a . '="' . addcslashes( $k, '"' ) . '" ';
 		}
 		
 		return "<meta name=\"" . $type . "\" content=\"" . $content . "\"" . $attributes . " />";
@@ -71,7 +71,7 @@ class HTML
 		$attributes = "";
 		foreach( $options as $a => $k )
 		{
-			$attributes .= $a . '="' . addslashes( $k ) . '" ';
+			$attributes .= $a . '="' . addcslashes( $k, '"' ) . '" ';
 		}
 	
 		return "<link " . $attributes . " type=\"" . $type . "\" href=\"" . BASE_PATH . $url . "\" />";
@@ -161,7 +161,7 @@ class HTML
 		
 		foreach( $options as $a => $k )
 		{
-			$attributes .= $a . '="' . addslashes( $k ) . '" ';
+			$attributes .= $a . '="' . addcslashes( $k, '"' ) . '" ';
 		}
 		
 		return '<a href="' . addslashes( $href ) . urlencode( $query ) . '"' . $attributes . ">";
@@ -174,7 +174,7 @@ class HTML
 		
 		foreach( $options as $a => $k )
 		{
-			$attributes .= $a . '="' . addslashes( $k ) . '" ';
+			$attributes .= $a . '="' . addcslashes( $k, '"' ) . '" ';
 		}
 		
 		$cache_prevension = "";
@@ -212,7 +212,7 @@ class HTML
 		
 		foreach( $options as $a => $k )
 		{
-			$attributes .= $a . '="' . addslashes( $k ) . '" ';
+			$attributes .= $a . '="' . addcslashes( $k, '"' ) . '" ';
 		}
 		
 		$cache_prevension = "";
@@ -235,7 +235,7 @@ class HTML
 		
 		foreach( $options as $a => $k )
 		{
-			$attributes .= $a . '="' . addslashes( $k ) . '" ';
+			$attributes .= $a . '="' . addcslashes( $k, '"' ) . '" ';
 		}
 		
 		return "<img src='" . BASE_PATH . "img/" . $file_name . "'"  . $attributes . "/>";
@@ -290,7 +290,7 @@ class HTML
 		$attributes = "";
 		foreach( $options as $a => $k )
 		{
-			$attributes .= $a . '="' . addslashes( $k ) . '" ';
+			$attributes .= $a . '="' . addcslashes( $k, '"' ) . '" ';
 		}
 		
 		if( $action == "" )

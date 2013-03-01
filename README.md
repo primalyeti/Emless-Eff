@@ -25,6 +25,12 @@ Changelog and New Features
 	* Improve Administration tools
 	* Create proper documentation
 
+## Version 1.0.5
+Release Date: 
+
+* Updated
+	* Fixed HTML library bug that would improperly escape quotes
+	
 ## Version 1.0.4
 Release Date: February 27th, 2013
 * Updated
@@ -79,7 +85,7 @@ Release Date: January 18th, 2013
 * Updated
 	* Moved files folder location
 
-### Version Beta 0.9
+## Version Beta 0.9
 Release Date: January 11th, 2013
 
 * Added
