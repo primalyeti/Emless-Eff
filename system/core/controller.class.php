@@ -16,7 +16,6 @@ class Controller
 	{	
 		$this->_controller 	= ucfirst( $controller );
 		$this->_action 		= $action;
-		$this->_view 		= $action;
 		
 		$this->render = $render;
 		$this->render_header = 1;
@@ -110,6 +109,11 @@ class Controller
 	{
 		$this->render_header = 0;
 		$this->render_footer = 0;
+	}
+
+	final public function clear_views()
+	{
+		$this->_views = array();
 	}
 
 	public function __destruct()

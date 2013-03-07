@@ -26,10 +26,13 @@ Changelog and New Features
 	* Create proper documentation
 
 ## Version 1.0.5
-Release Date: 
+Release Date: March6th, 2013
 
+* Added
+	* Added clear_views method to controller
 * Updated
 	* Fixed HTML library bug that would improperly escape quotes
+	* Fixed problem with loading views
 	
 ## Version 1.0.4
 Release Date: February 27th, 2013

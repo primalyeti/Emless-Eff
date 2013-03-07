@@ -78,18 +78,16 @@ class Template
 				if( file_exists( $path ) )
 				{
 					include( $path );
+					continue;
 				}
-				continue;
 			}
 			
-			if( count( $pathItems ) > 1 )
+			#if( count( $pathItems ) > 1 ){}
+			$path = ROOT . DS . 'application' . DS . ( Registry::get("isAdmin") == true ? 'admin' . DS : "" ) . 'views' . DS . $view . '.php';
+			
+			if( file_exists( $path ) )
 			{
-				$path = ROOT . DS . 'application' . DS . ( Registry::get("isAdmin") == true ? 'admin' . DS : "" ) . 'views' . DS . $view . '.php';
-				
-				if( file_exists( $path ) )
-				{
-					include( $path );
-				}
+				include( $path );
 			}
 		}
     }
