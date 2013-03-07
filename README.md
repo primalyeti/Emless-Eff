@@ -26,7 +26,7 @@ Changelog and New Features
 	* Create proper documentation
 
 ## Version 1.0.5
-Release Date: March6th, 2013
+Release Date: March 6th, 2013
 
 * Added
 	* Added clear_views method to controller
