@@ -305,7 +305,8 @@ class Framework
 		{
 			if( preg_match( $pattern, $url ) )
 			{
-				return preg_replace( $pattern, $result, $url );
+				$url = preg_replace( $pattern, $result, $url );
+				break;
 			}
 		}
 	
