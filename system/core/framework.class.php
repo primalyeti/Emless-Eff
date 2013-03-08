@@ -4,10 +4,8 @@ class Framework
 	protected $_url;		# unparsed url
 	protected $_loader;
 	
-	final public function __construct()
-	{
-		global $url;
-		
+	final public function __construct( $url )
+	{		
 		if( !$this->verify_settings() )
 		{
 			die();
@@ -48,12 +46,12 @@ class Framework
 	final public function init()
 	{
 		// load defaults
-		global $default;
+		global $defaultPage;
 		
 		$queryString = array();
 		
-		$controller = $default['controller'];
-		$action 	= $default['action'];
+		$controller = $defaultPage['controller'];
+		$action 	= $defaultPage['action'];
 		
 		// if its not defaults
 		if( isset( $this->_url ) )
@@ -86,15 +84,15 @@ class Framework
 					Registry::set( "isAdmin", true, true );
 					
 					// load default admin
-					$controller = $default['admin']['controller'];
-					$action 	= $default['admin']['action'];
+					$controller = $defaultPage['admin']['controller'];
+					$action 	= $defaultPage['admin']['action'];
 				}
 				else if( $controller == AJAX_ALIAS )
 				{
 					// set in registry
 					Registry::set( "isAjax", true, true );
 					
-					$controller = $default['controller'];
+					$controller = $defaultPage['controller'];
 				}
 				else if( $controller == SCRIPTS_ALIAS )
 				{
@@ -301,12 +299,15 @@ class Framework
 	{
 		global $routing;
 		
-		foreach( $routing as $pattern => $result )
+		if( !empty( $routing ) )
 		{
-			if( preg_match( $pattern, $url ) )
+			foreach( $routing as $pattern => $result )
 			{
-				$url = preg_replace( $pattern, $result, $url );
-				break;
+				if( preg_match( $pattern, $url ) )
+				{
+					$url = preg_replace( $pattern, $result, $url );
+					break;
+				}
 			}
 		}
 	
@@ -315,12 +316,12 @@ class Framework
 	
 	final public function set_profiler()
 	{
-		global $profiler_ignore_list;
+		global $profilerIgnoreList;
 		
 		$profiler = new Profiler();
 		Registry::set( "profiler", $profiler, true );
 		
-		if( in_array( Registry::get( "url" ), $profiler_ignore_list ) )
+		if( in_array( Registry::get( "url" ), $profilerIgnoreList ) )
 		{
 			Registry::get( "profiler" )->set_profiler( false );
 		}

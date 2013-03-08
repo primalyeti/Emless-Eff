@@ -1,5 +1,5 @@
 <?
-$framework = New Framework();
+$framework = New Framework( $url );
 Registry::set( "framework", $framework, true );
 $framework->init();
 
