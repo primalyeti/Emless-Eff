@@ -120,22 +120,36 @@ class Controller
 	{
 		if( $this->render )
 		{
+			global $defaultViews;
+		
 			// track user
 			if( TRACKER_TYPE == 'TEMPLATE' )
 			{
-				Registry::get("tracker")->push( Registry::get( "url" ) );
+				Registry::get( "tracker" )->push( Registry::get( "url" ) );
 			}
 		
 			$this->_template = new Template( strtolower( $this->_controller ), strtolower( $this->_action ) );
 			
 			if( $this->render_header )
 			{
-				array_unshift( $this->_views, "/header" );
+				if( !empty( $defaultViews['beforeView'] ) )
+				{
+					foreach( $defaultViews['beforeView'] as $view )
+					{
+						array_unshift( $this->_views, $view );
+					}
+				}
 			}
 			
 			if( $this->render_footer )
 			{
-				array_push( $this->_views, "/footer" );
+				if( !empty( $defaultViews['afterView'] ) )
+				{
+					foreach( $defaultViews['afterView'] as $view )
+					{
+						array_unshift( $this->_views, $view );
+					}
+				}
 			}
 						
 			$this->_template->set_variables( $this->_vars );

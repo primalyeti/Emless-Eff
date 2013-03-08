@@ -23,14 +23,25 @@ Changelog and New Features
 ## Planned Changes
 * Major Changes
 	* Improve Administration tools
-	* Create proper documentation
+	* Updater documentation
+
+## Version 1.0.6
+Release Date: 
+
+* Added
+	* Added core and schema config files
+	* Added default views, can now load more than 1 view by default as header and footer
+* Updated
+	* Updated config file setup
+* Fixed
+	* Fixed URL routing error
 
 ## Version 1.0.5
 Release Date: March 6th, 2013
 
 * Added
 	* Added clear_views method to controller
-* Updated
+* Fixed
 	* Fixed HTML library bug that would improperly escape quotes
 	* Fixed problem with loading views
 	
