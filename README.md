@@ -29,6 +29,7 @@ Changelog and New Features
 Release Date: 
 
 * Fixed
+	* Fixed defaultViews bug that would add views in reverse
 	* Fixed url routing bug that affected hyphens and underscores
 
 ## Version 1.0.6
