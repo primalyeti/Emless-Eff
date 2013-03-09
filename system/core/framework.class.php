@@ -72,7 +72,7 @@ class Framework
 			// get controller
 			if( isset( $urlArray[0] ) )
 			{
-				$controller = $urlArray[0];
+				$controller = preg_replace( "/[^a-z0-9\/]/i", "_", $urlArray[0] );
 				
 				// pop off for action call
 				array_shift( $urlArray );
@@ -113,7 +113,7 @@ class Framework
 			// get action
 			if( isset( $urlArray[0] ) )
 			{
-				$action = $urlArray[0];
+				$action = preg_replace( "/[^a-z0-9\/]/i", "_", $urlArray[0] );
 				array_shift( $urlArray );
 			}
 			
@@ -305,13 +305,13 @@ class Framework
 			{
 				if( preg_match( $pattern, $url ) )
 				{
-					$url = preg_replace( $pattern, $result, $url );
+					return preg_replace( $pattern, $result, $url );
 					break;
 				}
 			}
 		}
-	
-		return preg_replace( "/[^a-z0-9\/]/i", "_", $url );
+		
+		return $url;
 	}
 	
 	final public function set_profiler()
@@ -425,13 +425,3 @@ class Framework
 		return $valid;
 	}
 }
-
-
-
-
-
-
-
-
-
-
