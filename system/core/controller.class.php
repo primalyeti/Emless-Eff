@@ -134,7 +134,7 @@ class Controller
 			{
 				if( !empty( $defaultViews['beforeView'] ) )
 				{
-					foreach( $defaultViews['beforeView'] as $view )
+					foreach( array_reverse( $defaultViews['beforeView'] ) as $view )
 					{
 						array_unshift( $this->_views, $view );
 					}
