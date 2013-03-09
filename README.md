@@ -25,8 +25,14 @@ Changelog and New Features
 	* Improve Administration tools
 	* Updater documentation
 
-## Version 1.0.6
+## Version 1.0.7
 Release Date: 
+
+* Fixed
+	* Fixed url routing bug that affected hyphens and underscores
+
+## Version 1.0.6
+Release Date: March 8th, 2013
 
 * Added
 	* Added core and schema config files
