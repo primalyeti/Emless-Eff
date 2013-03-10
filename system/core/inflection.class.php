@@ -94,16 +94,19 @@ class Inflection
 		}
 		
         // check for irregular singular forms
-        foreach( $irregularWords as $pattern => $result )
+        if( !empty( $irregularWords ) )
         {
-            $pattern = '/' . $pattern . '$/i';
-
-            if( preg_match( $pattern, $string ) )
-			{
-                return preg_replace( $pattern, $result, $string );
-			}
-        }
-
+	        foreach( $irregularWords as $pattern => $result )
+	        {
+	            $pattern = '/' . $pattern . '$/i';
+	
+	            if( preg_match( $pattern, $string ) )
+				{
+	                return preg_replace( $pattern, $result, $string );
+				}
+	        }
+	    }
+	    
         // check for irregular singular forms
         foreach( self::$irregular as $pattern => $result )
         {
@@ -130,23 +133,27 @@ class Inflection
     public static function singularize( $string )
     {	
 		global $irregularWords;
+		
         // save some time in the case that singular and plural are the same
         if( in_array( strtolower( $string ), self::$uncountable ) )
 		{
             return $string;
 		}
-
-	    // check for irregular words
-        foreach( $irregularWords as $result => $pattern )
-        {
-            $pattern = '/' . $pattern . '$/i';
-
-            if ( preg_match( $pattern, $string ) )
-			{
-                return preg_replace( $pattern, $result, $string );
-			}
-        }
 		
+		if( !empty( $irregularWords ) )
+        {
+		    // check for irregular words
+	        foreach( $irregularWords as $result => $pattern )
+	        {
+	            $pattern = '/' . $pattern . '$/i';
+	
+	            if ( preg_match( $pattern, $string ) )
+				{
+	                return preg_replace( $pattern, $result, $string );
+				}
+	        }
+	    }
+	    
 		// check for irregular plural forms
         foreach( self::$irregular as $result => $pattern )
         {
