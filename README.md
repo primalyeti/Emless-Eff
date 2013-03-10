@@ -17,17 +17,15 @@ Installation
 Please see the Installation section of documentation/userguide.md
 
 
-Changelog and New Features
+Changelog
 --------------------------
 
-## Planned Changes
-* Major Changes
-	* Improve Administration tools
-	* Updater documentation
+## Version 1.1
+Release Date: March 9th, 2013
 
-## Version 1.0.7
-Release Date: 
-
+* Added
+	* Added admin specific helpers, libraries and scripts
+	* Added admin specific HTML library to core
 * Fixed
 	* Fixed defaultViews bug that would add views in reverse
 	* Fixed url routing bug that affected hyphens and underscores
