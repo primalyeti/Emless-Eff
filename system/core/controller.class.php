@@ -147,7 +147,7 @@ class Controller
 				{
 					foreach( $defaultViews['afterView'] as $view )
 					{
-						array_unshift( $this->_views, $view );
+						array_push( $this->_views, $view );
 					}
 				}
 			}
