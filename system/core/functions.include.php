@@ -1,7 +1,14 @@
 <?
 function forward( $url, $secure = 0, $external = 0 )
 {
-	$url = ( !$external ? ( $secure ? DOMAIN_SECURE : DOMAIN ) : "" ) . $url;
+	$url = ( !$external ? ( $secure ? DOMAIN_SECURE : BASE_PATH ) : "" ) . $url;
+	header( "Location: " . $url );
+	exit;
+}
+
+function aforward( $url, $secure = 0 )
+{
+	$url = ( $secure ? DOMAIN_SECURE : BASE_PATH ) . ADMIN_ALIAS . DS . $url;
 	header( "Location: " . $url );
 	exit;
 }

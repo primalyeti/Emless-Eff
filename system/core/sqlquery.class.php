@@ -491,7 +491,7 @@ class SQLResult
 	**/
 	protected function row_as_object( $key )
 	{
-		return (object) $this->_results[$key];
+		return $this->result_row_to_obj( $this->_results[$key] );
 	}
 	
 	protected function result_row_to_obj( $arr )
