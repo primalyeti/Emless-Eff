@@ -1,5 +1,5 @@
 <?
-class HTML
+class HTML extends Library
 {
 	public function doctype( $type = "" )
 	{

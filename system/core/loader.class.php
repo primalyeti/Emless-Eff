@@ -45,7 +45,14 @@ class Loader
 				
 				if( class_exists( $class ) )
 				{
-					$this->loaded[strtolower($class)] = new $class();
+					$newObj = new $class();
+					if( !is_subclass_of( $newObj, 'Library' ) )
+					{
+						unset( $newObj );
+						return false;
+					}
+					
+					$this->loaded[strtolower($class)] = $newObj;
 					return $this->loaded[strtolower($class)];
 				}
 			}

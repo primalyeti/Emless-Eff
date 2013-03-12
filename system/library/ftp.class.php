@@ -1,16 +1,4 @@
 <?php
-
-/* NFR FTP INFO */
-$nfs_host = '192.168.100.115';
-$nfs_user = 'macprovideo';
-$nfs_pw = 'r4nd0mp4ss';
-
-/* LL FTP INFO */
-$ll_host = 'macprovid.upload.llnw.net';
-$ll_user = 'macprovid-ht';
-$ll_pw = '2zssjy';
-
-
 /**
  * FTP - access to an FTP server.
  *
@@ -20,7 +8,7 @@ $ll_pw = '2zssjy';
  * @link       http://phpfashion.com/
  * @version    1.0
  */
-class Ftp
+class Ftp extends Library
 {
 	/**#@+ FTP constant alias */
 	const ASCII = FTP_ASCII;

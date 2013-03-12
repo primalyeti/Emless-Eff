@@ -1,5 +1,5 @@
 <?
-class Cache
+class Cache extends Library
 {
 	protected $_cacheHistory = array();
 	

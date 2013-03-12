@@ -1,5 +1,5 @@
 <?
-class Form_manager
+class Form_manager extends Library
 {
 	protected $fields;
 	protected $tags = array( "<p>", "</p>" );
