@@ -20,6 +20,20 @@ Please see the Installation section of documentation/userguide.md
 Changelog
 --------------------------
 
+## Version 1.1.1
+Release Date: March 12th, 2013
+
+* Updated
+	* Updated Libraries, all libraries now have to extend Library
+* Fixed
+	* Fixed framework globals, now returns error if index is not set
+	* Fixed form method in HTML library, would throw error when no action passed
+	* Fixed Template to load included_files for admin properly
+	* Fixed SQLQUery bug that would not return query object, as object
+	* Fixed Loader to properly load helpers and libraries for admin
+	* Fixed forward and aforward methods to work with domains with port numbers
+	* Fixed Template to properly load AHTML library
+
 ## Version 1.1
 Release Date: March 9th, 2013
 

@@ -258,11 +258,11 @@ class Framework
 	
 	final protected function register_globals_to_framework()
 	{
-		Registry::set( "post", $_POST, true );
-		Registry::set( "get", $_GET, true );
-		Registry::set( "session", $_SESSION, true );
-		Registry::set( "cookie", $_COOKIE, true );
-		Registry::set( "files", $_FILES, true );
+		Registry::set( "post", ( isset( $_POST ) ? $_POST : array() ), true );
+		Registry::set( "get", ( isset( $_GET ) ? $_GET : array() ), true );
+		Registry::set( "session", ( isset( $_SESSION ) ? $_SESSION : array() ), true );
+		Registry::set( "cookie", ( isset( $_COOKIE ) ? $_COOKIE : array() ), true );
+		Registry::set( "files", ( isset( $_FILES ) ? $_FILES : array() ), true );
 	}
 	
 	final protected function remove_magic_quotes()

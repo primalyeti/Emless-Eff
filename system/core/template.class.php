@@ -58,6 +58,10 @@ class Template
     final public function render()
 	{	
 		$this->load()->library( "html" );
+		if( Registry::get( "isAdmin" ) )
+		{
+			$this->load()->library( "ahtml" );
+		}
 		
 		extract( $this->_vars );
 		
@@ -95,11 +99,15 @@ class Template
 	final public function include_file( $file_name )
 	{
 		$this->load()->library( "html" );
+		if( Registry::get( "isAdmin" ) )
+		{
+			$this->load()->library( "ahtml" );
+		}
 	
 		extract( $this->_vars );
 		
-		$path = ROOT . DS . 'application' . DS . 'views' . DS . $this->_controller . DS . $file_name;
-		$pathUp = ROOT . DS . 'application' . DS . 'views' . DS . $file_name;
+		$path = ROOT . DS . 'application' . DS . ( Registry::get("isAdmin") == true ? 'admin' . DS : "" ) . 'views' . DS . $this->_controller . DS . $file_name;
+		$pathUp = ROOT . DS . 'application' . DS . ( Registry::get("isAdmin") == true ? 'admin' . DS : "" ) . 'views' . DS . $file_name;
 		
 		if( file_exists( $path ) )
 		{

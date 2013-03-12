@@ -10,11 +10,13 @@ class Loader
 		{
 			return true;
 		}
-	
-		foreach( array( "system", "application" ) as $location )
-		{
-			$path = ROOT . DS . $location . DS . 'helpers' . DS . $helper . ".php";
 		
+		$locations = $this->get_locations();
+		
+		foreach( $locations as $loc )
+		{
+			$path = ROOT . DS . $loc . DS . "helpers" . DS . $helper . ".php";
+	
 			if( file_exists( $path ) )
 			{
 				include( $path );
@@ -34,7 +36,9 @@ class Loader
 			return $this->loaded[strtolower($class)];
 		}
 	
-		foreach( array( "system", "application" ) as $location )
+		$locations = $this->get_locations();
+	
+		foreach( $locations as $location )
 		{
 			$path = ROOT . DS . $location . DS . 'library' . DS . $class . ".class.php";
 			$class = ucfirst( $class );
@@ -45,7 +49,14 @@ class Loader
 				
 				if( class_exists( $class ) )
 				{
-					$this->loaded[strtolower($class)] = new $class();
+					$newObj = new $class();
+					if( !is_subclass_of( $newObj, 'Library' ) )
+					{
+						unset( $newObj );
+						return false;
+					}
+					
+					$this->loaded[strtolower($class)] = $newObj;
 					return $this->loaded[strtolower($class)];
 				}
 			}
@@ -64,6 +75,21 @@ class Loader
 	    
 	    return false;
     }
+	
+	protected function get_locations()
+	{
+		$locations = array(
+			"system",
+			"application",
+		);
+		
+		if( Registry::get( "isAdmin" ) )
+		{
+			array_splice( $locations, 1, 0, array( "application" . DS . "admin" ) );
+		}
+		
+		return $locations;
+	}
 	
 	public function __get( $name )
     {
