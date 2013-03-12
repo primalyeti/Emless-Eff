@@ -295,7 +295,7 @@ class HTML extends Library
 		
 		if( $action == "" )
 		{
-			$action = $this->url;
+			$action = Registry::get("url");
 		}
 		
 		return "<form action='" . ( $secure ? DOMAIN_SECURE : BASE_PATH ) . $action . "'" . $attributes . ">";
