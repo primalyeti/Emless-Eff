@@ -21,8 +21,10 @@ Changelog
 --------------------------
 
 ## Version 1.1.1
-Release Date: 
+Release Date: March 12th, 2013
 
+* Updated
+	* Updated Libraries, all libraries now have to extend Library
 * Fixed
 	* Fixed framework globals, now returns error if index is not set
 	* Fixed form method in HTML library, would throw error when no action passed
