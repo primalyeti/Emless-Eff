@@ -20,6 +20,14 @@ Please see the Installation section of documentation/userguide.md
 Changelog
 --------------------------
 
+## Version 1.1.2
+Release Date: 
+
+* Updated
+	* Updated errCheck, now err_check, allows the passing of options to be added like html attributes
+* Fixed
+	* Fixed bug in SQLResult class that skipped first element after first run through
+
 ## Version 1.1.1
 Release Date: March 12th, 2013
 

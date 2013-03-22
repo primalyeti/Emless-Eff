@@ -31,7 +31,7 @@ function log_error( $error )
 	}
 }
 
-function errCheck( $errs, $keys, $msg = "", $att = "" )
+function err_check( $errs, $keys, $msg = "", $options = "" )
 {
 	$errs = (array) $errs;
 	$keys = (array) $keys;
@@ -56,7 +56,20 @@ function errCheck( $errs, $keys, $msg = "", $att = "" )
 		return false;
 	}
 	
-	return "<div class='error'>" . ( $msg != "" ? $msg : "Required Field" ) . "</div>";
+	$options = ( is_array( $options ) ? $options : array( 0 => $options ) );
+	$defaults = array(
+		"class" => "errpr",
+	);
+	
+	$options = array_merge( $defaults, $options );
+	
+	$attributes = "";
+	foreach( $options as $a => $k )
+	{
+		$attributes .= $a . '="' . addcslashes( $k, '"' ) . '" ';
+	}
+	
+	return "<div " . $attributes . ">" . ( $msg != "" ? $msg : "Required Field" ) . "</div>";
 }
 
 function exceptions_error_handler( $severity, $message, $filename, $lineno )
