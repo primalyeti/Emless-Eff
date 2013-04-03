@@ -26,7 +26,8 @@ Release Date:
 * Updated
 	* Updated errCheck, now err_check, allows the passing of options to be added like html attributes
 	* Updated error loggin, now defaults to framework log file if possible
-	* Updated HTML library, improved cache retention 
+	* Updated HTML library, improved cache retention
+	* Updated libraries, they now have access to load() method and improved inheritance
 * Fixed
 	* Fixed bug in SQLResult class that skipped first element after first run through
 
