@@ -21,7 +21,7 @@ Changelog
 --------------------------
 
 ## Version 1.1.2
-Release Date: 
+Release Date: April 4th, 2013
 
 * Updated
 	* Updated errCheck, now err_check, allows the passing of options to be added like html attributes
