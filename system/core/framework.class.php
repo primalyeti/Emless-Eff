@@ -223,7 +223,8 @@ class Framework
 	final protected function set_reporting()
 	{
 		error_reporting( E_ALL /* | E_STRICT */ );
-		#set_error_handler('exceptions_error_handler'); 
+		ini_set( 'log_errors', 'On' );
+		ini_set( 'error_log', ROOT . DS . 'application' . DS . LOGS_DIR . LOG_FILE_NAME );
 		
 		if( ENVIRONMENT != "LIVE" && DEVELOPMENT_ENVIRONMENT == true )
 		{
@@ -232,8 +233,6 @@ class Framework
 		else
 		{
 			ini_set( 'display_errors', 'Off' );
-			ini_set( 'log_errors', 'On' );
-			ini_set( 'error_log', ROOT . DS . 'application' . DS . LOGS_DIR . LOG_FILE_NAME );
 		}
 	}
 	
@@ -353,7 +352,6 @@ class Framework
 			"DEVELOPMENT_PRINT_GLOBALS" => array( true, false ),
 			"DEVELOPMENT_SHOW_CONTROLLER" => array( true, false ),
 			"LOG_FILE_NAME" => array( "%" ),
-			"LOG_CUST_ERR_FILE_NAME" => array( "%" ),
 			
 			// ** PATH VARIABLES ** //
 			"FILE_DIR" => array( "%" ),

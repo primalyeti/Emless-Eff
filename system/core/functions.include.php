@@ -21,17 +21,7 @@ function delete_cache_file( $file )
 	}
 }
 
-function log_error( $error )
-{
-	$handle = fopen( ROOT . DS . 'application' . DS . LOGS_DIR . LOG_CUST_ERR_FILE_NAME, 'a+' );
-	if( $handle !== false )
-	{
-		fwrite( $handle, $error );
-		fclose( $handle );
-	}
-}
-
-function errCheck( $errs, $keys, $msg = "", $att = "" )
+function err_check( $errs, $keys, $msg = "", $options = "" )
 {
 	$errs = (array) $errs;
 	$keys = (array) $keys;
@@ -56,7 +46,20 @@ function errCheck( $errs, $keys, $msg = "", $att = "" )
 		return false;
 	}
 	
-	return "<div class='error'>" . ( $msg != "" ? $msg : "Required Field" ) . "</div>";
+	$options = ( is_array( $options ) ? $options : array( 0 => $options ) );
+	$defaults = array(
+		"class" => "errpr",
+	);
+	
+	$options = array_merge( $defaults, $options );
+	
+	$attributes = "";
+	foreach( $options as $a => $k )
+	{
+		$attributes .= $a . '="' . addcslashes( $k, '"' ) . '" ';
+	}
+	
+	return "<div " . $attributes . ">" . ( $msg != "" ? $msg : "Required Field" ) . "</div>";
 }
 
 function exceptions_error_handler( $severity, $message, $filename, $lineno )

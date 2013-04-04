@@ -70,7 +70,7 @@ define( 'DOMAIN_SECURE', 'http://' . $_SERVER["SERVER_NAME"] . BASE_PATH );
 define( 'AUTH_KEY', '' );
 
 /** Version Number **/
-define( 'VERSION', '' );
+define( 'VERSION', '1.1.2' );
 
 /** ##### */
 
@@ -91,9 +91,6 @@ define( 'DEVELOPMENT_SHOW_CONTROLLER', false );
 
 /** Error Log Name */
 define( 'LOG_FILE_NAME', 'error.log' );
-
-/** Additional Error Log Name */
-define( 'LOG_CUST_ERR_FILE_NAME', 'cust.error.log' );
 
 /** ##### */
 

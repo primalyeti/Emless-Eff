@@ -9,6 +9,11 @@ abstract class Library
 		    return $val;
 		}
 		
+		if( $this->load()->$name != false )
+		{
+			return $this->load()->$name;
+		}
+		
 		if( isset( $this->$name ) )
 	    {
 		    return $this->$name;
@@ -16,4 +21,9 @@ abstract class Library
 		
 		return false;
     }
+    
+    final public function load()
+	{
+		return $this->framework->load();
+	}
 }

@@ -357,7 +357,8 @@ class SQLResult
 	
 	public function curr()
 	{
-		if( !isset( $this->_results[$this->_pos] ) )
+		$pos = ( $this->_pos == -1 && $this->length() > 0 ? 0 : -1 );
+		if( !isset( $this->_results[$pos] ) )
 		{
 			return false;
 		}
@@ -387,13 +388,7 @@ class SQLResult
 	
 	public function reset()
 	{
-		if( empty( $this->_results ) )
-		{
-			$this->_pos = -1;
-			return true;
-		}
-	
-		$this->_pos = 0;
+		$this->_pos = -1;
 		return true;
 	}
 
@@ -484,6 +479,16 @@ class SQLResult
 		return $this->_stmt;
 	}
 	
+	public function __get( $key )
+	{
+		if( !isset( $this->$key ) )
+		{
+			return $this->first()->$key;
+		}
+		
+		return null;
+	}
+	
 	/**
 	*
 	* PRIVATE
@@ -493,7 +498,7 @@ class SQLResult
 	{
 		return $this->result_row_to_obj( $this->_results[$key] );
 	}
-	
+		
 	protected function result_row_to_obj( $arr )
 	{
 		if( is_array( $arr ) ) 

@@ -178,11 +178,11 @@ class HTML extends Library
 		}
 		
 		$cache_prevension = "";
-		if( DEVELOPMENT_ENVIRONMENT == true )
+		if( ENVIRONMENT != 'LIVE' )
 		{
 			$cache_prevension = "?d=" . uniqid();
 		}
-		else if( CACHE_ISON == true )
+		else
 		{
 			$cache_prevension = "?v=" . VERSION;
 		}
@@ -216,11 +216,11 @@ class HTML extends Library
 		}
 		
 		$cache_prevension = "";
-		if( DEVELOPMENT_ENVIRONMENT == true )
+		if( ENVIRONMENT != 'LIVE' )
 		{
 			$cache_prevension = "?d=" . uniqid();
 		}
-		else if( CACHE_ISON == true )
+		else
 		{
 			$cache_prevension = "?v=" . VERSION;
 		}

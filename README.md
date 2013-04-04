@@ -20,6 +20,20 @@ Please see the Installation section of documentation/userguide.md
 Changelog
 --------------------------
 
+## Version 1.1.2
+Release Date: April 4th, 2013
+
+* Updated
+	* Updated errCheck, now err_check, allows the passing of options to be added like html attributes
+	* Updated error loggin, now defaults to framework log file if possible
+	* Updated HTML library, improved cache retention
+	* Updated libraries, they now have access to load() method and improved inheritance
+	* Updated SQLResult to auto return first()
+* Fixed
+	* Fixed bug in SQLResult class that skipped first element after first run through
+* Removed
+	* Removed log_error function to reduce redundancies
+
 ## Version 1.1.1
 Release Date: March 12th, 2013
 
