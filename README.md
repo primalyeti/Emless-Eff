@@ -28,8 +28,11 @@ Release Date:
 	* Updated error loggin, now defaults to framework log file if possible
 	* Updated HTML library, improved cache retention
 	* Updated libraries, they now have access to load() method and improved inheritance
+	* Updated SQLResult to auto return first()
 * Fixed
 	* Fixed bug in SQLResult class that skipped first element after first run through
+* Removed
+	* Removed log_error function to reduce redundancies
 
 ## Version 1.1.1
 Release Date: March 12th, 2013

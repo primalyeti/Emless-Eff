@@ -479,6 +479,16 @@ class SQLResult
 		return $this->_stmt;
 	}
 	
+	public function __get( $key )
+	{
+		if( !isset( $this->$key ) )
+		{
+			return $this->first()->$key;
+		}
+		
+		return null;
+	}
+	
 	/**
 	*
 	* PRIVATE

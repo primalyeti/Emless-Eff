@@ -21,16 +21,6 @@ function delete_cache_file( $file )
 	}
 }
 
-function log_error( $error )
-{
-	$handle = fopen( ROOT . DS . 'application' . DS . LOGS_DIR . LOG_CUST_ERR_FILE_NAME, 'a+' );
-	if( $handle !== false )
-	{
-		fwrite( $handle, $error );
-		fclose( $handle );
-	}
-}
-
 function err_check( $errs, $keys, $msg = "", $options = "" )
 {
 	$errs = (array) $errs;

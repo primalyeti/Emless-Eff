@@ -92,9 +92,6 @@ define( 'DEVELOPMENT_SHOW_CONTROLLER', false );
 /** Error Log Name */
 define( 'LOG_FILE_NAME', 'error.log' );
 
-/** Additional Error Log Name */
-define( 'LOG_CUST_ERR_FILE_NAME', 'cust.error.log' );
-
 /** ##### */
 
 // ** PATH VARIABLES - Where are folders located on your server, relative to the root index.php file ** //

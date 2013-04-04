@@ -352,7 +352,6 @@ class Framework
 			"DEVELOPMENT_PRINT_GLOBALS" => array( true, false ),
 			"DEVELOPMENT_SHOW_CONTROLLER" => array( true, false ),
 			"LOG_FILE_NAME" => array( "%" ),
-			"LOG_CUST_ERR_FILE_NAME" => array( "%" ),
 			
 			// ** PATH VARIABLES ** //
 			"FILE_DIR" => array( "%" ),
