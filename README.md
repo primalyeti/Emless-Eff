@@ -23,7 +23,9 @@ Changelog
 ## Version 1.1.3
 Release Date:
 
-
+* Fixed
+	* Fixed tracker, can now be disabled properly
+	* Fixed tracker, properly returns data even when not enabled
 
 ## Version 1.1.2
 Release Date: April 4th, 2013
