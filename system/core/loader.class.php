@@ -6,7 +6,9 @@ class Loader
 
 	public function helper( $helper )
 	{
-		if( isset( $this->included[strtolower($helper)] ) )
+		$helper = strtolower( $helper );
+		
+		if( isset( $this->included[$helper] ) )
 		{
 			return true;
 		}
@@ -19,8 +21,8 @@ class Loader
 	
 			if( file_exists( $path ) )
 			{
-				include( $path );
-				$this->included[strtolower($helper)] = true;
+				require_once( $path );
+				$this->included[$helper] = true;
 				
 				return true;
 			}
@@ -31,9 +33,11 @@ class Loader
 	
 	public function library( $class )
 	{
-		if( isset( $this->loaded[strtolower($class)] ) )
+		$class = strtolower( $class );
+		
+		if( isset( $this->loaded[$class] ) )
 		{
-			return $this->loaded[strtolower($class)];
+			return $this->loaded[$class];
 		}
 	
 		$locations = $this->get_locations();
@@ -41,23 +45,24 @@ class Loader
 		foreach( $locations as $location )
 		{
 			$path = ROOT . DS . $location . DS . 'library' . DS . $class . ".class.php";
-			$class = ucfirst( $class );
 			
 			if( file_exists( $path ) )
 			{
-				include_once( $path );
+				require_once( $path );
 				
-				if( class_exists( $class ) )
+				$class_name = ucfirst( $class );
+				
+				if( class_exists( $class_name ) )
 				{
-					$newObj = new $class();
+					$newObj = new $class_name();
 					if( !is_subclass_of( $newObj, 'Library' ) )
 					{
 						unset( $newObj );
 						return false;
 					}
 					
-					$this->loaded[strtolower($class)] = $newObj;
-					return $this->loaded[strtolower($class)];
+					$this->loaded[$class] = $newObj;
+					return $this->loaded[$class];
 				}
 			}
 		}

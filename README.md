@@ -23,9 +23,13 @@ Changelog
 ## Version 1.1.3
 Release Date:
 
+* Added
+	* Added public files folder
 * Fixed
 	* Fixed tracker, can now be disabled properly
 	* Fixed tracker, properly returns data even when not enabled
+	* Fixed htaccess to prevent spoofing
+	* Fixed Loader, no longer crashes due to case sensitive OS'
 
 ## Version 1.1.2
 Release Date: April 4th, 2013
