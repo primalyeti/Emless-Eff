@@ -25,6 +25,8 @@ Release Date:
 
 * Added
 	* Added public files folder
+* Updated
+	* Updated SQLResult, removed stmt from object when serialized
 * Fixed
 	* Fixed tracker, can now be disabled properly
 	* Fixed tracker, properly returns data even when not enabled

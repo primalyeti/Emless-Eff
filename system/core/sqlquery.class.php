@@ -325,6 +325,11 @@ class SQLResult
 	
 	public function __construct(){}
 	
+	public function __sleep()
+	{
+		$this->_stmt = null;
+	}
+	
 	/**
 	* 
 	* PUBLIC USE
