@@ -1,5 +1,5 @@
 <?
-class HTML extends Library
+class Html extends Library
 {
 	public function doctype( $type = "" )
 	{
@@ -80,6 +80,11 @@ class HTML extends Library
 	public function author( $url = "humans.txt" )
 	{
 		return "<link rel=\"author\" type=\"text/plain\" href=\"" . BASE_PATH . $url . "\" />";
+	}
+	
+	public function canonical( $url = '' )
+	{	
+		return ( !empty( $url ) ) ? "<link rel=\"canonical\" href=\"$url\" />" : '';
 	}
 
 	public function urlsafe( $string )

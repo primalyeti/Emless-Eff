@@ -1,5 +1,5 @@
 <?
-class AHTML extends HTML
+class Ahtml extends Html
 {
 	protected function link_form( $url, $options, $secure )
 	{

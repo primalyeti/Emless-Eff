@@ -19,7 +19,7 @@ class Tracker
 	
 	public function __destruct()
 	{
-		if( $this->is_set() )
+		if( $this->is_enabled() && $this->is_set() )
 		{
 			array_unshift( $this->_locs, $this->_loc );
 	
@@ -46,11 +46,6 @@ class Tracker
 	
 	final public function last()
 	{
-		if( !$this->is_enabled() )
-		{
-			return false;
-		}
-	
 		if( $this->length() > 0 )
 		{
 			return $this->get( 0 );
@@ -61,11 +56,6 @@ class Tracker
 	
 	final public function get( $key )
 	{
-		if( !$this->is_enabled() )
-		{
-			return false;
-		}
-	
 		if( isset( $this->_locs[$key] ) )
 		{
 			return $this->_locs[$key];
