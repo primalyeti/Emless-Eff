@@ -13,7 +13,7 @@ class Profiler
 		}
 		
 		// figure out if we're profiling
-		$this->_toProfile = ( mt_rand( 0, 100 ) > 99 );
+		$this->_toProfile = ( mt_rand( 0, 100 ) > ( 100 - PROFILER_RATE ) );
 	}
 	
 	/**
@@ -142,9 +142,15 @@ class Profiler
 		{
 			return false;
 		}
+		
 		// get supported points
 		foreach( $this->_validPoints as $vp )
 		{
+			if( !isset( $this->_aTimes[$vp] ) )
+			{
+				continue;
+			}
+			
 			${$vp} = $this->_aTimes[$vp];
 		}
 		
@@ -192,6 +198,11 @@ class Profiler
 		$table_suffix = "_" . @date("y_m");		# appent year and month to table name
 		$table_name = "profiler_log";# . $table_suffix;
 		
+		$ip 		= $_SERVER['REMOTE_ADDR'];
+		$page 		= $_SERVER["REQUEST_URI"];
+		$uagent 	= ( isset( $_SERVER['HTTP_USER_AGENT'] ) ? $_SERVER['HTTP_USER_AGENT'] : "" );
+		$referer 	= ( isset( $_SERVER['HTTP_REFERER'] ) ? $_SERVER['HTTP_REFERER'] : "" );
+		
 		$sql = "INSERT DELAYED INTO " . $table_name . " ( 
 				ip, 
 				page, 
@@ -203,10 +214,11 @@ class Profiler
 				mysql_count_queries, 
 				mysql_queries, 
 				user_agent, 
-				referer 
+				referer,
+				identifier
 			) VALUES (
-				" . Registry::get("dbh")->clean( $_SERVER['REMOTE_ADDR'], "str" ) . ", 
-				" . Registry::get("dbh")->clean( $_SERVER["REQUEST_URI"], "str" ) . ", 
+				" . Registry::get("dbh")->clean( $ip, "str" ) . ", 
+				" . Registry::get("dbh")->clean( $page, "str" ) . ", 
 				" . Registry::get("dbh")->clean( $data["utime"], "int" ) . ", 
 				" . Registry::get("dbh")->clean( $data["wtime"], "int" ) . ", 
 				" . Registry::get("dbh")->clean( $data["stime"], "int" ) . ", 
@@ -214,8 +226,9 @@ class Profiler
 				" . Registry::get("dbh")->clean( $data["mysql_time"], "int" ) . ", 
 				" . Registry::get("dbh")->clean( $data["mysql_count_queries"], "int" ) . ", 
 				" . Registry::get("dbh")->clean( $data["mysql_queries"], "str" ) . ", 
-				" . Registry::get("dbh")->clean( $_SERVER['HTTP_USER_AGENT'], "str" ) . ", 
-				" . Registry::get("dbh")->clean( $_SERVER['HTTP_REFERER'], "str" ) . "
+				" . Registry::get("dbh")->clean( $uagent, "str" ) . ", 
+				" . Registry::get("dbh")->clean( $referer, "str" ) . ",
+				" . Registry::get("dbh")->clean( PROFILER_IDENTIFIER, "str" ) . "
 			)";
 		
 		// insert data
@@ -260,6 +273,7 @@ class Profiler
 				`user_agent` VARCHAR(255) NOT NULL,
 				`ip` VARCHAR(15) NOT NULL,
 				`referer` VARCHAR(255) NOT NULL,
+				`identifier` VARCHAR(3) NOT NULL DEFAULT 'DEF',
 				PRIMARY KEY(`id`)
 			) ENGINE=ARCHIVE;
 		";

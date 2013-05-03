@@ -81,6 +81,11 @@ class Html extends Library
 	{
 		return "<link rel=\"author\" type=\"text/plain\" href=\"" . BASE_PATH . $url . "\" />";
 	}
+	
+	public function canonical( $url = '' )
+	{	
+		return ( !empty( $url ) ) ? "<link rel=\"canonical\" href=\"$url\" />" : '';
+	}
 
 	public function urlsafe( $string )
 	{

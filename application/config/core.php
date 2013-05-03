@@ -133,8 +133,14 @@ define( 'CACHE_ISON', false );
 /** Default cache lifetime */
 define( 'CACHE_DEFAULT_LIFESPAN', 5 * 60 );
 
-/** Is caching enabled */
+/** Is profiling enabled */
 define( 'PROFILER_ISON', false );
+
+/** Profiler identifier, max length is 3 */
+define( 'PROFILER_IDENTIFIER', 'DEF' );
+
+/** Profiler sample rate, integer between 0 and 100 */
+define( 'PROFILER_RATE', 1 );
 
 /** Is Page Tracking enabled */
 define( 'TRACKER_ISON', true );

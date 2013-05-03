@@ -366,6 +366,8 @@ class Framework
 			"CACHE_ISON" => array( true, false ),
 			"CACHE_DEFAULT_LIFESPAN" => array( "%" ),
 			"PROFILER_ISON" => array( true, false ),
+			"PROFILER_IDENTIFIER" => array( "%" ),
+			"PROFILER_RATE" => array( "#" ),
 			"TRACKER_ISON" => array( true, false ),
 			"TRACKER_TYPE" => array( 'CONTROLLER', 'TEMPLATE' ),
 			"TRACKER_SESSION_VAR" => array( "%" ),
@@ -388,6 +390,7 @@ class Framework
 			
 			// "" is allowed to be empty
 			// "%" is allowed to be anything
+			// "#" is numbers
 			// "wtv" needs to be that 
 			
 			$constVal = constant( $var );
@@ -400,6 +403,12 @@ class Framework
 			
 			// var is not empty but has anythign rule, we're good
 			if( !empty( $constVal ) && in_array( "%", $rules ) )
+			{
+				continue;
+			}
+			
+			// var is not empty but has a number rule, we're good
+			if( !empty( $constVal ) && in_array( "#", $rules ) && is_int( $constVal ) )
 			{
 				continue;
 			}

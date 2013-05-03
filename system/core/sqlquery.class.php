@@ -316,18 +316,30 @@ class PDOConn extends SQLHandle
 
 class SQLResult
 {
-	protected $_isValid = false;
-	protected $_query 	= null;
-	protected $_params 	= null;
-	protected $_stmt 	= null;
-	protected $_results	= array();
-	protected $_pos 	= -1;
+	protected $_isValid 		= false;
+	protected $_query 			= null;
+	protected $_params 			= null;
+	protected $_stmt 			= null;
+	protected $_results			= array();
+	protected $_pos 			= -1;
+	protected $_wasSerialized 	= false;
 	
 	public function __construct(){}
 	
 	public function __sleep()
 	{
-		$this->_stmt = null;
+		return array(
+			"_isValid",
+			"_query",
+			"_params",
+			"_results",
+			"_pos",
+		);
+	}
+	
+	public function __wakeup()
+	{
+		$this->_wasSerialized = true;
 	}
 	
 	/**
@@ -404,7 +416,11 @@ class SQLResult
 
 	public function error()
 	{
-		if( is_null( $this->_stmt ) )
+		if( $this->wasSerialized() && $this->isValid() )
+		{
+			return false;
+		}
+		else if( is_null( $this->_stmt ) )
 		{
 			return true;
 		}
@@ -499,6 +515,11 @@ class SQLResult
 	* PRIVATE
 	* 
 	**/
+	protected function wasSerialized()
+	{
+		return $this->_wasSerialized;
+	}
+	
 	protected function row_as_object( $key )
 	{
 		return $this->result_row_to_obj( $this->_results[$key] );

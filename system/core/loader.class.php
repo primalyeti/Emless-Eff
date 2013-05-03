@@ -72,9 +72,9 @@ class Loader
 	
 	public function unload( $key )
     {
-	    if( isset( $this->loaded[$name] ) )
+	    if( isset( $this->loaded[$key] ) )
 	    {
-		    unset( $this->loaded[$name] );
+		    unset( $this->loaded[$key] );
 		    return true;
 	    }
 	    

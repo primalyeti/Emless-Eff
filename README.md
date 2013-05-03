@@ -25,13 +25,20 @@ Release Date:
 
 * Added
 	* Added public files folder
+	* Added canonical function to html library
 * Updated
-	* Updated SQLResult, removed stmt from object when serialized
+	* Updated SQLResult, made serializable
+	* Updated Profiler, added identifier for sites running the same DB
+	* Updated Profiler, added sample rate to core.php
 * Fixed
 	* Fixed tracker, can now be disabled properly
 	* Fixed tracker, properly returns data even when not enabled
 	* Fixed htaccess to prevent spoofing
 	* Fixed Loader, no longer crashes due to case sensitive OS'
+	* Fixed Loader, properly unloads
+	* Fixed Profiler, no longer throws Undefined index errors
+* Removed
+	* Removed core functions helper to reduce redundancy
 
 ## Version 1.1.2
 Release Date: April 4th, 2013
