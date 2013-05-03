@@ -21,7 +21,7 @@ Changelog
 --------------------------
 
 ## Version 1.1.3
-Release Date:
+Release Date: May 3rd, 2013
 
 * Added
 	* Added public files folder
