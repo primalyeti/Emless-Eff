@@ -46,7 +46,7 @@ class SQLQuery
 		}
 		
 		Registry::get("profiler")->start_time( "mysql" );
-		$return = $this->_dbObj->query( $query, false, $params );
+		$return = $this->_dbObj->query( $query, DBH_OBJ_DEFAULT, $params );
 		Registry::get("profiler")->stop_time( "mysql", $query . "\nParams: \n" . print_r( $params, true ) );
 		
 		return $return;

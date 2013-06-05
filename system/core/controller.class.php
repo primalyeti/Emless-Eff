@@ -111,6 +111,17 @@ class Controller
 		$this->render_footer = 0;
 	}
 
+	final public function remove_view( $view )
+	{
+		if( $key = array_search( $view, $this->_views ) )
+		{
+			unset( $this->_views[$key] );
+			return true;
+		}
+		
+		return false;
+	}
+
 	final public function clear_views()
 	{
 		$this->_views = array();
