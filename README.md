@@ -20,6 +20,18 @@ Please see the Installation section of documentation/userguide.md
 Changelog
 --------------------------
 
+
+## Version 1.1.4
+Release Date: June 12th, 2013
+
+* Added
+	* Added remove_view method to controller, can unset views 
+* Updated
+	* Updated HTML library, options can now be passed as strings
+	* Updated SQLQuery, can now set wether the default return type for query is an object or not
+* Fixed
+	* Fixed err_check default class name
+
 ## Version 1.1.3
 Release Date: May 3rd, 2013
 

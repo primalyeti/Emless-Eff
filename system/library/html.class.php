@@ -52,13 +52,9 @@ class Html extends Library
 	
 	public function meta( $type, $content, $options = array() )
 	{
-		$attributes = " ";
-		foreach( $options as $a => $k )
-		{
-			$attributes .= $a . '="' . addcslashes( $k, '"' ) . '" ';
-		}
+		$attributes = $this->generate_options( $options );
 		
-		return "<meta name=\"" . $type . "\" content=\"" . $content . "\"" . $attributes . " />";
+		return "<meta name=\"" . $type . "\" content=\"" . $content . "\" " . $attributes . " />";
 	}
 	
 	public function icon( $url, $type = "", $options = array() )
@@ -144,7 +140,6 @@ class Html extends Library
 	protected function link_form( $url, $options, $secure )
 	{
 		$url = ( is_array( $url ) ? $url : array( 0 => $url ) );
-		$options = ( is_array( $options ) ? $options : array( 0 => $options ) );
 
 		$href = ( $secure ? DOMAIN_SECURE : BASE_PATH );
 		$query = "?";
@@ -164,12 +159,9 @@ class Html extends Library
 		$query = substr( $query, 0, -1 );
 		$href = substr( $href, 0, -1 );
 		
-		foreach( $options as $a => $k )
-		{
-			$attributes .= $a . '="' . addcslashes( $k, '"' ) . '" ';
-		}
+		$attributes = $this->generate_options( $options );
 		
-		return '<a href="' . addslashes( $href ) . urlencode( $query ) . '"' . $attributes . ">";
+		return '<a href="' . addslashes( $href ) . urlencode( $query ) . '" ' . $attributes . ">";
 	}
 	
 	public function js( $file_name, $options = array() )
@@ -212,13 +204,7 @@ class Html extends Library
 	
 	public function css( $file_name, $options = array() )
 	{
-		$options = ( is_array( $options ) ? $options : array( 0 => $options ) );
-		$attributes = " ";
-		
-		foreach( $options as $a => $k )
-		{
-			$attributes .= $a . '="' . addcslashes( $k, '"' ) . '" ';
-		}
+		$attributes = $this->generate_options( $options );
 		
 		$cache_prevension = "";
 		if( ENVIRONMENT != 'LIVE' )
@@ -235,15 +221,9 @@ class Html extends Library
 	
 	public function img( $file_name, $options = array() )
 	{
-		$options = ( is_array( $options ) ? $options : array( 0 => $options ) );
-		$attributes = " ";
+		$attributes = $this->generate_options( $options );
 		
-		foreach( $options as $a => $k )
-		{
-			$attributes .= $a . '="' . addcslashes( $k, '"' ) . '" ';
-		}
-		
-		return "<img src='" . BASE_PATH . "img/" . $file_name . "'"  . $attributes . "/>";
+		return "<img src='" . BASE_PATH . "img/" . $file_name . "' "  . $attributes . "/>";
 	}
 	
 	public function form_open( $action = "", $options = array() )
@@ -258,8 +238,9 @@ class Html extends Library
 	
 	public function form_open_multipart( $action, $options = array() )
 	{
-		$options = ( is_array( $options ) ? $options : array( 0 => $options ) );
-		$options = array_merge( array( "enctype" => "multipart/form-data" ), $options );
+		$defaults = array( "enctype" => "multipart/form-data" );
+		
+		$options = $this->generate_options( $options, $defaults );
 		
 		return $this->form_form( $action, $options, 0 );
 	}
@@ -291,18 +272,35 @@ class Html extends Library
 			"name" => uniqid(),
 		);
 		
-		$options = array_merge( $defaults, $options );
-		$attributes = "";
-		foreach( $options as $a => $k )
-		{
-			$attributes .= $a . '="' . addcslashes( $k, '"' ) . '" ';
-		}
-		
+		$attributes = $this->generate_options( $options, $defaults );
+				
 		if( $action == "" )
 		{
 			$action = Registry::get("url");
 		}
 		
-		return "<form action='" . ( $secure ? DOMAIN_SECURE : BASE_PATH ) . $action . "'" . $attributes . ">";
+		return "<form action='" . ( $secure ? DOMAIN_SECURE : BASE_PATH ) . $action . "' " . $attributes . ">";
+	}
+	
+	protected function generate_options( $options, $defaults = array() )
+	{
+		$attributes = "";
+	
+		foreach( array( $defaults, $options ) as $ops )
+		{
+			if( is_array( $ops ) )
+			{
+				foreach( $ops as $a => $k )
+				{
+					$attributes .= trim( $a ) . '="' . addcslashes( trim( $k ), '"' ) . '" ';
+				}
+			}
+			else 
+			{
+				$attributes .= trim( $ops );
+			}
+		}
+				
+		return $attributes;
 	}
 }

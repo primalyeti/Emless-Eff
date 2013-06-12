@@ -363,6 +363,7 @@ class Framework
 			"TRACKER_DIR" => array( "%" ),
 			
 			// ** MISCELLANEOUS VARIABLES ** //
+			"DBH_OBJ_DEFAULT" => array( true, false ),
 			"CACHE_ISON" => array( true, false ),
 			"CACHE_DEFAULT_LIFESPAN" => array( "%" ),
 			"PROFILER_ISON" => array( true, false ),

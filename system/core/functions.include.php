@@ -48,7 +48,7 @@ function err_check( $errs, $keys, $msg = "", $options = "" )
 	
 	$options = ( is_array( $options ) ? $options : array( 0 => $options ) );
 	$defaults = array(
-		"class" => "errpr",
+		"class" => "error",
 	);
 	
 	$options = array_merge( $defaults, $options );

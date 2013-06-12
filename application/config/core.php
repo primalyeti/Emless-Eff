@@ -128,6 +128,9 @@ define( 'TRACKER_DIR', TEMP_DIR . "trackers/" );
  */
 
 /** Is caching enabled */
+define( 'DBH_OBJ_DEFAULT', false );
+
+/** Is caching enabled */
 define( 'CACHE_ISON', false );
 
 /** Default cache lifetime */
