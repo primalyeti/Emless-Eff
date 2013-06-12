@@ -21,7 +21,7 @@ Changelog
 --------------------------
 
 ## Version 1.1.4
-Release Date: 
+Release Date: June 12th, 2013
 
 * Added
 	* Added remove_view method to controller, can unset views 
