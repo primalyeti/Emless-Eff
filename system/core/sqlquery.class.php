@@ -359,7 +359,7 @@ class SQLResult
 			return false;
 		}
 		
-		return $this->row_as_object( 0 );
+		return $this->_results[0];
 	}
 	
 	public function last()
@@ -369,7 +369,7 @@ class SQLResult
 			return false;
 		}
 		
-		return $this->row_as_object( $this->length()-1 );
+		return $this->_results[$this->length()-1];
 	}
 	
 	public function curr()
@@ -380,7 +380,7 @@ class SQLResult
 			return false;
 		}
 		
-		return $this->row_as_object( $this->_pos );
+		return $this->_results[ $this->_pos ];
 	}
 	
 	public function next()
@@ -389,8 +389,7 @@ class SQLResult
 		{
 			return false;
 		}
-		
-		return $this->row_as_object( ++$this->_pos );
+		return $this->_results[++$this->_pos];
 	}
 	
 	public function prev()
@@ -400,7 +399,7 @@ class SQLResult
 			return false;
 		}
 		
-		return $this->row_as_object( --$this->_pos );
+		return $this->_results[--$this->_pos];
 	}
 	
 	public function reset()
@@ -450,8 +449,15 @@ class SQLResult
 	
 	public function as_array()
 	{
-		return $this->_results;
+		$resultArray = array();
+		foreach( $this->_results as $result )
+		{
+			array_push( $resultArray, $result->as_array() );
+		}
+
+		return $resultArray;
 	}
+
 	
 	/**
 	* 
@@ -480,8 +486,13 @@ class SQLResult
 		{
 			throw new Exception( "SQLResult: not a valid result array" );
 		}
+
+		foreach( $results as $result )
+		{
+			$row = new SQLRow( $result );
+			array_push($this->_results, $row );
+		}
 		
-		$this->_results = $results;
 		$this->_isValid = true;
 	}
 	
@@ -519,13 +530,18 @@ class SQLResult
 	{
 		return $this->_wasSerialized;
 	}
-	
-	protected function row_as_object( $key )
+}
+
+class SQLRow
+{
+	protected $_row;
+
+	public function __construct( $arr )
 	{
-		return $this->result_row_to_obj( $this->_results[$key] );
+		$this->_row = $this->init( $arr );
 	}
-		
-	protected function result_row_to_obj( $arr )
+	
+	private function init( $arr )
 	{
 		if( is_array( $arr ) ) 
 		{
@@ -538,7 +554,7 @@ class SQLResult
 			
 			foreach( $arr as $key => $val )
 			{
-				$new->{$key} = $this->result_row_to_obj( $val );
+				$new->{$key} = $this->init( $val );
 			}
 		}
 		else
@@ -547,5 +563,33 @@ class SQLResult
 		}
 		
 		return $new;
+	}
+	
+	public function __get( $key )
+	{
+		if( isset( $this->_row->$key ) )
+		{
+			return $this->_row->$key;
+		}
+		
+		return null;
+	}
+	
+	public function as_array()
+	{
+		$array = array();
+		
+		foreach( $this->_row as $key => $value )
+		{
+			$array[$key] = (array) $value;
+		}
+		
+		return $array;
+	}
+		
+	public function add_value( $key, $value )
+	{
+		$this->_row->custom->$key = $value;
+		return true;
 	}
 }
