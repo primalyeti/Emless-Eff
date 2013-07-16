@@ -286,7 +286,7 @@ class Html extends Library
 	{
 		$attributes = "";
 	
-		foreach( array( $defaults, $options ) as $ops )
+		foreach( array( $options, $defaults ) as $ops )
 		{
 			if( is_array( $ops ) )
 			{

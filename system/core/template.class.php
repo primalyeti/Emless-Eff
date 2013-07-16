@@ -96,7 +96,7 @@ class Template
 		}
     }
 
-	final public function include_file( $file_name )
+	final public function include_file( $file_name, $vars = array() )
 	{
 		$this->load()->library( "html" );
 		if( Registry::get( "isAdmin" ) )
@@ -105,6 +105,7 @@ class Template
 		}
 	
 		extract( $this->_vars );
+		extract( $vars );
 		
 		$path = ROOT . DS . 'application' . DS . ( Registry::get("isAdmin") == true ? 'admin' . DS : "" ) . 'views' . DS . $this->_controller . DS . $file_name;
 		$pathUp = ROOT . DS . 'application' . DS . ( Registry::get("isAdmin") == true ? 'admin' . DS : "" ) . 'views' . DS . $file_name;

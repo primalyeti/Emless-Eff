@@ -20,7 +20,18 @@ Please see the Installation section of documentation/userguide.md
 Changelog
 --------------------------
 
+## Version 1.1.5
+Release Date: July 16th, 2013
 
+* Added
+	* Added SQLRow class to SQLQuery file
+	* Added ability to add custom data to SQLResults and SQLRow objects
+* Updated
+	* Updated include_file method in Template, now accepts parameters
+	* Updated SQLResult, now stores data in SQLRow class
+* Fixed
+	* Fixed HTML options, now properly works with defaults
+	
 ## Version 1.1.4
 Release Date: June 12th, 2013
 
@@ -176,8 +187,3 @@ Release Date: January 11th, 2013
 License
 -------
 Please see documentation/license.txt
-
-
-Acknowledgement
----------------
-Anant Garg for providing me with the idea and the base for this framework, Skye and Jon for providing me with the opportunity to code and actively develope this framework	
