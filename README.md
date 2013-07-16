@@ -21,7 +21,7 @@ Changelog
 --------------------------
 
 ## Version 1.1.5
-Release Date: 
+Release Date: July 16th, 2013
 
 * Added
 	* Added SQLRow class to SQLQuery file
@@ -187,8 +187,3 @@ Release Date: January 11th, 2013
 License
 -------
 Please see documentation/license.txt
-
-
-Acknowledgement
----------------
-Anant Garg for providing me with the idea and the base for this framework, Skye and Jon for providing me with the opportunity to code and actively develope this framework	
