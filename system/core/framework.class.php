@@ -175,7 +175,7 @@ class Framework
 			}
 			
 			// init controller, if its an ajax call, do not render
-			$dispatch = new $controllerName( $controller, $action, !Registry::get( "isAjax"  ) );
+			$dispatch = new $controllerName( $controller, $action, !Registry::get( "isAjax"  ), Registry::get( "isAdmin" ) );
 			
 			require_once( ROOT . DS . 'application' . DS . "config" . DS . "init_hooks.php" );
 			
@@ -207,7 +207,7 @@ class Framework
 	    return false;
     }
 	
-	final public static function action( $controller, $action, $queryString = null, $render = 0 )
+	final public static function action( $controller, $action, $queryString = null, $render = 0, $isAdmin = false )
 	{
 		if( $queryString === null )
 		{
@@ -215,7 +215,7 @@ class Framework
 		}
 	
 		$controllerName = ucfirst( $controller ) . 'Controller';
-		$dispatch = new $controllerName( $controller, $action, $render );
+		$dispatch = new $controllerName( $controller, $action, $render, $isAdmin );
 		return call_user_func_array( array( $dispatch, $action ), $queryString );
 	}
 		

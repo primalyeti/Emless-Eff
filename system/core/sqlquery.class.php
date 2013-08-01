@@ -412,7 +412,28 @@ class SQLResult
 	{
 		return count( $this->_results );
 	}
-
+	
+	public function all( $table, $field )
+	{
+		// get position, then go to the beginning
+		$pos = $this->_pos;
+		$this->reset();
+		
+		// store the values
+		$vals = array();
+		while( $row = $this->next() )
+		{
+			if( isset( $this->$table ) && isset( $this->$table->$field ) && ( $val = $this->$table->$field ) != "" )
+			{
+				array_push( $vals, $val );
+			}
+		}
+		
+		$this->_pos = $pos;
+		
+		return $vals;
+	}
+	
 	public function error()
 	{
 		if( $this->wasSerialized() && $this->isValid() )
@@ -567,12 +588,12 @@ class SQLRow
 	
 	public function __get( $key )
 	{
-		if( isset( $this->_row->$key ) )
+		if( !isset( $this->_row->$key ) )
 		{
-			return $this->_row->$key;
+			$this->_row->$key = $this->init( array() );
 		}
 		
-		return null;
+		return $this->_row->$key;
 	}
 	
 	public function as_array()
@@ -585,11 +606,5 @@ class SQLRow
 		}
 		
 		return $array;
-	}
-		
-	public function add_value( $key, $value )
-	{
-		$this->_row->custom->$key = $value;
-		return true;
 	}
 }

@@ -23,9 +23,18 @@ Changelog
 ## Version 1.1.6
 Release Date: 
 
+* Added
+	* Added all method to SQLResult to get all fields from a table, as array
 * Updated
 	* Updated Library loading, can now pass paramters required for constructor
 	* Updated Library loading, can now only include library file without instantiating
+	* Updated SQLRow capabilities to edit and add data post query
+	* Updated controller and template logic to better handle admin functions, admin logic now controller heavy
+	* Updated debugging, now shows post and get arrays
+* Fixed
+	* Fixed template render logic
+* Removed
+	* Removed SQLRow add_value method, redundant
 
 ## Version 1.1.5
 Release Date: July 16th, 2013
