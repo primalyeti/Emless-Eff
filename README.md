@@ -21,7 +21,7 @@ Changelog
 --------------------------
 
 ## Version 1.1.6
-Release Date: 
+Release Date: August 1st, 2013
 
 * Added
 	* Added all method to SQLResult to get all fields from a table, as array
