@@ -31,7 +31,7 @@ class Loader
 		return false;
 	}
 	
-	public function library( $class )
+	public function library( $class, $args = array(), $include_only = false )
 	{
 		$class = strtolower( $class );
 		
@@ -50,11 +50,28 @@ class Loader
 			{
 				require_once( $path );
 				
+				$this->loaded[$class] = null;
+				
+				if( $include_only == true )
+				{
+					return true;
+				}
+				
 				$class_name = ucfirst( $class );
 				
 				if( class_exists( $class_name ) )
 				{
-					$newObj = new $class_name();
+					if( empty( $args ) )
+					{
+						$newObj = new $class_name();
+					}
+					else
+					{
+						$r = new ReflectionClass( $class_name );
+						$newObj = $r->newInstanceArgs( $args );
+						unset( $r );
+					}
+					
 					if( !is_subclass_of( $newObj, 'Library' ) )
 					{
 						unset( $newObj );

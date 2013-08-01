@@ -5,7 +5,7 @@ class Template
 	protected $_views;
 	protected $_vars = array();
 	
-	function __construct( $controller, $action )	
+	final function __construct( $controller, $action )	
 	{
 		$this->_controller = $controller;
 		$this->_view = $action;
@@ -38,7 +38,7 @@ class Template
 		return false;
 	}
 	
-	public function __get( $name )
+	final public function __get( $name )
     {
 	    $val = Registry::get( $name );
 	    if( $val !== false )
@@ -69,30 +69,13 @@ class Template
 		{
 			echo "<br><pre>" . print_r( $_SESSION, true ) . "</pre><br />";
 			echo "<pre>" . print_r( $_COOKIE, true ) . "</pre><br />";
+			echo "<pre>" . print_r( $_GET, true ) . "</pre><br />";
+			echo "<pre>" . print_r( $_POST, true ) . "</pre><br />";
 		}
 		
 		foreach( $this->_views as $view )
 		{
-			$pathItems = explode( "/", $view );
-			
-			if( count( $pathItems ) == 1 )
-			{
-				$path = ROOT . DS . 'application' . DS . ( Registry::get("isAdmin") == true ? 'admin' . DS : "" ) . 'views' . DS . $this->_controller . DS . $view . '.php';
-
-				if( file_exists( $path ) )
-				{
-					include( $path );
-					continue;
-				}
-			}
-			
-			#if( count( $pathItems ) > 1 ){}
-			$path = ROOT . DS . 'application' . DS . ( Registry::get("isAdmin") == true ? 'admin' . DS : "" ) . 'views' . DS . $view . '.php';
-			
-			if( file_exists( $path ) )
-			{
-				include( $path );
-			}
+			include( $view );
 		}
     }
 
@@ -120,8 +103,8 @@ class Template
 		}
 	}
 	
-	final public function module( $controller, $action, $query = null )
+	final public function module( $controller, $action, $query = null, $isAdmin = false )
 	{	
-		return Framework::action( $controller, $action, $query, 1 );
+		return Framework::action( $controller, $action, $query, 1, $isAdmin );
 	}
 }

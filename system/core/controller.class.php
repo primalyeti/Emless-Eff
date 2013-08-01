@@ -3,6 +3,7 @@ class Controller
 {
 	protected $_controller;		# controller name
 	protected $_action;			# controllers action
+	protected $_isAdmin;
 	
 	protected $_template;		# template
 	protected $_views = array();# the view to load
@@ -12,10 +13,11 @@ class Controller
 	protected $render_header;	# render header
 	protected $render_footer;	# render footer
 		
-	function __construct( $controller, $action, $render = 1 )
+	final function __construct( $controller, $action, $render = 1, $isAdmin = false )
 	{	
 		$this->_controller 	= ucfirst( $controller );
 		$this->_action 		= $action;
+		$this->_isAdmin		= $isAdmin;
 		
 		$this->render = $render;
 		$this->render_header = 1;
@@ -30,7 +32,7 @@ class Controller
 	
 	final public function view( $view )
 	{
-		array_push( $this->_views, $view );
+		$this->append_view( $view );
 	}
 	
 	final public function action( $action, $controller, $query = null, $render = 0 )
@@ -48,7 +50,7 @@ class Controller
 		return $this->framework->load();
 	}
 	
-	public function __get( $name )
+	final public function __get( $name )
     {
 	    $val = Registry::get( $name );
 	    if( $val !== false )
@@ -127,7 +129,39 @@ class Controller
 		$this->_views = array();
 	}
 
-	public function __destruct()
+	final private function append_view( $view, $first = false )
+	{
+		$viewArray 	= explode( '/', $view );
+		$admin		= ( $this->_isAdmin ? 'admin' : '' );
+		$base_path 	= ROOT . DS . 'application'. DS;
+		$pathArray 	= array();
+ 
+		// try the controller folder if no leading slash
+		if( $viewArray[0] != '' )
+		{
+			array_push( $pathArray, $base_path . $admin . DS . 'views' . DS . $this->_controller . DS . $view . '.php' );
+		}
+		
+		// if admin try the admin base view folder
+		if( $this->_isAdmin )
+		{
+			array_push( $pathArray, $base_path . $admin . DS . 'views' . DS . $view . '.php' );
+		}
+		
+		// try the absolute base path
+		array_push( $pathArray, $base_path . 'views' . DS . $view . '.php' );
+ 
+		foreach( $pathArray as $path )
+		{
+			if( file_exists( $path ) )
+			{
+				call_user_func( "array_" . ( $first ? "unshift" : "push" ), $this->_views, $path );
+				break;
+			}
+		}
+	}
+ 
+	final public function __destruct()
 	{
 		if( $this->render )
 		{
@@ -147,7 +181,7 @@ class Controller
 				{
 					foreach( array_reverse( $defaultViews['beforeView'] ) as $view )
 					{
-						array_unshift( $this->_views, $view );
+						$this->append_view( $view, true );
 					}
 				}
 			}
@@ -158,7 +192,7 @@ class Controller
 				{
 					foreach( $defaultViews['afterView'] as $view )
 					{
-						array_push( $this->_views, $view );
+						$this->append_view( $view );
 					}
 				}
 			}
