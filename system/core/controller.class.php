@@ -155,7 +155,8 @@ class Controller
 		{
 			if( file_exists( $path ) )
 			{
-				call_user_func( "array_" . ( $first ? "unshift" : "push" ), $this->_views, $path );
+				$callback = "array_" . ( $first ? "unshift" : "push" )( $this->_views, $path );
+				$callback( $this->_views, $path );
 				break;
 			}
 		}
