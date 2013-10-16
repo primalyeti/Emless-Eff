@@ -265,7 +265,6 @@ class Html extends Library
 		
 	protected function form_form( $action, $options, $secure )
 	{
-		$options = ( is_array( $options ) ? $options : array( 0 => $options ) );
 		$defaults = array(
 			"method" => "post",
 			"accept-charset" => "utf-8",
