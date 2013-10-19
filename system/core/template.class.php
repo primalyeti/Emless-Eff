@@ -58,7 +58,7 @@ class Template
     final public function render()
 	{	
 		$this->load()->library( "html" );
-		if( Registry::get( "isAdmin" ) )
+		if( Registry::get( "_isAdmin" ) )
 		{
 			$this->load()->library( "ahtml" );
 		}

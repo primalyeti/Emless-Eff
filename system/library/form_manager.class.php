@@ -252,7 +252,7 @@ class Form_manager extends Library
 			return 0;
 		}
 	
-		$dbh = Registry::get("dbh");
+		$dbh = Registry::get("_dbh");
 		
 		$dbParams = explode( ".". $sub[1] );
 		$check = $dbh->query(

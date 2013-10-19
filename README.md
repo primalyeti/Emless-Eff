@@ -20,6 +20,19 @@ Please see the Installation section of documentation/userguide.md
 Changelog
 --------------------------
 
+## Version 1.1.7
+Release Date: 
+
+* Added
+	* Added uploader library (experimental)
+	* Added controller and action to registry
+* Update
+	* All framework registered registry entries now start with _
+	* SQL clean now accepts 'noquote' as parameter, wont wrape in quotes
+* Fixed
+	* Fixed default include path for views, would break on some servers
+	* Fix form function, now accepts strings and array properly
+
 ## Version 1.1.6
 Release Date: August 1st, 2013
 

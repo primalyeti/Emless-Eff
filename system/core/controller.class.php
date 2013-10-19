@@ -26,7 +26,7 @@ class Controller
 		// track user
 		if( TRACKER_TYPE == 'CONTROLLER' )
 		{
-			Registry::get("tracker")->push( Registry::get( "url" ) );
+			Registry::get("_tracker")->push( Registry::get( "_url" ) );
 		}
 	}
 	
@@ -171,7 +171,7 @@ class Controller
 			// track user
 			if( TRACKER_TYPE == 'TEMPLATE' )
 			{
-				Registry::get( "tracker" )->push( Registry::get( "url" ) );
+				Registry::get( "_tracker" )->push( Registry::get( "_url" ) );
 			}
 		
 			$this->_template = new Template( strtolower( $this->_controller ), strtolower( $this->_action ) );

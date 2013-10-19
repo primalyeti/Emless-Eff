@@ -48,6 +48,6 @@ class Ahtml extends Html
 			$attributes .= $a . '="' . addcslashes( $k, '"' ) . '" ';
 		}
 		
-		return "<form action='" . ( $secure ? DOMAIN_SECURE : BASE_PATH ) . ( $action == "" ? Registry::get("url") : ADMIN_ALIAS . DS ) . $action . "'" . $attributes . ">";
+		return "<form action='" . ( $secure ? DOMAIN_SECURE : BASE_PATH ) . ( $action == "" ? Registry::get("_url") : ADMIN_ALIAS . DS ) . $action . "'" . $attributes . ">";
 	}
 }
