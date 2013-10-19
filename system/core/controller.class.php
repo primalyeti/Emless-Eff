@@ -149,7 +149,7 @@ class Controller
 		}
 		
 		// try the absolute base path
-		array_push( $pathArray, $base_path . 'views' . DS . $view . '.php' );
+		array_push( $pathArray, $base_path . 'views' . ( $viewArray[0] != '' ? DS : "" ) . $view . '.php' );
  
 		foreach( $pathArray as $path )
 		{

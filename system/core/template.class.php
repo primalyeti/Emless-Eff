@@ -79,30 +79,6 @@ class Template
 		}
     }
 
-	final public function include_file( $file_name, $vars = array() )
-	{
-		$this->load()->library( "html" );
-		if( Registry::get( "isAdmin" ) )
-		{
-			$this->load()->library( "ahtml" );
-		}
-	
-		extract( $this->_vars );
-		extract( $vars );
-		
-		$path = ROOT . DS . 'application' . DS . ( Registry::get("isAdmin") == true ? 'admin' . DS : "" ) . 'views' . DS . $this->_controller . DS . $file_name;
-		$pathUp = ROOT . DS . 'application' . DS . ( Registry::get("isAdmin") == true ? 'admin' . DS : "" ) . 'views' . DS . $file_name;
-		
-		if( file_exists( $path ) )
-		{
-			include( $path  );
-		}
-		else if( file_exists( $pathUp ) )
-		{
-			include( $pathUp );
-		}
-	}
-	
 	final public function module( $controller, $action, $query = null, $isAdmin = false )
 	{	
 		return Framework::action( $controller, $action, $query, 1, $isAdmin );
