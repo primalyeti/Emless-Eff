@@ -132,14 +132,14 @@ class Controller
 	final private function append_view( $view, $first = false )
 	{
 		$viewArray 	= explode( '/', $view );
-		$admin		= ( $this->_isAdmin ? 'admin' : '' );
+		$admin		= ( $this->_isAdmin ? 'admin' . DS : '' );
 		$base_path 	= ROOT . DS . 'application'. DS;
 		$pathArray 	= array();
  
 		// try the controller folder if no leading slash
 		if( $viewArray[0] != '' )
 		{
-			array_push( $pathArray, $base_path . $admin . DS . 'views' . DS . $this->_controller . DS . $view . '.php' );
+			array_push( $pathArray, $base_path . $admin . DS . 'views' . DS . strtolower( $this->_controller ) . DS . $view . '.php' );
 		}
 		
 		// if admin try the admin base view folder
