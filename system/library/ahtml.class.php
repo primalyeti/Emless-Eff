@@ -4,7 +4,6 @@ class Ahtml extends Html
 	protected function link_form( $url, $options, $secure )
 	{
 		$url = ( is_array( $url ) ? $url : array( 0 => $url ) );
-		$options = ( is_array( $options ) ? $options : array( 0 => $options ) );
 
 		$href = ( $secure ? DOMAIN_SECURE : BASE_PATH ) . ADMIN_ALIAS . DS;
 		$query = "?";
@@ -24,28 +23,24 @@ class Ahtml extends Html
 		$query = substr( $query, 0, -1 );
 		$href = substr( $href, 0, -1 );
 		
-		foreach( $options as $a => $k )
-		{
-			$attributes .= $a . '="' . addcslashes( $k, '"' ) . '" ';
-		}
+		$attributes = $this->generate_options( $options );
 		
 		return '<a href="' . addslashes( $href ) . urlencode( $query ) . '"' . $attributes . ">";
 	}
 			
 	protected function form_form( $action, $options, $secure )
 	{
-		$options = ( is_array( $options ) ? $options : array( 0 => $options ) );
 		$defaults = array(
 			"method" => "post",
 			"accept-charset" => "utf-8",
 			"name" => uniqid(),
 		);
 		
-		$options = array_merge( $defaults, $options );
-		$attributes = "";
-		foreach( $options as $a => $k )
+		$attributes = $this->generate_options( $options, $defaults );
+				
+		if( $action == "" )
 		{
-			$attributes .= $a . '="' . addcslashes( $k, '"' ) . '" ';
+			$action = Registry::get("_url");
 		}
 		
 		return "<form action='" . ( $secure ? DOMAIN_SECURE : BASE_PATH ) . ( $action == "" ? Registry::get("_url") : ADMIN_ALIAS . DS ) . $action . "'" . $attributes . ">";

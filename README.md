@@ -24,7 +24,7 @@ Changelog
 Release Date: 
 
 * Added
-	* Added uploader library (experimental)
+	* Added uploader library
 	* Added controller and action to registry
 * Update
 	* All framework registered registry entries now start with _
@@ -32,6 +32,8 @@ Release Date:
 * Fixed
 	* Fixed default include path for views, would break on some servers
 	* Fix form function, now accepts strings and array properly
+	* Admin html now properly accepts the same options as public
+	* Fix ignore files in temp folder
 
 ## Version 1.1.6
 Release Date: August 1st, 2013
