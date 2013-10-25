@@ -24,7 +24,9 @@ Changelog
 Release Date: August 1st, 2013
 
 * Added
-	* Added all method to SQLResult to get all fields from a table, as array
+	* Added search method to SQLResult to get all fields from a table, as array
+	* Added slice method to SQLResult to get a subset of results
+	* Added shuffle method to SQLResult to randomize results
 * Updated
 	* Updated Library loading, can now pass paramters required for constructor
 	* Updated Library loading, can now only include library file without instantiating

@@ -413,7 +413,7 @@ class SQLResult
 		return count( $this->_results );
 	}
 	
-	public function all( $table, $field )
+	public function serch( $table, $field = "" )
 	{
 		// get position, then go to the beginning
 		$pos = $this->_pos;
@@ -432,6 +432,40 @@ class SQLResult
 		$this->_pos = $pos;
 		
 		return $vals;
+	}
+	
+	public function shuffle()
+	{
+		$this->results = shuffle( $this->_results );
+		
+		return $this;
+	}
+	
+	public function slice( $start, $end = -1 )
+	{
+		if( $end == -1 )
+		{
+			$end = $this->lenght();
+		}
+		
+		$this->reset();
+		
+		while( $row = $this->next() )
+		{
+			if( $this->position() < $start || $this->position() >= $end )
+			{
+				unset( $this->_results[$this->position()] );
+			}
+		}
+		
+		$this->reset();
+		
+		return $this;
+	}
+	
+	public function position()
+	{
+		return $this->_pos;
 	}
 	
 	public function error()
