@@ -17,7 +17,7 @@ class Framework
 		}
 		
 		// set url in registry
-		Registry::set( "url", $url, true );
+		Registry::set( "_url", $url, true );
 		$this->_url 	= $url;
 		
 		// start profiling
@@ -28,7 +28,7 @@ class Framework
 		
 		// set tracker
 		$tracker = new Tracker();
-		Registry::set( "tracker", $tracker, true );
+		Registry::set( "_tracker", $tracker, true );
 		
 		// clean and prep everything
 		$this->set_reporting();
@@ -39,8 +39,8 @@ class Framework
 	
 	final public function __destruct()
 	{
-		Registry::get("profiler")->stop_time( "page" );
-		Registry::get("profiler")->log_data();
+		Registry::get("_profiler")->stop_time( "page" );
+		Registry::get("_profiler")->log_data();
 	}
 	
 	final public function init()
@@ -81,7 +81,7 @@ class Framework
 				if( $controller == ADMIN_ALIAS )
 				{
 					// set in registry
-					Registry::set( "isAdmin", true, true );
+					Registry::set( "_isAdmin", true, true );
 					
 					// load default admin
 					$controller = $defaultPage['admin']['controller'];
@@ -90,16 +90,16 @@ class Framework
 				else if( $controller == AJAX_ALIAS )
 				{
 					// set in registry
-					Registry::set( "isAjax", true, true );
+					Registry::set( "_isAjax", true, true );
 					
 					$controller = $defaultPage['controller'];
 				}
 				else if( $controller == SCRIPTS_ALIAS )
 				{
-					Registry::set( "isScript", true, true );
+					Registry::set( "_isScript", true, true );
 				}
 				
-				if( Registry::get( "isAdmin"  ) || Registry::get( "isAjax"  ) )
+				if( Registry::get( "_isAdmin"  ) || Registry::get( "_isAjax"  ) )
 				{
 					// get admin controller
 					if( isset( $urlArray[0] ) )
@@ -122,14 +122,14 @@ class Framework
 		}
 		
 		// set admin
-		Registry::set( "isAdmin", false );
+		Registry::set( "_isAdmin", false );
 		
 		// init dbh
 		$dbh = new SQLQuery( DB_HOST, DB_USER, DB_PASSWORD, DB_NAME );
-		Registry::set( "dbh", $dbh, true );
+		Registry::set( "_dbh", $dbh, true );
 		
 		// is script
-		if( Registry::get( "isScript" ) )
+		if( Registry::get( "_isScript" ) )
 		{
 			$newUrl = explode( "/", $this->_url );
 			array_shift( $newUrl );
@@ -166,8 +166,11 @@ class Framework
 				$controller 	= "errors";
 				$action 		= "index";
 				
-				Registry::get("tracker")->set_enabled( false );
+				Registry::get("_tracker")->set_enabled( false );
 			}
+			
+			Registry::set( "_controller", $controller );
+			Registry::set( "_action", $action );
 			
 			if( ENVIRONMENT != "LIVE" && DEVELOPMENT_ENVIRONMENT == true && DEVELOPMENT_SHOW_CONTROLLER == true )
 			{
@@ -175,7 +178,7 @@ class Framework
 			}
 			
 			// init controller, if its an ajax call, do not render
-			$dispatch = new $controllerName( $controller, $action, !Registry::get( "isAjax"  ), Registry::get( "isAdmin" ) );
+			$dispatch = new $controllerName( $controller, $action, !Registry::get( "_isAjax"  ), Registry::get( "_isAdmin" ) );
 			
 			require_once( ROOT . DS . 'application' . DS . "config" . DS . "init_hooks.php" );
 			
@@ -257,11 +260,11 @@ class Framework
 	
 	final protected function register_globals_to_framework()
 	{
-		Registry::set( "post", ( isset( $_POST ) ? $_POST : array() ), true );
-		Registry::set( "get", ( isset( $_GET ) ? $_GET : array() ), true );
-		Registry::set( "session", ( isset( $_SESSION ) ? $_SESSION : array() ), true );
-		Registry::set( "cookie", ( isset( $_COOKIE ) ? $_COOKIE : array() ), true );
-		Registry::set( "files", ( isset( $_FILES ) ? $_FILES : array() ), true );
+		Registry::set( "_post", ( isset( $_POST ) ? $_POST : array() ), true );
+		Registry::set( "_get", ( isset( $_GET ) ? $_GET : array() ), true );
+		Registry::set( "_session", ( isset( $_SESSION ) ? $_SESSION : array() ), true );
+		Registry::set( "_cookie", ( isset( $_COOKIE ) ? $_COOKIE : array() ), true );
+		Registry::set( "_files", ( isset( $_FILES ) ? $_FILES : array() ), true );
 	}
 	
 	final protected function remove_magic_quotes()
@@ -318,14 +321,14 @@ class Framework
 		global $profilerIgnoreList;
 		
 		$profiler = new Profiler();
-		Registry::set( "profiler", $profiler, true );
+		Registry::set( "_profiler", $profiler, true );
 		
-		if( in_array( Registry::get( "url" ), $profilerIgnoreList ) )
+		if( in_array( Registry::get( "_url" ), $profilerIgnoreList ) )
 		{
-			Registry::get( "profiler" )->set_profiler( false );
+			Registry::get( "_profiler" )->set_profiler( false );
 		}
 		
-		Registry::get( "profiler" )->start_time( "page" );
+		Registry::get( "_profiler" )->start_time( "page" );
 	}
 	
 	/** Check Constants **/

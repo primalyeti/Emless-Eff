@@ -29,9 +29,9 @@ class SQLQuery
 			array_shift( $params );
 		}
 		
-		Registry::get("profiler")->start_time( "mysql" );
+		Registry::get("_profiler")->start_time( "mysql" );
 		$return = $this->_dbObj->query( $query, true, $params );
-		Registry::get("profiler")->stop_time( "mysql", $query . "\nParams: \n" . print_r( $params, true ) );
+		Registry::get("_profiler")->stop_time( "mysql", $query . "\nParams: \n" . print_r( $params, true ) );
 		
 		return $return;
 	}
@@ -45,9 +45,9 @@ class SQLQuery
 			array_shift( $params );
 		}
 		
-		Registry::get("profiler")->start_time( "mysql" );
+		Registry::get("_profiler")->start_time( "mysql" );
 		$return = $this->_dbObj->query( $query, DBH_OBJ_DEFAULT, $params );
-		Registry::get("profiler")->stop_time( "mysql", $query . "\nParams: \n" . print_r( $params, true ) );
+		Registry::get("_profiler")->stop_time( "mysql", $query . "\nParams: \n" . print_r( $params, true ) );
 		
 		return $return;
 	}
@@ -151,6 +151,7 @@ class PDOConn extends SQLHandle
 			case "bool":
 			case "null":
 			case "int":
+			case "noquote":
 				$toReturn = substr( $toReturn, 1, -1 );
 				break;
 			default:
@@ -226,7 +227,7 @@ class PDOConn extends SQLHandle
 					$value 		= $params[$key][1];
 					$data_type 	= $params[$key][2];
 					
-					if( !in_array( $data_type, array( "bool", "null", "int", "str" ) ) )
+					if( !in_array( $data_type, array( "bool", "null", "int", "str", "noquote" ) ) )
 					{
 						$data_type = "str";
 					}

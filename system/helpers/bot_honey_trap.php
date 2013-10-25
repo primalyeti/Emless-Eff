@@ -23,7 +23,7 @@ function bot_honey_trap_link()
 		return;
 	}
 	
-	echo Registry::get( "framework" )->load()->html->link( HONEYPOT_URL, "This link will get you banned", array( "style" => "display: none; position: absolute; top:0; left: 0; margin-left: -99%;" ) );
+	echo Registry::get( "_framework" )->load()->html->link( HONEYPOT_URL, "This link will get you banned", array( "style" => "display: none; position: absolute; top:0; left: 0; margin-left: -99%;" ) );
 }
 
 function bot_honey_trap_init()

@@ -19,12 +19,9 @@ class Uploader extends Library
 	const ERR_NO_FILE = -4;
 	const ERR_MOVE_FILE = -13;
 
-	public function file( $ket, $Options = array() )
+	public function file( $key, $options = array() )
 	{
-		$_options = array(
-			"rename" => true,
-			"validExtensions" => array(),
-		);
+		$_options = $this->default_options( "file" );
 		
 		$options = array_merge( $_options, $options );
 	
@@ -37,20 +34,18 @@ class Uploader extends Library
 		$fileExtension 	= $fileInfo['ext'];
 		$fileName 		= $fileInfo['filename'];
 		
-		if( $this->check_valid_extensions( $fileExtension, $validFileExtensions ) == false )
+		if( $this->check_valid_extensions( $fileExtension, $options['validExtensions'] ) == false )
 		{
-			$this->set_error( self::ERR_FILE_EXTENSION, "Invalid extension" );
+			$this->set_error( self::ERR_FILE_EXTENSION, "Only " . implode( "/", $options['validExtensions'] ) . " files are supported" );
 			return false;
 		}
 		
-		return $this->save_file( $key, $options['rename'] );
+		return $this->save_file( $key, $options );
 	}
 
 	public function image( $key, $options = array() )
 	{
-		$_options = array(
-			"rename" => true,
-		);
+		$_options = $this->default_options( "image" );
 		
 		$options = array_merge( $_options, $options );
 	
@@ -98,42 +93,24 @@ class Uploader extends Library
 			
 			return false;
 		}
-	
-		// png, jpg, gif (unanimated)
-		$validMimeTypes = array(
-		    "image/gif",
-		    "image/png",
-		    "image/jpeg",
-		    "image/pjpeg",
-		);
-		 
-		// Check that the uploaded file is actually an image
-		// and move it to the right folder if is.
-		if( !in_array( $_FILES[$key]["type"], $validMimeTypes ) )
-		{
-			$this->set_error( self::ERR_IMAGE_MIME_TYPES, "Only gif/png/jpg images are supported" );
-			return false;
-		}
 		
-		$validFileExtensions = array( "jpg", "jpeg", "gif", "png" );
-
 		$fileInfo = $this->get_filename( $key );
 		$fileExtension 	= $fileInfo['ext'];
 		$fileName 		= $fileInfo['filename'];
 		
-		if( $this->check_valid_extensions( $fileExtension, $validFileExtensions ) == false )
+		if( $this->check_valid_extensions( $fileExtension, $options['validExtensions'] ) == false )
 		{
-			$this->set_error( self::ERR_IMAGE_EXTENSION, "Only gif/png/jpg images are supported" );
+			$this->set_error( self::ERR_IMAGE_EXTENSION, "Only " . implode( "/", $options['validExtensions'] ) . " images are supported" );
 			return false;
 		}
 		
 		if( @getimagesize( $_FILES[$key]["tmp_name"] ) === false )
 		{
-			$this->set_error( self::ERR_IMAGE_NOT_IMAGE, "Only gif/png/jpg images are supported" );
+			$this->set_error( self::ERR_IMAGE_NOT_IMAGE, "Only " . implode( "/", $options['validExtensions'] ) . " images are supported" );
 			return false;
 		}
 		
-		return $this->save_file( $key, $options['rename'] );
+		return $this->save_file( $key, $options );
 	}
 	
 	public function has_error()
@@ -171,6 +148,28 @@ class Uploader extends Library
 	* PRIVATE FNS
 	********** */
 	
+	protected function default_options( $type )
+	{
+		$options = array(
+			"filenamePrepend" => "",
+			"filenameAppend" => "",
+			"rename" => true,
+			"validExtensions" => array(),
+		);
+		
+		switch( $type )
+		{
+			case "file":
+				return $options;
+			
+			case "image":
+				$options["validExtensions"] = array( "jpg", "jpeg", "gif", "png" );
+				return $options;
+		}
+		
+		return $options;
+	}
+	
 	protected function check_for_file( $key )
 	{
 		if( !isset( $_FILES[$key] ) )
@@ -182,17 +181,19 @@ class Uploader extends Library
 		return true;
 	}
 	
-	protected function save_file( $key, $rename = true )
+	protected function save_file( $key, $options )
 	{
 		$fileInfo = $this->get_filename( $key );
 		
 		$newFileName = $fileInfo['filename'];
-		if( $rename == true )
+		if( $options['rename'] == true )
 		{
 			$newFilename = time() . uniqid( "", true );
-		}		
+		}
 		
+		$newFilename = $options['filenamePrepend'] . $newFilename . $options['filenameAppend'];
 		$filename = $newFilename . "." . $fileInfo['ext'];;
+		
 		$path = ROOT . DS . FILE_DIR;
 		$filePath = $path . $filename;
 
