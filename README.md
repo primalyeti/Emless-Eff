@@ -26,10 +26,13 @@ Release Date:
 * Added
 	* Added uploader library
 	* Added controller and action to registry
+	* Added slice method to SQLResult to get a subset of results
+	* Added shuffle method to SQLResult to randomize results
 * Update
 	* All framework registered registry entries now start with _
 	* SQL clean now accepts 'noquote' as parameter, wont wrape in quotes
 	* Updated status_array method, now accepts and returns extra data
+	* Renamed SQLResult all method to search
 * Fixed
 	* Fixed default include path for views, would break on some servers
 	* Fix form function, now accepts strings and array properly
@@ -40,9 +43,7 @@ Release Date:
 Release Date: August 1st, 2013
 
 * Added
-	* Added search method to SQLResult to get all fields from a table, as array
-	* Added slice method to SQLResult to get a subset of results
-	* Added shuffle method to SQLResult to randomize results
+	* Added all method to SQLResult to get all fields from a table, as array
 * Updated
 	* Updated Library loading, can now pass paramters required for constructor
 	* Updated Library loading, can now only include library file without instantiating
