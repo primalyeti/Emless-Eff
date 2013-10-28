@@ -71,7 +71,7 @@ function exceptions_error_handler( $severity, $message, $filename, $lineno )
 	return;
 }
 
-function status_array( $status, $msg = "", $code = "" )
+function status_array( $status, $msg = "", $code = "", $data = array() )
 {
 	// VALID STAUS'
 	#	error 	= an error was produced
@@ -90,5 +90,5 @@ function status_array( $status, $msg = "", $code = "" )
 		$status = $statuses[$status];
 	}
 	
-	return array( "status" => $status, "code" => $code, "msg" => $msg );
+	return array( "status" => $status, "code" => $code, "msg" => $msg, "data" => $data );
 }

@@ -29,6 +29,7 @@ Release Date:
 * Update
 	* All framework registered registry entries now start with _
 	* SQL clean now accepts 'noquote' as parameter, wont wrape in quotes
+	* Updated status_array method, now accepts and returns extra data
 * Fixed
 	* Fixed default include path for views, would break on some servers
 	* Fix form function, now accepts strings and array properly
