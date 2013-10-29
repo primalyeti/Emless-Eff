@@ -24,6 +24,6 @@ abstract class Library
     
     final public function load()
 	{
-		return $this->framework->load();
+		return $this->_framework->load();
 	}
 }

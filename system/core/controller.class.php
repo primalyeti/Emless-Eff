@@ -47,7 +47,7 @@ class Controller
 	
 	final public function load()
 	{
-		return $this->framework->load();
+		return $this->_framework->load();
 	}
 	
 	final public function __get( $name )

@@ -414,7 +414,7 @@ class SQLResult
 		return count( $this->_results );
 	}
 	
-	public function serch( $table, $field = "" )
+	public function search( $table, $field = "" )
 	{
 		// get position, then go to the beginning
 		$pos = $this->_pos;
