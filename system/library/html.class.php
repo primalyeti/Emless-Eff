@@ -19,7 +19,7 @@ class Html extends Library
 				
 			default:
 			case "html5":
-				return "<!DOCTYPE>";
+				return "<!DOCTYPE html>";
 				break;
 				
 			case "xhtml-strict":
@@ -54,7 +54,7 @@ class Html extends Library
 	{
 		$attributes = $this->generate_options( $options );
 		
-		return "<meta name=\"" . $type . "\" content=\"" . $content . "\" " . $attributes . " />";
+		return "<meta name=\"" . $type . "\" content=\"" . $content . "\"" . $attributes . " />";
 	}
 	
 	public function icon( $url, $type = "", $options = array() )
@@ -143,7 +143,7 @@ class Html extends Library
 
 		$href = ( $secure ? DOMAIN_SECURE : BASE_PATH );
 		$query = "?";
-		$attributes = " ";
+		$attributes = "";
 		
 		foreach( $url as $n => $v )
 		{
@@ -161,13 +161,13 @@ class Html extends Library
 		
 		$attributes = $this->generate_options( $options );
 		
-		return '<a href="' . addslashes( $href ) . urlencode( $query ) . '" ' . $attributes . ">";
+		return '<a href="' . addslashes( $href ) . urlencode( $query ) . '"' . $attributes . ">";
 	}
 	
 	public function js( $file_name, $options = array() )
 	{
 		$options = ( is_array( $options ) ? $options : array( 0 => $options ) );
-		$attributes = " ";
+		$attributes = "";
 		
 		foreach( $options as $a => $k )
 		{
@@ -184,7 +184,7 @@ class Html extends Library
 			$cache_prevension = "?v=" . VERSION;
 		}
 	
-		return "<script type='text/javascript' src='" . BASE_PATH . "js/" . $file_name . ".js" . $cache_prevension . "'"  . $attributes . "></script>" . "\r\n";
+		return "<script type='text/javascript' src='" . BASE_PATH . "js/" . $file_name . ".js" . $cache_prevension . "' "  . $attributes . "></script>" . "\r\n";
 	}
 	
 	public function jquery()
@@ -223,7 +223,7 @@ class Html extends Library
 	{
 		$attributes = $this->generate_options( $options );
 		
-		return "<img src='" . BASE_PATH . "img/" . $file_name . "' "  . $attributes . "/>";
+		return "<img src='" . BASE_PATH . "img/" . $file_name . "'"  . $attributes . "/>";
 	}
 	
 	public function form_open( $action = "", $options = array() )
@@ -278,12 +278,12 @@ class Html extends Library
 			$action = Registry::get("_url");
 		}
 		
-		return "<form action='" . ( $secure ? DOMAIN_SECURE : BASE_PATH ) . $action . "' " . $attributes . ">";
+		return "<form action='" . ( $secure ? DOMAIN_SECURE : BASE_PATH ) . $action . "'" . $attributes . ">";
 	}
 	
 	protected function generate_options( $options, $defaults = array() )
 	{
-		$attributes = "";
+		$attributes = " ";
 	
 		foreach( array( $options, $defaults ) as $ops )
 		{

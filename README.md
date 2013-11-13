@@ -38,6 +38,8 @@ Release Date:
 	* Fix form function, now accepts strings and array properly
 	* Admin html now properly accepts the same options as public
 	* Fix ignore files in temp folder
+	* HTML5 doctype not proper
+	* FIxed html attributes
 
 ## Version 1.1.6
 Release Date: August 1st, 2013
