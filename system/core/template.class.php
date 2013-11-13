@@ -24,7 +24,7 @@ class Template
 	
 	final public function load()
 	{
-		return $this->framework->load();
+		return $this->_framework->load();
 	}
 	
 	/** Set Variables **/
