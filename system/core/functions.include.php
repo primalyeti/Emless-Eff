@@ -1,4 +1,9 @@
 <?
+function is_dev()
+{
+	return ( ENVIRONMENT == 'LOCAL' || ENVIRONMENT == 'DEV' );
+}
+
 function forward( $url, $secure = 0, $external = 0 )
 {
 	$url = ( !$external ? ( $secure ? DOMAIN_SECURE : BASE_PATH ) : "" ) . $url;

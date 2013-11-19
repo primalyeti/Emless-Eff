@@ -28,6 +28,7 @@ Release Date:
 	* Added controller and action to registry
 	* Added slice method to SQLResult to get a subset of results
 	* Added shuffle method to SQLResult to randomize results
+	* Added is_dev method 
 * Update
 	* All framework registered registry entries now start with _
 	* SQL clean now accepts 'noquote' as parameter, wont wrape in quotes
