@@ -20,6 +20,16 @@ Please see the Installation section of documentation/userguide.md
 Changelog
 --------------------------
 
+## Version 1.1.8
+Release Date: 
+
+* Added
+
+* Updated
+
+* Fixed
+
+
 ## Version 1.1.7
 Release Date: November 20th, 2013
 
