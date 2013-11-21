@@ -21,7 +21,7 @@ Changelog
 --------------------------
 
 ## Version 1.1.7
-Release Date: 
+Release Date: November 20th, 2013
 
 * Added
 	* Added uploader library
