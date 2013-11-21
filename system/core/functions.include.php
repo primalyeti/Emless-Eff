@@ -1,4 +1,9 @@
 <?
+function is_dev()
+{
+	return ( ENVIRONMENT == 'LOCAL' || ENVIRONMENT == 'DEV' );
+}
+
 function forward( $url, $secure = 0, $external = 0 )
 {
 	$url = ( !$external ? ( $secure ? DOMAIN_SECURE : BASE_PATH ) : "" ) . $url;
@@ -71,7 +76,7 @@ function exceptions_error_handler( $severity, $message, $filename, $lineno )
 	return;
 }
 
-function status_array( $status, $msg = "", $code = "" )
+function status_array( $status, $msg = "", $code = "", $data = array() )
 {
 	// VALID STAUS'
 	#	error 	= an error was produced
@@ -90,5 +95,5 @@ function status_array( $status, $msg = "", $code = "" )
 		$status = $statuses[$status];
 	}
 	
-	return array( "status" => $status, "code" => $code, "msg" => $msg );
+	return array( "status" => $status, "code" => $code, "msg" => $msg, "data" => $data );
 }

@@ -20,6 +20,28 @@ Please see the Installation section of documentation/userguide.md
 Changelog
 --------------------------
 
+## Version 1.1.7
+Release Date: November 20th, 2013
+
+* Added
+	* Added uploader library
+	* Added controller and action to registry
+	* Added slice method to SQLResult to get a subset of results
+	* Added shuffle method to SQLResult to randomize results
+	* Added is_dev method 
+* Update
+	* All framework registered registry entries now start with _
+	* SQL clean now accepts 'noquote' as parameter, wont wrape in quotes
+	* Updated status_array method, now accepts and returns extra data
+	* Renamed SQLResult all method to search
+* Fixed
+	* Fixed default include path for views, would break on some servers
+	* Fix form function, now accepts strings and array properly
+	* Admin html now properly accepts the same options as public
+	* Fix ignore files in temp folder
+	* HTML5 doctype not proper
+	* FIxed html attributes
+
 ## Version 1.1.6
 Release Date: August 1st, 2013
 

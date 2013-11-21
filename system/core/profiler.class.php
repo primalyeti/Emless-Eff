@@ -217,37 +217,37 @@ class Profiler
 				referer,
 				identifier
 			) VALUES (
-				" . Registry::get("dbh")->clean( $ip, "str" ) . ", 
-				" . Registry::get("dbh")->clean( $page, "str" ) . ", 
-				" . Registry::get("dbh")->clean( $data["utime"], "int" ) . ", 
-				" . Registry::get("dbh")->clean( $data["wtime"], "int" ) . ", 
-				" . Registry::get("dbh")->clean( $data["stime"], "int" ) . ", 
-				" . Registry::get("dbh")->clean( $data["ttime"], "int" ) . ", 
-				" . Registry::get("dbh")->clean( $data["mysql_time"], "int" ) . ", 
-				" . Registry::get("dbh")->clean( $data["mysql_count_queries"], "int" ) . ", 
-				" . Registry::get("dbh")->clean( $data["mysql_queries"], "str" ) . ", 
-				" . Registry::get("dbh")->clean( $uagent, "str" ) . ", 
-				" . Registry::get("dbh")->clean( $referer, "str" ) . ",
-				" . Registry::get("dbh")->clean( PROFILER_IDENTIFIER, "str" ) . "
+				" . Registry::get("_dbh")->clean( $ip, "str" ) . ", 
+				" . Registry::get("_dbh")->clean( $page, "str" ) . ", 
+				" . Registry::get("_dbh")->clean( $data["utime"], "int" ) . ", 
+				" . Registry::get("_dbh")->clean( $data["wtime"], "int" ) . ", 
+				" . Registry::get("_dbh")->clean( $data["stime"], "int" ) . ", 
+				" . Registry::get("_dbh")->clean( $data["ttime"], "int" ) . ", 
+				" . Registry::get("_dbh")->clean( $data["mysql_time"], "int" ) . ", 
+				" . Registry::get("_dbh")->clean( $data["mysql_count_queries"], "int" ) . ", 
+				" . Registry::get("_dbh")->clean( $data["mysql_queries"], "str" ) . ", 
+				" . Registry::get("_dbh")->clean( $uagent, "str" ) . ", 
+				" . Registry::get("_dbh")->clean( $referer, "str" ) . ",
+				" . Registry::get("_dbh")->clean( PROFILER_IDENTIFIER, "str" ) . "
 			)";
 		
 		// insert data
-		Registry::get("dbh")->query( $sql );
+		Registry::get("_dbh")->query( $sql );
 		
 		// table not found
-		if( Registry::get("dbh")->error() && Registry::get("dbh")->errno() == "42S02" ) 
+		if( Registry::get("_dbh")->error() && Registry::get("_dbh")->errno() == "42S02" ) 
 		{
 			// create the table
-			Registry::get("dbh")->query( $this->create_table( $table_name ) );
+			Registry::get("_dbh")->query( $this->create_table( $table_name ) );
 			
 			// if that failed, bail
-			if( Registry::get("dbh")->error() )
+			if( Registry::get("_dbh")->error() )
 			{
 				return false;
 			}
 			
 			// insert log
-			Registry::get("dbh")->query( $sql );
+			Registry::get("_dbh")->query( $sql );
 		}
 	}
 	

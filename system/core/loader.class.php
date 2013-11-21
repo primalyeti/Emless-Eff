@@ -105,7 +105,7 @@ class Loader
 			"application",
 		);
 		
-		if( Registry::get( "isAdmin" ) )
+		if( Registry::get( "_isAdmin" ) )
 		{
 			array_splice( $locations, 1, 0, array( "application" . DS . "admin" ) );
 		}

@@ -26,7 +26,7 @@ class Controller
 		// track user
 		if( TRACKER_TYPE == 'CONTROLLER' )
 		{
-			Registry::get("tracker")->push( Registry::get( "url" ) );
+			Registry::get("_tracker")->push( Registry::get( "_url" ) );
 		}
 	}
 	
@@ -47,7 +47,7 @@ class Controller
 	
 	final public function load()
 	{
-		return $this->framework->load();
+		return $this->_framework->load();
 	}
 	
 	final public function __get( $name )
@@ -139,7 +139,7 @@ class Controller
 		// try the controller folder if no leading slash
 		if( $viewArray[0] != '' )
 		{
-			array_push( $pathArray, $base_path . $admin . DS . 'views' . DS . $this->_controller . DS . $view . '.php' );
+			array_push( $pathArray, $base_path . $admin . DS . 'views' . DS . strtolower( $this->_controller ) . DS . $view . '.php' );
 		}
 		
 		// if admin try the admin base view folder
@@ -149,7 +149,7 @@ class Controller
 		}
 		
 		// try the absolute base path
-		array_push( $pathArray, $base_path . 'views' . DS . $view . '.php' );
+		array_push( $pathArray, $base_path . 'views' . ( $viewArray[0] != '' ? DS : "" ) . $view . '.php' );
  
 		foreach( $pathArray as $path )
 		{
@@ -171,7 +171,7 @@ class Controller
 			// track user
 			if( TRACKER_TYPE == 'TEMPLATE' )
 			{
-				Registry::get( "tracker" )->push( Registry::get( "url" ) );
+				Registry::get( "_tracker" )->push( Registry::get( "_url" ) );
 			}
 		
 			$this->_template = new Template( strtolower( $this->_controller ), strtolower( $this->_action ) );

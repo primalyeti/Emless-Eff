@@ -24,7 +24,7 @@ class Template
 	
 	final public function load()
 	{
-		return $this->framework->load();
+		return $this->_framework->load();
 	}
 	
 	/** Set Variables **/
@@ -58,7 +58,7 @@ class Template
     final public function render()
 	{	
 		$this->load()->library( "html" );
-		if( Registry::get( "isAdmin" ) )
+		if( Registry::get( "_isAdmin" ) )
 		{
 			$this->load()->library( "ahtml" );
 		}

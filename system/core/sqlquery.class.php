@@ -29,9 +29,9 @@ class SQLQuery
 			array_shift( $params );
 		}
 		
-		Registry::get("profiler")->start_time( "mysql" );
+		Registry::get("_profiler")->start_time( "mysql" );
 		$return = $this->_dbObj->query( $query, true, $params );
-		Registry::get("profiler")->stop_time( "mysql", $query . "\nParams: \n" . print_r( $params, true ) );
+		Registry::get("_profiler")->stop_time( "mysql", $query . "\nParams: \n" . print_r( $params, true ) );
 		
 		return $return;
 	}
@@ -45,9 +45,9 @@ class SQLQuery
 			array_shift( $params );
 		}
 		
-		Registry::get("profiler")->start_time( "mysql" );
+		Registry::get("_profiler")->start_time( "mysql" );
 		$return = $this->_dbObj->query( $query, DBH_OBJ_DEFAULT, $params );
-		Registry::get("profiler")->stop_time( "mysql", $query . "\nParams: \n" . print_r( $params, true ) );
+		Registry::get("_profiler")->stop_time( "mysql", $query . "\nParams: \n" . print_r( $params, true ) );
 		
 		return $return;
 	}
@@ -151,6 +151,7 @@ class PDOConn extends SQLHandle
 			case "bool":
 			case "null":
 			case "int":
+			case "noquote":
 				$toReturn = substr( $toReturn, 1, -1 );
 				break;
 			default:
@@ -226,7 +227,7 @@ class PDOConn extends SQLHandle
 					$value 		= $params[$key][1];
 					$data_type 	= $params[$key][2];
 					
-					if( !in_array( $data_type, array( "bool", "null", "int", "str" ) ) )
+					if( !in_array( $data_type, array( "bool", "null", "int", "str", "noquote" ) ) )
 					{
 						$data_type = "str";
 					}
@@ -413,7 +414,7 @@ class SQLResult
 		return count( $this->_results );
 	}
 	
-	public function all( $table, $field )
+	public function search( $table, $field = "" )
 	{
 		// get position, then go to the beginning
 		$pos = $this->_pos;
@@ -423,7 +424,7 @@ class SQLResult
 		$vals = array();
 		while( $row = $this->next() )
 		{
-			if( isset( $this->$table ) && isset( $this->$table->$field ) && ( $val = $this->$table->$field ) != "" )
+			if( isset( $row->$table->$field ) && ( $val = $row->$table->$field ) != "" )
 			{
 				array_push( $vals, $val );
 			}
@@ -432,6 +433,40 @@ class SQLResult
 		$this->_pos = $pos;
 		
 		return $vals;
+	}
+	
+	public function shuffle()
+	{
+		$this->results = shuffle( $this->_results );
+		
+		return $this;
+	}
+	
+	public function slice( $start, $end = -1 )
+	{
+		if( $end == -1 )
+		{
+			$end = $this->lenght();
+		}
+		
+		$this->reset();
+		
+		while( $row = $this->next() )
+		{
+			if( $this->position() < $start || $this->position() >= $end )
+			{
+				unset( $this->_results[$this->position()] );
+			}
+		}
+		
+		$this->reset();
+		
+		return $this;
+	}
+	
+	public function position()
+	{
+		return $this->_pos;
 	}
 	
 	public function error()

@@ -1,6 +1,6 @@
 <?
 $framework = New Framework( $url );
-Registry::set( "framework", $framework, true );
+Registry::set( "_framework", $framework, true );
 $framework->init();
 
 /** Autoload any classes that are required **/
@@ -13,7 +13,7 @@ function __autoload( $className )
 		return false;
 	}
 	
-	if( Registry::get( "isAdmin" ) == true && file_exists( ROOT . DS . 'application' . DS . 'admin' . DS . 'controllers' . DS . strtolower( $className ) . '.php' ) )
+	if( Registry::get( "_isAdmin" ) == true && file_exists( ROOT . DS . 'application' . DS . 'admin' . DS . 'controllers' . DS . strtolower( $className ) . '.php' ) )
 	{
 		require_once( ROOT . DS . 'application' . DS . 'admin' . DS . 'controllers' . DS . strtolower( $className ) . '.php' );
 		return false;
