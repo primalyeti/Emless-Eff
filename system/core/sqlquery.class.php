@@ -30,7 +30,7 @@ class SQLQuery
 		}
 		
 		Registry::get("_profiler")->start_time( "mysql" );
-		$return = $this->_dbObj->query( $query, true, $params );
+		$return = $this->_dbObj->query( $query, $params );
 		Registry::get("_profiler")->stop_time( "mysql", $query . "\nParams: \n" . print_r( $params, true ) );
 		
 		return $return;
@@ -46,7 +46,7 @@ class SQLQuery
 		}
 		
 		Registry::get("_profiler")->start_time( "mysql" );
-		$return = $this->_dbObj->query( $query, DBH_OBJ_DEFAULT, $params );
+		$return = $this->_dbObj->query( $query, $params );
 		Registry::get("_profiler")->stop_time( "mysql", $query . "\nParams: \n" . print_r( $params, true ) );
 		
 		return $return;
@@ -78,7 +78,7 @@ interface SQLConn
 	function connect( $host, $username, $password, $dbname );
 	function isValid();
 	function clean( $string );
-	function query( $query, $isObj, $params );
+	function query( $query, $params );
 	function id();
 	function error();
 	function errno();
@@ -163,7 +163,7 @@ class PDOConn extends SQLHandle
 		return $toReturn;
 	}
 		
-	public function query( $query, $asObj, $params )
+	public function query( $query, $params )
 	{
 		$query = trim( $query );
 		
@@ -172,7 +172,7 @@ class PDOConn extends SQLHandle
 		// no query called
 		if( $query == "" || !is_string( $query ) || $this->_dbHandle == null )
 		{
-			return ( $asObj == false ? false : $results );
+			return $results;
 		}
 		
 		$results->set_query( $query, $params );
@@ -184,7 +184,7 @@ class PDOConn extends SQLHandle
 		catch( PDOException $e )
 		{
 			$this->put_error( $e->getMessage() . " SQL STATEMENT:" . $query );
-			return ( $asObj == false ? false : $results );
+			return $results;
 		}
 		
 		$results->set_stmt( $stmt );
@@ -198,7 +198,7 @@ class PDOConn extends SQLHandle
 				if( !array( $param ))
 				{
 					$this->put_error( "Parameter " . $key . " is not an array. SQL STATEMENT:" . $query );
-					return ( $asObj == false ? false : $results );
+					return $results;
 				}
 				array_push( $lens, count( $param ) );
 			}
@@ -208,7 +208,7 @@ class PDOConn extends SQLHandle
 			if( count( $lens ) != 1 )
 			{
 				$this->put_error( "Statement contains both question mark and named placeholders. SQL STATEMENT:" . $query );
-				return ( $asObj == false ? false : $results );
+				return $results;
 			}
 			$len = $lens[0];
 			
@@ -236,7 +236,7 @@ class PDOConn extends SQLHandle
 				if( $results->get_stmt()->bindValue( $parameter, $value, constant( "PDO::PARAM_" . strtoupper( $data_type ) ) ) === false )
 				{
 					$this->put_error( "Statement parameter " . $parameter . " ( " . $parameter . "," . $value . "," . $data_type . " ) is invalid. SQL STATEMENT:" . $query );
-					return ( $asObj == false ? false : $results );
+					return $results;
 				}
 			}	
 		}
@@ -248,7 +248,7 @@ class PDOConn extends SQLHandle
 		catch( PDOException $e )
 		{
 			$this->put_error( $e->getMessage() . " SQL STATEMENT:" . $query );
-			return ( $asObj == false ? false : $results );
+			return $results;
 		}
 		
 		$result = array();
@@ -265,7 +265,7 @@ class PDOConn extends SQLHandle
 				
 				array_push( $field, $meta['name'] );
 				
-				if( $asObj && empty( $meta['table'] ) )
+				if( empty( $meta['table'] ) )
 				{
 					array_push( $table, "fn" );
 				}
@@ -288,7 +288,7 @@ class PDOConn extends SQLHandle
 		
 		$results->set_results( $result );
 		
-		return ( $asObj == false ? $results->as_array() : $results );
+		return $results;
 	}
 	
 	public function id()

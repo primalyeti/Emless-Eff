@@ -26,8 +26,9 @@ Release Date:
 * Added
 
 * Updated
-
+	* DBH calls are now always objects. Use as_array() method instead
 * Fixed
+	
 
 
 ## Version 1.1.7
