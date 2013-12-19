@@ -1,11 +1,11 @@
 <?php
-class Template 
+class Template
 {
 	protected $_controller;
 	protected $_views;
 	protected $_vars = array();
-	
-	final function __construct( $controller, $action )	
+
+	final function __construct( $controller, $action )
 	{
 		$this->_controller = $controller;
 		$this->_view = $action;
@@ -16,17 +16,17 @@ class Template
 	{
 		$this->_vars = $arr;
 	}
-	
+
 	final public function set_views( $arr )
 	{
 		$this->_views = $arr;
 	}
-	
+
 	final public function load()
 	{
 		return $this->_framework->load();
 	}
-	
+
 	/** Set Variables **/
 	final public function get( $name )
 	{
@@ -34,10 +34,10 @@ class Template
 		{
 			return $this->_vars[$name];
 		}
-		
+
 		return false;
 	}
-	
+
 	final public function __get( $name )
     {
 	    $val = Registry::get( $name );
@@ -45,26 +45,26 @@ class Template
 	    {
 		    return $val;
 		}
-		
+
 		if( $this->load()->$name != false )
 		{
 			return $this->load()->$name;
 		}
-		
+
 		return true;
     }
-    
+
 	/** Display Template **/
     final public function render()
-	{	
+	{
 		$this->load()->library( "html" );
 		if( Registry::get( "_isAdmin" ) )
 		{
 			$this->load()->library( "ahtml" );
 		}
-		
+
 		extract( $this->_vars );
-		
+
 		if( DEVELOPMENT_PRINT_GLOBALS )
 		{
 			echo "<br><pre>" . print_r( $_SESSION, true ) . "</pre><br />";
@@ -72,7 +72,7 @@ class Template
 			echo "<pre>" . print_r( $_GET, true ) . "</pre><br />";
 			echo "<pre>" . print_r( $_POST, true ) . "</pre><br />";
 		}
-		
+
 		foreach( $this->_views as $view )
 		{
 			include( $view );
@@ -86,13 +86,13 @@ class Template
 		{
 			$this->load()->library( "ahtml" );
 		}
-	
+
 		extract( $this->_vars );
 		extract( $vars );
-		
+
 		$path = ROOT . DS . 'application' . DS . ( Registry::get("isAdmin") == true ? 'admin' . DS : "" ) . 'views' . DS . $this->_controller . DS . $file_name;
 		$pathUp = ROOT . DS . 'application' . DS . ( Registry::get("isAdmin") == true ? 'admin' . DS : "" ) . 'views' . DS . $file_name;
-		
+
 		if( file_exists( $path ) )
 		{
 			include( $path  );
@@ -102,9 +102,9 @@ class Template
 			include( $pathUp );
 		}
 	}
-	
+
 	final public function module( $controller, $action, $query = null, $isAdmin = false )
-	{	
-		return Framework::action( $controller, $action, $query, 1, $isAdmin );
+	{
+		return Registry::get("_framework")->action( $controller, $action, $query, 1, $isAdmin );
 	}
 }
