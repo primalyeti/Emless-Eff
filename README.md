@@ -1,7 +1,7 @@
 What is Emless-Eff
 ==================
 Emless-Eff (M-F) is an Application Development Framework for people who build websites using PHP. M-F follows an MVC design idea with one major difference, it dropped the M, that is, it does not contain
-a model. Removing the model adds a lot of freedom to your development, but you trade predictabilty and regidity for freedom. M-F enables toyu to develop projects must faster than you coul dif you were 
+a model. Removing the model adds a lot of freedom to your development, but you trade predictabilty and regidity for freedom. M-F enables toyu to develop projects must faster than you coul dif you were
 writing it from scratch. M-F provides many libraries to help standardize and speed up commonly done tasks, by both the designer and devolper, on your project. M-F helps you stay on task and rapidly
 ship and maintain your project without apply strict guidlines to your database design.
 
@@ -9,7 +9,7 @@ ship and maintain your project without apply strict guidlines to your database d
 Requirements
 ------------
 * PHP version 5.3 or newer.
-* A MySQL database 
+* A MySQL database
 
 
 Installation
@@ -20,6 +20,21 @@ Please see the Installation section of documentation/userguide.md
 Changelog
 --------------------------
 
+## Version 1.1.8
+Release Date: January 14th, 2014
+
+* Added
+	* Added dbh to registry to increase compatibility when updating
+	* Added Ajax Hooks
+* Updated
+	* DBH calls are now always objects. Use as_array() method instead
+	* Init Hooks are no longer called on ajax calls
+* Fixed
+	* Fix framework action, no longer static. No longer recreates an instance of the framework on module calls
+	* Tracker no longer tracks module calls
+
+
+
 ## Version 1.1.7
 Release Date: November 20th, 2013
 
@@ -28,7 +43,7 @@ Release Date: November 20th, 2013
 	* Added controller and action to registry
 	* Added slice method to SQLResult to get a subset of results
 	* Added shuffle method to SQLResult to randomize results
-	* Added is_dev method 
+	* Added is_dev method
 * Update
 	* All framework registered registry entries now start with _
 	* SQL clean now accepts 'noquote' as parameter, wont wrape in quotes
@@ -69,12 +84,12 @@ Release Date: July 16th, 2013
 	* Updated SQLResult, now stores data in SQLRow class
 * Fixed
 	* Fixed HTML options, now properly works with defaults
-	
+
 ## Version 1.1.4
 Release Date: June 12th, 2013
 
 * Added
-	* Added remove_view method to controller, can unset views 
+	* Added remove_view method to controller, can unset views
 * Updated
 	* Updated HTML library, options can now be passed as strings
 	* Updated SQLQuery, can now set wether the default return type for query is an object or not
@@ -158,14 +173,14 @@ Release Date: March 6th, 2013
 * Fixed
 	* Fixed HTML library bug that would improperly escape quotes
 	* Fixed problem with loading views
-	
+
 ## Version 1.0.4
 Release Date: February 27th, 2013
 * Updated
 	* Cache library is no longer static
 	* AJAX library is no longer static
 	* Link and Form HTML methods now have secure alternatives
-	* Loader library method now returns a reference to the library 
+	* Loader library method now returns a reference to the library
 * Fixed
 	* Fixed incorrect path for cache files
 
