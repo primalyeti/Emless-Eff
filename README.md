@@ -21,7 +21,7 @@ Changelog
 --------------------------
 
 ## Version 1.1.8
-Release Date:
+Release Date: January 14th, 2014
 
 * Added
 	* Added dbh to registry to increase compatibility when updating
