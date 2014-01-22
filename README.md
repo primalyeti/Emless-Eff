@@ -19,6 +19,12 @@ Please see the Installation section of documentation/userguide.md
 
 Changelog
 --------------------------
+## Version 1.1.9
+Release Date
+* Added
+* Updated
+	* SQLResult error methods now check DBH for error
+* Fixed
 
 ## Version 1.1.8
 Release Date: January 14th, 2014
