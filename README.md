@@ -24,6 +24,7 @@ Release Date
 * Added
 * Updated
 	* SQLResult error methods now check DBH for error
+	* Added beforeAction and afterAction to base controller, no longer needed in application controllers
 * Fixed
 
 ## Version 1.1.8

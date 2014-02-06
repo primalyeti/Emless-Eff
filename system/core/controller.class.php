@@ -162,6 +162,16 @@ class Controller
 		}
 	}
 
+	public function beforeAction()
+	{
+
+	}
+
+	public function afterAction()
+	{
+
+	}
+
 	final public function __destruct()
 	{
 		if( $this->render )
