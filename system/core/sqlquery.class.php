@@ -15,6 +15,21 @@ class SQLQuery
 		}
 	}
 
+	public function beginTransaction()
+	{
+		return $this->_dbObj->beginTransaction();
+	}
+
+	public function commit()
+	{
+		return $this->_dbObj->commit();
+	}
+
+	public function rollBack()
+	{
+		return $this->_dbObj->rollBack();
+	}
+
 	public function clean( $string, $type = "str" )
 	{
 		return $this->_dbObj->clean( $string, $type );
@@ -142,6 +157,21 @@ class PDOConn extends SQLHandle
     	return $this->_isConn;
     }
 
+    public function beginTransaction()
+    {
+    	return $this->_dbHandle->beginTransaction();
+    }
+
+    public function commit()
+    {
+    	return $this->_dbHandle->commit();
+    }
+
+    public function rollBack()
+    {
+    	return $this->_dbHandle->rollBack();
+    }
+
 	public function clean( $string, $type = "str" )
 	{
 		$toReturn = $this->_dbHandle->quote( $string, PDO::PARAM_STR );
@@ -188,7 +218,6 @@ class PDOConn extends SQLHandle
 		}
 
 		$results->set_stmt( $stmt );
-
 		if( $params != null && is_array( $params ) && !empty( $params ) )
 		{
 			// make sure they're all the same length
@@ -232,12 +261,26 @@ class PDOConn extends SQLHandle
 						$data_type = "str";
 					}
 				}
-
-				if( $results->get_stmt()->bindValue( $parameter, $value, constant( "PDO::PARAM_" . strtoupper( $data_type ) ) ) === false )
+				try
 				{
-					$this->put_error( "Statement parameter " . $parameter . " ( " . $parameter . "," . $value . "," . $data_type . " ) is invalid. SQL STATEMENT:" . $query );
-					return $results;
+					$test = $results->get_stmt()->bindValue( $parameter, $value, constant( "PDO::PARAM_" . strtoupper( $data_type ) ) );
+					if( $results->get_stmt()->bindValue( $parameter, $value, constant( "PDO::PARAM_" . strtoupper( $data_type ) ) ) === false )
+					{
+						$this->put_error( "Statement parameter " . $parameter . " ( " . $parameter . "," . $value . "," . $data_type . " ) is invalid. SQL STATEMENT:" . $query );
+						return $results;
+					}
 				}
+				// catch( PDOException $e )
+				// {
+				// 	error_log('fdsafadds');
+				// 	$this->put_error( "Statement parameter " . $parameter . " ( " . $parameter . "," . $value . "," . $data_type . " ) is invalid. SQL STATEMENT:" . $query );
+				// 	return $results;
+				// }
+				catch( Exception $e )
+				{
+					error_log($e);
+				}
+
 			}
 		}
 
@@ -513,7 +556,7 @@ class SQLResult
 		}
 
 		return "";
-
+	}
 
 	public function as_array()
 	{
@@ -594,12 +637,12 @@ class SQLResult
 	* PRIVATE
 	*
 	**/
-	protected has_statement_error()
+	protected function has_statement_error()
 	{
 		return ( $this->_stmt->errorCode() != "00000" );
 	}
 
-	protected has_dbh_error()
+	protected function has_dbh_error()
 	{
 		return Registry::get("_dbh")->error();
 	}
@@ -614,13 +657,33 @@ class SQLRow
 {
 	protected $_row;
 
-	public function __construct( $arr )
+	public function __construct( $val )
 	{
-		$this->_row = $this->init( $arr );
+		$this->_row = $this->init( $val );
+	}
+
+	public function __get( $key )
+	{
+		if( isset( $this->_row->$key ) || method_exists( $this->_row, $key ) )
+		{
+			return $this->_row->$key;
+		}
+
+		return null;
+	}
+
+	public function __set( $key, $value )
+	{
+		$this->_row->$key = $value;
 	}
 
 	private function init( $arr )
 	{
+		if( $arr instanceof SQLRow || $arr instanceof SQLResult )
+		{
+			return $arr;
+		}
+
 		if( is_array( $arr ) )
 		{
 			$arr = (object) $arr;
@@ -643,22 +706,17 @@ class SQLRow
 		return $new;
 	}
 
-	public function __get( $key )
-	{
-		if( !isset( $this->_row->$key ) )
-		{
-			$this->_row->$key = $this->init( array() );
-		}
-
-		return $this->_row->$key;
-	}
-
 	public function as_array()
 	{
 		$array = array();
 
 		foreach( $this->_row as $key => $value )
 		{
+			if( $value instanceof SQLResult || $value instanceof SQLRow )
+			{
+				$value = $value->as_array();
+			}
+
 			$array[$key] = (array) $value;
 		}
 

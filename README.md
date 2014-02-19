@@ -26,6 +26,7 @@ Release Date
 	* SQLResult error methods now check DBH for error
 	* Added beforeAction and afterAction to base controller, no longer needed in application controllers
 * Fixed
+	* SQLRow now properly accepts setting data outside of initialization
 
 ## Version 1.1.8
 Release Date: January 14th, 2014
