@@ -22,6 +22,7 @@ Changelog
 ## Version 1.1.9
 Release Date
 * Added
+	* Added PDO transactions to SQL library
 * Updated
 	* SQLResult error methods now check DBH for error
 	* Added beforeAction and afterAction to base controller, no longer needed in application controllers
