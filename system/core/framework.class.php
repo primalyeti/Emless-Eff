@@ -2,7 +2,28 @@
 class Framework
 {
 	protected $_url;		# unparsed url
+
+	protected $_controller;
+	protected $_action;
+	protected $_controllerName;
+	protected $_queryString = array();
+
+	protected $_isAdmin = false;
+	protected $_isAjax = false;
+	protected $_isScript = false;
+	protected $_defaultPage = array(
+		"controller" 		=> "",
+		"action" 			=> "",
+		"admin"	=> array(
+			"controller" 	=> "",
+			"action" 		=> "",
+		),
+	);
+
 	protected $_loader;
+	protected $_dbh;
+	protected $_tracker;
+	protected $_profiler;
 
 	final public function __construct( $url )
 	{
@@ -11,47 +32,186 @@ class Framework
 			die();
 		}
 
+		// load defaults
+		global $defaultPage;
+
+		if( !isset( $defaultPage ) )
+		{
+			die();
+		}
+
+		$this->_defaultPage = $defaultPage;
+
 		if( empty( $url ) )
 		{
 			$url = "";
 		}
 
 		// set url in registry
-		Registry::set( "_url", $url, true );
 		$this->_url 	= $url;
 
 		// start profiling
-		$this->set_profiler();
-
-		// set loader
-		$this->_loader 	= new Loader();
-
-		// set tracker
-		$tracker = new Tracker();
-		Registry::set( "_tracker", $tracker, true );
+		$this->init_addons();
 
 		// clean and prep everything
 		$this->set_reporting();
 		$this->remove_magic_quotes();
-		$this->register_globals_to_framework();
 		$this->unregister_globals();
+		$this->parse_url();
+		$this->init_registry();
 	}
 
 	final public function __destruct()
 	{
-		Registry::get("_profiler")->stop_time( "page" );
-		Registry::get("_profiler")->log_data();
+		$this->_profiler->stop_time( "page" );
+		$this->_profiler->log_data();
 	}
 
-	final public function init()
+	final public function run()
 	{
-		// load defaults
-		global $defaultPage;
+		// is script
+		if( $this->_isScript )
+		{
+			$this->run_as_script();
+			return;
+		}
 
+		// init controller, if its an ajax call, do not render
+		$dispatch = new $this->_controllerName( $this->_controller, $this->_action, !$this->__isAjax, $this->_isAdmin );
+
+		if( $this->_isAjax )
+		{
+			$this->_tracker->set_enabled( false );
+			$this->load()->library( "ajax" );
+			require_once( ROOT . DS . 'application' . DS . "config" . DS . "ajax_hooks.php" );
+		}
+		else
+		{
+			require_once( ROOT . DS . 'application' . DS . "config" . DS . "init_hooks.php" );
+		}
+
+		if( (int) method_exists( $this->_controllerName, $this->_action ) )
+		{
+			call_user_func_array( array( $dispatch, "beforeAction" ), $this->_queryString );
+			call_user_func_array( array( $dispatch, $this->_action ), $this->_queryString );
+			call_user_func_array( array( $dispatch, "afterAction" ), $this->_queryString );
+		}
+		else
+		{
+			die( "Error 0: Framework could not init" );
+		}
+	}
+
+	final public function run_as_script()
+	{
+		$newUrl = explode( "/", $this->_url );
+		array_shift( $newUrl );
+
+		$scripts_dir = ROOT . DS . 'application' . DS . 'scripts' . DS;
+		$script_file = implode( "/", $newUrl );
+		$script_path = $scripts_dir . $script_file;
+
+		if( !file_exists( $script_path  ) || !is_file( $script_path ) )
+		{
+			echo "Script not found";
+			return;
+		}
+
+		$pwd = getcwd();
+		chdir( dirname( $script_path ) );
+
+		require_once( $script_path );
+
+		chdir( $pwd );
+	}
+
+	final public function action( $controller, $action, $queryString = null, $render = 0, $isAdmin = false )
+	{
+		$oldTrackerVal = $this->_tracker->is_enabled();
+
+		$this->_tracker->set_enabled( false );
+
+		if( $queryString === null )
+		{
+			$queryString = array();
+		}
+
+		$controllerName = ucfirst( $controller ) . 'Controller';
+		$dispatch = new $controllerName( $controller, $action, $render, $isAdmin );
+
+		$this->_tracker->set_enabled( $oldTrackerVal );
+
+		return call_user_func_array( array( $dispatch, $action ), $queryString );
+	}
+
+	final public function load()
+	{
+		return $this->_loader;
+	}
+
+	final public function __get( $name )
+    {
+	    if( isset( $this->$name ) )
+	    {
+		    return $this->$name;
+	    }
+
+	    return false;
+    }
+
+	final protected function init_addons()
+	{
+		$this->_loader 	= new Loader();
+
+		$this->init_profiler();
+
+		// set tracker
+		$this->_tracker = new Tracker();
+
+		// init dbh
+		$this->_dbh = new SQLQuery( DB_HOST, DB_USER, DB_PASSWORD, DB_NAME );
+	}
+
+	final protected function init_profiler()
+	{
+		global $profilerIgnoreList;
+
+		$this->_profiler = new Profiler();
+
+		if( in_array( $this->_url, $profilerIgnoreList ) )
+		{
+			$this->_profiler->set_profiler( false );
+		}
+
+		$this->_profiler->start_time( "page" );
+	}
+
+	final protected function init_registry()
+	{
+		Registry::set( "_url", $this->_url, true );
+
+		Registry::set( "_controller", $this->_controller );
+		Registry::set( "_action", $this->_action );
+
+		Registry::set( "_isAdmin", $this->_isAdmin, true );
+		Registry::set( "_isScript", $this->_isScript, true );
+		Registry::set( "_isAjax", $this->_isAjax, true );
+
+		Registry::set( "_dbh", $this->_dbh, true );
+		Registry::set( "dbh", $this->_dbh, true );
+
+		Registry::set( "_tracker", $this->_tracker, true );
+		Registry::set( "_profiler", $this->_profiler, true );
+
+		Registry::set( "_framework", $this, true );
+	}
+
+	final protected function parse_url()
+	{
 		$queryString = array();
 
-		$controller = $defaultPage['controller'];
-		$action 	= $defaultPage['action'];
+		$controller = $this->_defaultPage['controller'];
+		$action 	= $this->_defaultPage['action'];
 
 		// if its not defaults
 		if( isset( $this->_url ) )
@@ -81,25 +241,25 @@ class Framework
 				if( $controller == ADMIN_ALIAS )
 				{
 					// set in registry
-					Registry::set( "_isAdmin", true, true );
+					$this->_isAdmin = true;
 
 					// load default admin
-					$controller = $defaultPage['admin']['controller'];
-					$action 	= $defaultPage['admin']['action'];
+					$controller = $this->_defaultPage['admin']['controller'];
+					$action 	= $this->_defaultPage['admin']['action'];
 				}
 				else if( $controller == AJAX_ALIAS )
 				{
 					// set in registry
-					Registry::set( "_isAjax", true, true );
+					$this->_isAjax = true;
 
-					$controller = $defaultPage['controller'];
+					$controller = $this->_defaultPage['controller'];
 				}
 				else if( $controller == SCRIPTS_ALIAS )
 				{
-					Registry::set( "_isScript", true, true );
+					$this->_isScript = true;
 				}
 
-				if( Registry::get( "_isAdmin"  ) || Registry::get( "_isAjax"  ) )
+				if( $this->_isAdmin || $this->_isAjax )
 				{
 					// get admin controller
 					if( isset( $urlArray[0] ) )
@@ -121,122 +281,30 @@ class Framework
 			$queryString = $urlArray;
 		}
 
-		// set admin
-		Registry::set( "_isAdmin", false );
-
-		// init dbh
-		$dbh = new SQLQuery( DB_HOST, DB_USER, DB_PASSWORD, DB_NAME );
-		Registry::set( "_dbh", $dbh, true );
-		Registry::set( "dbh", $dbh, true );
-
-		// is script
-		if( Registry::get( "_isScript" ) )
-		{
-			$newUrl = explode( "/", $this->_url );
-			array_shift( $newUrl );
-
-			$scripts_dir = ROOT . DS . 'application' . DS . 'scripts' . DS;
-			$script_file = implode( "/", $newUrl );
-			$script_path = $scripts_dir . $script_file;
-
-			if( file_exists( $script_path  ) && is_file( $script_path ) )
-			{
-				$pwd = getcwd();
-				chdir( dirname( $script_path ) );
-
-				require_once( $script_path );
-
-				chdir( $pwd );
-			}
-			else
-			{
-				echo "Script not found ";
-			}
-		}
-		else
-		{
-			$controllerName = ucfirst( $controller ) . 'Controller';
-			if( ENVIRONMENT != "LIVE" && DEVELOPMENT_ENVIRONMENT == true && DEVELOPMENT_SHOW_CONTROLLER == true )
-			{
-				echo "Original: " . $controllerName . " C: " . $controller . " A: " . $action . " Q: " . implode( ",", $queryString ) . "<br>";
-			}
-
-			if( !class_exists( $controllerName ) || !method_exists( $controllerName, $action ) )
-			{
-				$controllerName = "ErrorsController";
-				$controller 	= "errors";
-				$action 		= "index";
-
-				Registry::get("_tracker")->set_enabled( false );
-			}
-
-			Registry::set( "_controller", $controller );
-			Registry::set( "_action", $action );
-
-			if( ENVIRONMENT != "LIVE" && DEVELOPMENT_ENVIRONMENT == true && DEVELOPMENT_SHOW_CONTROLLER == true )
-			{
-				echo "After Check: " . $controllerName . " C: " . $controller . " A: " . $action . " Q: " . implode( ",", $queryString ) . "<br>";
-			}
-
-			// init controller, if its an ajax call, do not render
-			$dispatch = new $controllerName( $controller, $action, !Registry::get( "_isAjax"  ), Registry::get( "_isAdmin" ) );
-
-			if( Registry::get( "_isAjax"  ) )
-			{
-				Registry::get("_tracker")->set_enabled( false );
-				$this->load()->library( "ajax" );
-				require_once( ROOT . DS . 'application' . DS . "config" . DS . "ajax_hooks.php" );
-			}
-			else
-			{
-				require_once( ROOT . DS . 'application' . DS . "config" . DS . "init_hooks.php" );
-			}
-
-			if( (int) method_exists( $controllerName, $action ) )
-			{
-				call_user_func_array( array( $dispatch, "beforeAction" ), $queryString );
-				call_user_func_array( array( $dispatch, $action ), $queryString );
-				call_user_func_array( array( $dispatch, "afterAction" ), $queryString );
-			}
-			else
-			{
-				die( "Error 0: Framework could not init" );
-			}
-		}
-	}
-
-	final public function load()
-	{
-		return $this->_loader;
-	}
-
-	final public function __get( $name )
-    {
-	    if( isset( $this->$name ) )
-	    {
-		    return $this->$name;
-	    }
-
-	    return false;
-    }
-
-	final public function action( $controller, $action, $queryString = null, $render = 0, $isAdmin = false )
-	{
-		$oldTrackerVal = Registry::get("_tracker")->is_enabled();
-
-		Registry::get("_tracker")->set_enabled( false );
-
-		if( $queryString === null )
-		{
-			$queryString = array();
-		}
-
 		$controllerName = ucfirst( $controller ) . 'Controller';
-		$dispatch = new $controllerName( $controller, $action, $render, $isAdmin );
+		if( ENVIRONMENT != "LIVE" && DEVELOPMENT_ENVIRONMENT == true && DEVELOPMENT_SHOW_CONTROLLER == true )
+		{
+			echo "Original: " . $controllerName . " C: " . $controller . " A: " . $action . " Q: " . implode( ",", $queryString ) . "<br>";
+		}
 
-		Registry::get("_tracker")->set_enabled( $oldTrackerVal );
+		if( !class_exists( $controllerName ) || !method_exists( $controllerName, $action ) )
+		{
+			$controllerName = "ErrorsController";
+			$controller 	= "errors";
+			$action 		= "index";
 
-		return call_user_func_array( array( $dispatch, $action ), $queryString );
+			$this->_tracker->set_enabled( false );
+		}
+
+		$this->_controllerName = $controllerName;
+		$this->_controller = $controller;
+		$this->_action = $action;
+		$this->_queryString = $queryString;
+
+		if( ENVIRONMENT != "LIVE" && DEVELOPMENT_ENVIRONMENT == true && DEVELOPMENT_SHOW_CONTROLLER == true )
+		{
+			echo "After Check: " . $controllerName . " C: " . $controller . " A: " . $action . " Q: " . implode( ",", $queryString ) . "<br>";
+		}
 	}
 
 	/** Check if environment is development and display errors **/
@@ -273,15 +341,6 @@ class Framework
 		}
 
 		return $value;
-	}
-
-	final protected function register_globals_to_framework()
-	{
-		Registry::set( "_post", ( isset( $_POST ) ? $_POST : array() ), true );
-		Registry::set( "_get", ( isset( $_GET ) ? $_GET : array() ), true );
-		Registry::set( "_session", ( isset( $_SESSION ) ? $_SESSION : array() ), true );
-		Registry::set( "_cookie", ( isset( $_COOKIE ) ? $_COOKIE : array() ), true );
-		Registry::set( "_files", ( isset( $_FILES ) ? $_FILES : array() ), true );
 	}
 
 	final protected function remove_magic_quotes()
@@ -331,21 +390,6 @@ class Framework
 		}
 
 		return $url;
-	}
-
-	final public function set_profiler()
-	{
-		global $profilerIgnoreList;
-
-		$profiler = new Profiler();
-		Registry::set( "_profiler", $profiler, true );
-
-		if( in_array( Registry::get( "_url" ), $profilerIgnoreList ) )
-		{
-			Registry::get( "_profiler" )->set_profiler( false );
-		}
-
-		Registry::get( "_profiler" )->start_time( "page" );
 	}
 
 	/** Check Constants **/

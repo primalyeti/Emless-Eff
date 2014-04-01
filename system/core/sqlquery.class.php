@@ -446,6 +446,11 @@ class SQLResult
 		return $this->_results[--$this->_pos];
 	}
 
+	public function all()
+	{
+		return $this->_results;
+	}
+
 	public function reset()
 	{
 		$this->_pos = -1;
@@ -476,6 +481,38 @@ class SQLResult
 		$this->_pos = $pos;
 
 		return $vals;
+	}
+
+	public function apply_function_to_cells( $table, $field, $functionName, $additionalParams = array() )
+	{
+		if( !function_exists( $functionName ) )
+		{
+			return false;
+		}
+
+		// get position, then go to the beginning
+		$pos = $this->_pos;
+		$this->reset();
+
+		// store the values
+		while( $row = $this->next() )
+		{
+			if( isset( $row->$table->$field ) && ( $val = $row->$table->$field ) != "" )
+			{
+				$newVal = call_user_func_array( $functionName, array_merge( array( $row->$table->$field ), $additionalParams ) );
+
+				if( $newVal === false )
+				{
+					return false;
+				}
+
+				$row->$table->$field = $newVal;
+			}
+		}
+
+		$this->_pos = $pos;
+
+		return true;
 	}
 
 	public function shuffle()
@@ -624,7 +661,7 @@ class SQLResult
 
 	public function __get( $key )
 	{
-		if( !isset( $this->$key ) )
+		if( !isset( $this->$key ) && $this->first() !== false )
 		{
 			return $this->first()->$key;
 		}
@@ -706,15 +743,29 @@ class SQLRow
 		return $new;
 	}
 
+	public function row()
+	{
+		return $this->_row;
+	}
+
 	public function as_array()
+	{
+		return $this->internal_as_array( $this->_row );
+	}
+
+	protected function internal_as_array( $vals )
 	{
 		$array = array();
 
-		foreach( $this->_row as $key => $value )
+		foreach( $vals as $key => $value )
 		{
-			if( $value instanceof SQLResult || $value instanceof SQLRow )
+			if( method_exists( $value, "as_array" ) )
 			{
 				$value = $value->as_array();
+			}
+			else if( is_array( $value ) )
+			{
+				$value = $this->internal_as_array( $value );
 			}
 
 			$array[$key] = (array) $value;

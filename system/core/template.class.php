@@ -90,8 +90,8 @@ class Template
 		extract( $this->_vars );
 		extract( $vars );
 
-		$path = ROOT . DS . 'application' . DS . ( Registry::get("isAdmin") == true ? 'admin' . DS : "" ) . 'views' . DS . $this->_controller . DS . $file_name;
-		$pathUp = ROOT . DS . 'application' . DS . ( Registry::get("isAdmin") == true ? 'admin' . DS : "" ) . 'views' . DS . $file_name;
+		$path = ROOT . DS . 'application' . DS . ( Registry::get("_isAdmin") == true ? 'admin' . DS : "" ) . 'views' . DS . $this->_controller . DS . $file_name;
+		$pathUp = ROOT . DS . 'application' . DS . ( Registry::get("_isAdmin") == true ? 'admin' . DS : "" ) . 'views' . DS . $file_name;
 
 		if( file_exists( $path ) )
 		{
