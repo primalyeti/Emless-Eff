@@ -2,7 +2,7 @@
 class SQLQuery
 {
 	protected $_dbObj = false;
-    protected $_result;
+	protected $_result;
 
 	public function __construct( $db_host, $db_user, $db_password, $db_name )
 	{
@@ -103,22 +103,22 @@ interface SQLConn
 abstract class SQLHandle implements SQLConn
 {
 	protected $_dbHandle = false;
-    protected $_result;
-    protected $_isConn = false;
+	protected $_result;
+	protected $_isConn = false;
 
-    public function __construct( $host, $username, $password, $dbname )
+	public function __construct( $host, $username, $password, $dbname )
 	{
 		$this->connect( $host, $username, $password, $dbname );
 	}
 
 	public function isValid()
-    {
-    	return $this->_isConn;
-    }
+	{
+		return $this->_isConn;
+	}
 
 	protected function put_error( $msg )
-    {
-	    if( ENVIRONMENT == "LIVE" )
+	{
+		if( ENVIRONMENT == "LIVE" )
 		{
 			error_log( $msg );
 		}
@@ -128,13 +128,13 @@ abstract class SQLHandle implements SQLConn
 		}
 
 		return;
-    }
+	}
 }
 
 class PDOConn extends SQLHandle
 {
-    /** Connects to database **/
-    public function connect( $host, $username, $password, $dbname )
+	/** Connects to database **/
+	public function connect( $host, $username, $password, $dbname )
 	{
 		try
 		{
@@ -147,30 +147,30 @@ class PDOConn extends SQLHandle
 		}
 
 		$this->_dbHandle->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
-	    $this->_dbHandle->setAttribute( PDO::ATTR_EMULATE_PREPARES, false );
+		$this->_dbHandle->setAttribute( PDO::ATTR_EMULATE_PREPARES, false );
 
 		$this->_isConn = true;
-    }
+	}
 
-    public function isValid()
-    {
-    	return $this->_isConn;
-    }
+	public function isValid()
+	{
+		return $this->_isConn;
+	}
 
-    public function beginTransaction()
-    {
-    	return $this->_dbHandle->beginTransaction();
-    }
+	public function beginTransaction()
+	{
+		return $this->_dbHandle->beginTransaction();
+	}
 
-    public function commit()
-    {
-    	return $this->_dbHandle->commit();
-    }
+	public function commit()
+	{
+		return $this->_dbHandle->commit();
+	}
 
-    public function rollBack()
-    {
-    	return $this->_dbHandle->rollBack();
-    }
+	public function rollBack()
+	{
+		return $this->_dbHandle->rollBack();
+	}
 
 	public function clean( $string, $type = "str" )
 	{
@@ -270,12 +270,6 @@ class PDOConn extends SQLHandle
 						return $results;
 					}
 				}
-				// catch( PDOException $e )
-				// {
-				// 	error_log('fdsafadds');
-				// 	$this->put_error( "Statement parameter " . $parameter . " ( " . $parameter . "," . $value . "," . $data_type . " ) is invalid. SQL STATEMENT:" . $query );
-				// 	return $results;
-				// }
 				catch( Exception $e )
 				{
 					error_log($e);
@@ -339,23 +333,23 @@ class PDOConn extends SQLHandle
 		return $this->_dbHandle->lastInsertId();
 	}
 
-    /** Get error string **/
-    public function error()
-    {
-        return ( $this->_dbHandle->errorCode() != "00000" );
-    }
+	/** Get error string **/
+	public function error()
+	{
+		return ( $this->_dbHandle->errorCode() != "00000" );
+	}
 
-     /** Get error number **/
-    public function errno()
-    {
-        return $this->_dbHandle->errorCode();
-    }
+	 /** Get error number **/
+	public function errno()
+	{
+		return $this->_dbHandle->errorCode();
+	}
 
-    /** Get error desc **/
-    public function errdesc()
-    {
-         return print_r( $this->_dbHandle->errorInfo(), true );
-    }
+	/** Get error desc **/
+	public function errdesc()
+	{
+		return print_r( $this->_dbHandle->errorInfo(), true );
+	}
 }
 
 class SQLResult
