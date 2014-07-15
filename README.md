@@ -20,7 +20,7 @@ Please see the Installation section of documentation/userguide.md
 Changelog
 --------------------------
 ## Version 1.1.9
-Release Date
+Release Date July 15th, 2013
 * Added
 	* Added PDO transactions to SQL library
 	* Added apply_functo_to_cells method to SQL Result, used to apply a function to all cells in results
