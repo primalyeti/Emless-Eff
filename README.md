@@ -19,6 +19,38 @@ Please see the Installation section of documentation/userguide.md
 
 Changelog
 --------------------------
+## Version 1.1.9
+Release Date July 15th, 2013
+* Added
+	* Added PDO transactions to SQL library
+	* Added apply_functo_to_cells method to SQL Result, used to apply a function to all cells in results
+	* Added ability to embed SQL Results into other results
+	* Added run_as_script method to framework class (experimental)
+* Updated
+	* Updated SQLResult, error methods now check DBH for error
+	* Update base controller, beforeAction and afterAction now declared by default
+	* Updated SQL Result and SQL Row as_array methods to properly return embeded SQL Results
+	* Updated bootstrap, now self contained and no longer dependant on index.php
+	* Updated framework class, re-structure code to improve performance and maintainability and clear up memory
+* Fixed
+	* Fixed SQLRow, now properly accepts setting data outside of initialization
+	* Fixed template bug that would improperly load admin views
+	* Fixed admin class instantiation
+
+
+## Version 1.1.8
+Release Date: January 14th, 2014
+
+* Added
+	* Added dbh to registry to increase compatibility when updating
+	* Added Ajax Hooks
+* Updated
+	* DBH calls are now always objects. Use as_array() method instead
+	* Init Hooks are no longer called on ajax calls
+* Fixed
+	* Fix framework action, no longer static. No longer recreates an instance of the framework on module calls
+	* Tracker no longer tracks module calls
+
 
 ## Version 1.1.8
 Release Date: January 14th, 2014
@@ -57,6 +89,7 @@ Release Date: November 20th, 2013
 	* HTML5 doctype not proper
 	* FIxed html attributes
 
+
 ## Version 1.1.6
 Release Date: August 1st, 2013
 
@@ -73,6 +106,7 @@ Release Date: August 1st, 2013
 * Removed
 	* Removed SQLRow add_value method, redundant
 
+
 ## Version 1.1.5
 Release Date: July 16th, 2013
 
@@ -85,6 +119,7 @@ Release Date: July 16th, 2013
 * Fixed
 	* Fixed HTML options, now properly works with defaults
 
+
 ## Version 1.1.4
 Release Date: June 12th, 2013
 
@@ -95,6 +130,7 @@ Release Date: June 12th, 2013
 	* Updated SQLQuery, can now set wether the default return type for query is an object or not
 * Fixed
 	* Fixed err_check default class name
+
 
 ## Version 1.1.3
 Release Date: May 3rd, 2013
@@ -116,6 +152,7 @@ Release Date: May 3rd, 2013
 * Removed
 	* Removed core functions helper to reduce redundancy
 
+
 ## Version 1.1.2
 Release Date: April 4th, 2013
 
@@ -129,6 +166,7 @@ Release Date: April 4th, 2013
 	* Fixed bug in SQLResult class that skipped first element after first run through
 * Removed
 	* Removed log_error function to reduce redundancies
+
 
 ## Version 1.1.1
 Release Date: March 12th, 2013
@@ -144,6 +182,7 @@ Release Date: March 12th, 2013
 	* Fixed forward and aforward methods to work with domains with port numbers
 	* Fixed Template to properly load AHTML library
 
+
 ## Version 1.1
 Release Date: March 9th, 2013
 
@@ -153,6 +192,7 @@ Release Date: March 9th, 2013
 * Fixed
 	* Fixed defaultViews bug that would add views in reverse
 	* Fixed url routing bug that affected hyphens and underscores
+
 
 ## Version 1.0.6
 Release Date: March 8th, 2013
@@ -165,6 +205,7 @@ Release Date: March 8th, 2013
 * Fixed
 	* Fixed URL routing error
 
+
 ## Version 1.0.5
 Release Date: March 6th, 2013
 
@@ -173,6 +214,7 @@ Release Date: March 6th, 2013
 * Fixed
 	* Fixed HTML library bug that would improperly escape quotes
 	* Fixed problem with loading views
+
 
 ## Version 1.0.4
 Release Date: February 27th, 2013
@@ -183,6 +225,7 @@ Release Date: February 27th, 2013
 	* Loader library method now returns a reference to the library
 * Fixed
 	* Fixed incorrect path for cache files
+
 
 ## Version 1.0.3
 Release Date: February 25th, 2013
@@ -199,6 +242,7 @@ Release Date: February 25th, 2013
 * Removed
 	* Removed Tracker library
 
+
 ## Version 1.0.2
 Release Date: February 18th, 2013
 
@@ -206,6 +250,7 @@ Release Date: February 18th, 2013
 	* Template module method now accepts query string paramters
 	* HTML meta method now accepts options parameter
 	* HTML icon method now accepts options parameter
+
 
 ## Version 1.0.1
 Release Date: February 15th, 2013
@@ -218,6 +263,7 @@ Release Date: February 15th, 2013
 	* SQLQuery class, removed MySQL PHP support in favor of PDO
 	* Profiler, added support for ignored pages
 
+
 ## Version 1.0
 Release Date: January 18th, 2013
 
@@ -227,6 +273,7 @@ Release Date: January 18th, 2013
 	* Added file linking support
 * Updated
 	* Moved files folder location
+
 
 ## Version Beta 0.9
 Release Date: January 11th, 2013

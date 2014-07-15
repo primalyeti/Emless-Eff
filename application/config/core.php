@@ -4,7 +4,7 @@
  * Base configuration file for Emless-F framework.
  *
  * This config file allows you to configure the following, MySQL settings,
- * directory names, environment and development settings, site variables 
+ * directory names, environment and development settings, site variables
  * and miscellaneous functions\
  *
  */
@@ -14,7 +14,7 @@
  *
  * Switches between all domain names, ex: www.example.com, text.example.com, dev.example.com and local.example.com
  * Lets you set up different MySQL and environment setting depending on what server/domain we're on
- * 
+ *
  * Supported environments are:
  * LOCAL	- testing on local machine, good for use with MAMP
  * DEV		- on a test server, not your machine, but not the final server either
@@ -36,26 +36,26 @@ switch( $_SERVER["SERVER_NAME"] )
 	//case "test.example.com":
 	//case "dev.example.com":
 	//case "local.example.com":
-	
+
 	default:
 		/** Environment Mode, see supported environment values */
 		define( 'ENVIRONMENT', 'LOCAL' );
-		
+
 		/** Change if framework is installed in a subdirectory */
-		define( 'BASE_PATH', '/' );	
-		
+		define( 'BASE_PATH', '/' );
+
 		/** Database Connection Type, supports PDO and MySQL */
 		define( 'DB_TYPE',		'PDO' );		# database connection type. Valid values are "PDO", "MYSQL"
-		
+
 		/** Database Name */
 		define( 'DB_NAME', 		'' );
-		
+
 		/** Database Login Username */
 		define( 'DB_USER', 		'' );
-		
+
 		/** Database Login Password */
 		define( 'DB_PASSWORD', 	'' );
-		
+
 		/** Database Host */
 		define( 'DB_HOST', 		'' );
 }
@@ -98,15 +98,15 @@ define( 'LOG_FILE_NAME', 'error.log' );
 /**
  *
  */
- 
+
 /** User uploaded files */
-define( 'FILE_DIR', "files/" );
+define( 'FILE_DIR', ROOT . DS . "files/" );
 
 /** Temporary user uploaded files */
 define( 'FILE_TEMP_DIR', FILE_DIR . "temp/" );
 
 /** Temporary framework files */
-define( 'TEMP_DIR', "tmp/" );
+define( 'TEMP_DIR', ROOT . DS . 'application' . DS . "tmp/" );
 
 /** Cache files */
 define( 'CACHE_DIR', TEMP_DIR . "cache/" );
