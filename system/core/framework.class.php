@@ -313,7 +313,7 @@ class Framework
 	{
 		error_reporting( E_ALL /* | E_STRICT */ );
 		ini_set( 'log_errors', 'On' );
-		ini_set( 'error_log', ROOT . DS . 'application' . DS . LOGS_DIR . LOG_FILE_NAME );
+		ini_set( 'error_log', LOGS_DIR . LOG_FILE_NAME );
 
 		if( ENVIRONMENT != "LIVE" && DEVELOPMENT_ENVIRONMENT == true )
 		{

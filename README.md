@@ -52,6 +52,21 @@ Release Date: January 14th, 2014
 	* Tracker no longer tracks module calls
 
 
+## Version 1.1.8
+Release Date: January 14th, 2014
+
+* Added
+	* Added dbh to registry to increase compatibility when updating
+	* Added Ajax Hooks
+* Updated
+	* DBH calls are now always objects. Use as_array() method instead
+	* Init Hooks are no longer called on ajax calls
+* Fixed
+	* Fix framework action, no longer static. No longer recreates an instance of the framework on module calls
+	* Tracker no longer tracks module calls
+
+
+
 ## Version 1.1.7
 Release Date: November 20th, 2013
 
