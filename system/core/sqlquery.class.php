@@ -491,17 +491,14 @@ class SQLResult
 		// store the values
 		while( $row = $this->next() )
 		{
-			if( isset( $row->$table->$field ) && ( $val = $row->$table->$field ) != "" )
+			$newVal = @call_user_func_array( $functionName, array_merge( array( $row->$table->$field ), $additionalParams ) );
+
+			if( $newVal === false )
 			{
-				$newVal = call_user_func_array( $functionName, array_merge( array( $row->$table->$field ), $additionalParams ) );
-
-				if( $newVal === false )
-				{
-					return false;
-				}
-
-				$row->$table->$field = $newVal;
+				return false;
 			}
+
+			$row->$table->$field = $newVal;
 		}
 
 		$this->_pos = $pos;
@@ -631,11 +628,16 @@ class SQLResult
 
 		foreach( $results as $result )
 		{
-			$row = new SQLRow( $result );
-			array_push($this->_results, $row );
+			$this->add_result( $result );
 		}
 
 		$this->_isValid = true;
+	}
+
+	public function add_result( $result )
+	{
+		$row = new SQLRow( $result );
+		array_push( $this->_results, $row );
 	}
 
 	/**

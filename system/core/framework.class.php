@@ -305,14 +305,7 @@ class Framework
 		if( ENVIRONMENT != "LIVE" && DEVELOPMENT_ENVIRONMENT == true && DEVELOPMENT_SHOW_CONTROLLER == true )
 		{
 			echo "After Check: " . $controllerName . " C: " . $controller . " A: " . $action . " Q: " . implode( ",", $queryString ) . "<br>";
-		}
-
-		$controllerName = ucfirst( $controller ) . 'Controller';
-		$dispatch = new $controllerName( $controller, $action, $render, $isAdmin );
-
-		Registry::get("_tracker")->set_enabled( $oldTrackerVal );
-
-		return call_user_func_array( array( $dispatch, $action ), $queryString );
+		};
 	}
 
 	/** Check if environment is development and display errors **/
@@ -320,7 +313,7 @@ class Framework
 	{
 		error_reporting( E_ALL /* | E_STRICT */ );
 		ini_set( 'log_errors', 'On' );
-		ini_set( 'error_log', ROOT . DS . 'application' . DS . LOGS_DIR . LOG_FILE_NAME );
+		ini_set( 'error_log', LOGS_DIR . LOG_FILE_NAME );
 
 		if( ENVIRONMENT != "LIVE" && DEVELOPMENT_ENVIRONMENT == true )
 		{
