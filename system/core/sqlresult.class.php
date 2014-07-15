@@ -151,9 +151,15 @@ class SQLResult
 		public function as_array()
 		{
 			$rowsArray = array();
-			foreach( $this->_results as $row )
+			foreach( $this->_results as $key => $row )
 			{
-				array_push( $rowsArray, $row->as_array() );
+				if( method_exists( $row, "as_array" ) )
+				{
+					$rowsArray[$key] = $row->as_array();
+					continue;
+				}
+
+				$rowsArray[$key] = $row;
 			}
 
 			return $rowsArray;

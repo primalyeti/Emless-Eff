@@ -58,7 +58,13 @@ class SQLRow
 		$tableArr = array();
 		foreach( $this->_row as $key => $table )
 		{
-			$tableArr[$key] = $table->as_array();
+			if( method_exists( $table, "as_array" ) )
+			{
+				$tableArr[$key] = $table->as_array();
+				continue;
+			}
+
+			$tableArr[$key] = $table;
 		}
 
 		return $tableArr;

@@ -19,15 +19,18 @@ class SQLTable
 		#echo var_export( $value );
 		if( $value instanceof SQLResult )
 		{
+			#echo "--- ";
 			$this->_cells[$key] = $value;
 		}
 		else if( $value instanceof SQLRow || $value instanceof SQLTable )
 		{
-			#echo "+++";
+			#echo "+++ ";
+			#print_r( $value );
 			$this->_cells[$key] = $value;
 		}
 		else
 		{
+			#echo "=== ";
 			$this->_cells[$key] = $value;
 		}
 	}
@@ -64,6 +67,12 @@ class SQLTable
 		$cellsArr = array();
 		foreach( $this->_cells as $key => $cell )
 		{
+			if( method_exists( $cell, "as_array" ) )
+			{
+				$cellsArr[$key] = $cell->as_array();
+				continue;
+			}
+
 			$cellsArr[$key] = $cell;
 		}
 
