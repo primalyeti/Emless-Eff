@@ -169,7 +169,7 @@ class Framework
 		$this->_tracker = new Tracker();
 
 		// init dbh
-		$this->_dbh = new SQLQuery( DB_HOST, DB_USER, DB_PASSWORD, DB_NAME );
+		$this->_dbh = new SQLConn( DB_HOST, DB_USER, DB_PASSWORD, DB_NAME );
 	}
 
 	final protected function init_profiler()

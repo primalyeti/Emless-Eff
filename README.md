@@ -19,6 +19,16 @@ Please see the Installation section of documentation/userguide.md
 
 Changelog
 --------------------------
+## Version 1.1.10
+Release Date
+* Added
+* Updated
+	* Recoded the SQLQuery class, is now composed of SQLConn, SQLResult, SQLRow and SQLTable
+	* SQL classes can properly be embeded into others for easy data manipulation
+* Fixed
+* Removed
+
+
 ## Version 1.1.9
 Release Date July 15th, 2013
 * Added
