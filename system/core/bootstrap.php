@@ -1,5 +1,8 @@
 <?
-session_start();
+if( strpos( php_sapi_name(), 'cli' ) === false && ( ( version_compare( phpversion(), '5.4.0', '>=' ) && session_status() === PHP_SESSION_NONE ) || session_id() === '' ) )
+{
+	session_start();
+}
 
 require_once( ROOT . DS . 'application' . DS . 'config' . DS . 'core.php' );
 require_once( ROOT . DS . 'application' . DS . 'config' . DS . 'user_vars.php' );
@@ -7,9 +10,6 @@ require_once( ROOT . DS . 'application' . DS . 'config' . DS . 'schema.php' );
 require_once( ROOT . DS . 'system' . DS . 'core' . DS . 'functions.include.php' );
 
 date_default_timezone_set( TIMEZONE );
-
-$framework = New Framework( $url );
-$framework->run();
 
 /** Autoload any classes that are required **/
 function __autoload( $className )

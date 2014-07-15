@@ -190,8 +190,8 @@ class Framework
 	{
 		Registry::set( "_url", $this->_url, true );
 
-		Registry::set( "_controller", $this->_controller );
-		Registry::set( "_action", $this->_action );
+		Registry::set( "_controller", $this->_controller, true );
+		Registry::set( "_action", $this->_action, true );
 
 		Registry::set( "_isAdmin", $this->_isAdmin, true );
 		Registry::set( "_isScript", $this->_isScript, true );
@@ -242,6 +242,7 @@ class Framework
 				{
 					// set in registry
 					$this->_isAdmin = true;
+					Registry::set( "_isAdmin", $this->_isAdmin );
 
 					// load default admin
 					$controller = $this->_defaultPage['admin']['controller'];

@@ -9,4 +9,7 @@ if( isset( $_GET['url'] ) )
 }
 
 require_once( ROOT . DS . 'system' . DS . 'core' . DS . 'bootstrap.php' );
+
+$framework = New Framework( $url );
+$framework->run();
 ?>

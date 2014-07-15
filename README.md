@@ -28,13 +28,14 @@ Release Date
 	* Added run_as_script method to framework class (experimental)
 * Updated
 	* Updated SQLResult, error methods now check DBH for error
-	* Update base controller, beforeAction and afterAction no declared by default
+	* Update base controller, beforeAction and afterAction now declared by default
 	* Updated SQL Result and SQL Row as_array methods to properly return embeded SQL Results
 	* Updated bootstrap, now self contained and no longer dependant on index.php
 	* Updated framework class, re-structure code to improve performance and maintainability and clear up memory
 * Fixed
 	* Fixed SQLRow, now properly accepts setting data outside of initialization
 	* Fixed template bug that would improperly load admin views
+	* Fixed admin class instantiation
 
 
 ## Version 1.1.8
