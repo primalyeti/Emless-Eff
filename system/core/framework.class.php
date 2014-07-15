@@ -305,7 +305,7 @@ class Framework
 		if( ENVIRONMENT != "LIVE" && DEVELOPMENT_ENVIRONMENT == true && DEVELOPMENT_SHOW_CONTROLLER == true )
 		{
 			echo "After Check: " . $controllerName . " C: " . $controller . " A: " . $action . " Q: " . implode( ",", $queryString ) . "<br>";
-		};
+		}
 	}
 
 	/** Check if environment is development and display errors **/
