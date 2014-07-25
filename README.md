@@ -22,6 +22,7 @@ Changelog
 ## Version 1.1.10
 Release Date
 * Added
+	* Added Maintenance Mode
 * Updated
 	* Recoded the SQLQuery class, is now composed of SQLConn, SQLResult, SQLRow and SQLTable
 	* SQL classes can properly be embeded into others for easy data manipulation

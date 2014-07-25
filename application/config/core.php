@@ -72,6 +72,15 @@ define( 'AUTH_KEY', '' );
 /** Version Number **/
 define( 'VERSION', '1.1.2' );
 
+/** Maintenance Mode **/
+/*
+* Supported environments are:
+* FULL		- no dbh, no nothing
+* PARTIAL	- has dbh, locked out for anyone who isnt admin
+* OFF		- no maintenance mode
+*/
+define( 'MAINTENANCE_MODE', "OFF" );
+
 /** ##### */
 
 // ** DEVELOPMENT VARIABLES - Enable debug mode ** //

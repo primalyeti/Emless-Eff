@@ -169,7 +169,10 @@ class Framework
 		$this->_tracker = new Tracker();
 
 		// init dbh
-		$this->_dbh = new SQLConn( DB_HOST, DB_USER, DB_PASSWORD, DB_NAME );
+		if( MAINTENANCE_MODE !== "FULL" )
+		{
+			$this->_dbh = new SQLQuery( DB_HOST, DB_USER, DB_PASSWORD, DB_NAME );
+		}
 	}
 
 	final protected function init_profiler()
@@ -288,11 +291,11 @@ class Framework
 			echo "Original: " . $controllerName . " C: " . $controller . " A: " . $action . " Q: " . implode( ",", $queryString ) . "<br>";
 		}
 
-		if( !class_exists( $controllerName ) || !method_exists( $controllerName, $action ) )
+		if( MAINTENANCE_MODE !== "OFF" || !class_exists( $controllerName ) || !method_exists( $controllerName, $action ) )
 		{
 			$controllerName = "ErrorsController";
 			$controller 	= "errors";
-			$action 		= "index";
+			$action 		= ( MAINTENANCE_MODE !== "OFF" ? "maintenance" : "index" );
 
 			$this->_tracker->set_enabled( false );
 		}
@@ -411,6 +414,8 @@ class Framework
 			"DOMAIN" => array( "%" ),
 			"DOMAIN_SECURE" => array( "", "%" ),
 			"AUTH_KEY" => array( "", "%" ),
+			"VERSION" => array( "%" ),
+			"MAINTENANCE_MODE" => array( "FULL", "PARTIAL", "OFF" ),
 
 			// ** DEVELOPMENT VARIABLES ** //
 			"DEVELOPMENT_ENVIRONMENT" => array( true, false ),
