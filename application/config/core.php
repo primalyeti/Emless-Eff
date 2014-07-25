@@ -72,6 +72,7 @@ define( 'AUTH_KEY', '' );
 /** Version Number **/
 define( 'VERSION', '1.1.2' );
 
+
 /** Maintenance Mode **/
 /*
 * Supported environments are:
@@ -80,6 +81,12 @@ define( 'VERSION', '1.1.2' );
 * OFF		- no maintenance mode
 */
 define( 'MAINTENANCE_MODE', "OFF" );
+
+/* Maintenance Mode Access Token provides access when in partial maintenance mode */
+define( 'MAINTENANCE_MODE_ACCESS_TOKEN', 'g0dm0d3' );
+
+/** Maintenance Mode Session Variable Name */
+define( 'MAINTENANCE_MODE_ACCESS_SESSION_VAR', 'maintenance_mode' );
 
 /** ##### */
 

@@ -291,7 +291,7 @@ class Framework
 			echo "Original: " . $controllerName . " C: " . $controller . " A: " . $action . " Q: " . implode( ",", $queryString ) . "<br>";
 		}
 
-		if( MAINTENANCE_MODE !== "OFF" || !class_exists( $controllerName ) || !method_exists( $controllerName, $action ) )
+		if( ( MAINTENANCE_MODE !== "OFF" && !isset( $_SESSION[MAINTENANCE_MODE_ACCESS_SESSION_VAR] ) ) || !class_exists( $controllerName ) || !method_exists( $controllerName, $action ) )
 		{
 			$controllerName = "ErrorsController";
 			$controller 	= "errors";
@@ -416,6 +416,8 @@ class Framework
 			"AUTH_KEY" => array( "", "%" ),
 			"VERSION" => array( "%" ),
 			"MAINTENANCE_MODE" => array( "FULL", "PARTIAL", "OFF" ),
+			"MAINTENANCE_MODE_ACCESS_TOKEN" => array( "%" ),
+			"MAINTENANCE_MODE_ACCESS_SESSION_VAR" => array( "%" ),
 
 			// ** DEVELOPMENT VARIABLES ** //
 			"DEVELOPMENT_ENVIRONMENT" => array( true, false ),
