@@ -27,6 +27,7 @@ Release Date
 	* Recoded the SQLQuery class, is now composed of SQLConn, SQLResult, SQLRow and SQLTable
 	* SQL classes can properly be embeded into others for easy data manipulation
 * Fixed
+	* Framework now properly defaults to index actions when action not provided
 * Removed
 
 

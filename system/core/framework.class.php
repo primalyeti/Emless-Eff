@@ -232,6 +232,12 @@ class Framework
 				}
 			}
 
+			// reset action to index if controller isset
+			if( count( $urlArray ) >= 1 )
+			{
+				$action = "index";
+			}
+
 			// get controller
 			if( isset( $urlArray[0] ) )
 			{
