@@ -1,23 +1,23 @@
 <?
 class Controller
 {
-	protected $_controller;		# controller name
-	protected $_action;			# controllers action
+	protected $_controller;     # controller name
+	protected $_action;         # controllers action
 	protected $_isAdmin;
 
-	protected $_template;		# template
+	protected $_template;       # template
 	protected $_views = array();# the view to load
 	protected $_vars = array(); # template vars
 
-	protected $render;			# render template or not
-	protected $render_header;	# render header
-	protected $render_footer;	# render footer
+	protected $render;          # render template or not
+	protected $render_header;   # render header
+	protected $render_footer;   # render footer
 
 	final function __construct( $controller, $action, $render = 1, $isAdmin = false )
 	{
-		$this->_controller 	= ucfirst( $controller );
-		$this->_action 		= $action;
-		$this->_isAdmin		= $isAdmin;
+		$this->_controller  = ucfirst( $controller );
+		$this->_action      = $action;
+		$this->_isAdmin     = $isAdmin;
 
 		$this->render = $render;
 		$this->render_header = 1;
@@ -51,11 +51,11 @@ class Controller
 	}
 
 	final public function __get( $name )
-    {
-	    $val = Registry::get( $name );
-	    if( $val !== false )
-	    {
-		    return $val;
+	{
+		$val = Registry::get( $name );
+		if( $val !== false )
+		{
+			return $val;
 		}
 
 		if( $this->load()->$name != false )
@@ -64,44 +64,44 @@ class Controller
 		}
 
 		if( isset( $this->$name ) )
-	    {
-		    return $this->$name;
+		{
+			return $this->$name;
 		}
 
 		return false;
-    }
+	}
 
-    final public function enable_render()
-    {
-	    $this->render = 1;
-    }
+	final public function enable_render()
+	{
+		$this->render = 1;
+	}
 
-    final public function disable_render()
-    {
-	    $this->render = 0;
-    }
+	final public function disable_render()
+	{
+		$this->render = 0;
+	}
 
-    final public function enable_header()
-    {
-	    $this->render_header = 1;
-    }
+	final public function enable_header()
+	{
+		$this->render_header = 1;
+	}
 
-    final public function disable_header()
-    {
-	    $this->render_header = 0;
-    }
+	final public function disable_header()
+	{
+		$this->render_header = 0;
+	}
 
-    final public function enable_footer()
-    {
-	    $this->render_footer = 1;
-    }
+	final public function enable_footer()
+	{
+		$this->render_footer = 1;
+	}
 
-    final public function disable_footer()
-    {
-	    $this->render_footer = 0;
-    }
+	final public function disable_footer()
+	{
+		$this->render_footer = 0;
+	}
 
-    final public function enable_wrappers()
+	final public function enable_wrappers()
 	{
 		$this->render_header = 1;
 		$this->render_footer = 1;
@@ -131,10 +131,10 @@ class Controller
 
 	final private function append_view( $view, $first = false )
 	{
-		$viewArray 	= explode( '/', $view );
-		$admin		= ( $this->_isAdmin ? 'admin' : '' );
-		$base_path 	= ROOT . DS . 'application'. DS;
-		$pathArray 	= array();
+		$viewArray  = explode( '/', $view );
+		$admin      = ( $this->_isAdmin ? 'admin' : '' );
+		$base_path  = ROOT . DS . 'application'. DS;
+		$pathArray  = array();
 
 		// try the controller folder if no leading slash
 		if( $viewArray[0] != '' )

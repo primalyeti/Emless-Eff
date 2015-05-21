@@ -1,1 +1,0 @@
-admin accounts index

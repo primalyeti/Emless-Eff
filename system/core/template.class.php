@@ -39,11 +39,11 @@ class Template
 	}
 
 	final public function __get( $name )
-    {
-	    $val = Registry::get( $name );
-	    if( $val !== false )
-	    {
-		    return $val;
+	{
+		$val = Registry::get( $name );
+		if( $val !== false )
+		{
+			return $val;
 		}
 
 		if( $this->load()->$name != false )
@@ -52,10 +52,10 @@ class Template
 		}
 
 		return true;
-    }
+	}
 
 	/** Display Template **/
-    final public function render()
+	final public function render()
 	{
 		$this->load()->library( "html" );
 		if( Registry::get( "_isAdmin" ) )
@@ -77,7 +77,7 @@ class Template
 		{
 			include( $view );
 		}
-    }
+	}
 
 	final public function include_file( $file_name, $vars = array() )
 	{
@@ -103,8 +103,8 @@ class Template
 		}
 	}
 
-	final public function module( $controller, $action, $query = null, $isAdmin = false )
+	final public function module( $controller, $action, $query = null, $isAdmin = false, $callBefore = false, $callAfter = false )
 	{
-		return Registry::get("_framework")->action( $controller, $action, $query, 1, $isAdmin );
+		return Registry::get("_framework")->action( $controller, $action, $query, 1, $isAdmin, $callBefore, $callAfter );
 	}
 }

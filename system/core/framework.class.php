@@ -24,6 +24,7 @@ class Framework
 	protected $_dbh;
 	protected $_tracker;
 	protected $_profiler;
+	protected $_isOffline;
 
 	final public function __construct( $url )
 	{
@@ -76,9 +77,6 @@ class Framework
 			return;
 		}
 
-		// init controller, if its an ajax call, do not render
-		$dispatch = new $this->_controllerName( $this->_controller, $this->_action, !$this->__isAjax, $this->_isAdmin );
-
 		if( $this->_isAjax )
 		{
 			$this->_tracker->set_enabled( false );
@@ -90,6 +88,14 @@ class Framework
 			require_once( ROOT . DS . 'application' . DS . "config" . DS . "init_hooks.php" );
 		}
 
+		if( ENVIRONMENT != "LIVE" && DEVELOPMENT_ENVIRONMENT == true && DEVELOPMENT_SHOW_CONTROLLER == true )
+		{
+			echo "After Check: " . $this->_controllerName . " C: " . $this->_controller . " A: " . $this->_action . " Q: " . implode( ",", $this->_queryString ) . "<br>";
+		}
+
+		// init controller, if its an ajax call, do not render
+		$dispatch = $this->create_dispatch( $this->_controller, $this->_action, !$this->__isAjax, $this->_isAdmin );
+
 		if( (int) method_exists( $this->_controllerName, $this->_action ) )
 		{
 			call_user_func_array( array( $dispatch, "beforeAction" ), $this->_queryString );
@@ -100,6 +106,67 @@ class Framework
 		{
 			die( "Error 0: Framework could not init" );
 		}
+	}
+
+	final public function set_execution( $controller, $action, $queryString )
+	{
+		$this->set_controller( $controller );
+		$this->set_action( $action );
+		$this->set_query_string( $queryString );
+	}
+
+	final public function set_controller_name( $controllerName )
+	{
+		$this->_controllerName = $controllerName;
+	}
+
+	final public function get_controller_name()
+	{
+		return $this->_controllerName;
+	}
+
+	final public function set_controller( $controller )
+	{
+		$this->_controller = $controller;
+	}
+
+	final public function get_controller()
+	{
+		return $this->_controller;
+	}
+
+	final public function set_action( $action )
+	{
+		$this->_action = $action;
+	}
+
+	final public function get_action()
+	{
+		return $this->_action;
+	}
+
+	final public function set_query_string( $queryString )
+	{
+		$this->_queryString = $queryString;
+	}
+
+	final public function get_query_string()
+	{
+		return $this->_queryString;
+	}
+
+	final protected function create_controller_name( $controller )
+	{
+		return ucfirst( $controller ) . 'Controller';
+	}
+
+	final protected function create_dispatch( $controller, $action, $render, $isAdmin = false )
+	{
+		$controllerName = $this->create_controller_name( $controller );
+
+		$obj = new $controllerName( $controller, $action, $render, $isAdmin );
+
+		return $obj;
 	}
 
 	final public function run_as_script()
@@ -125,7 +192,7 @@ class Framework
 		chdir( $pwd );
 	}
 
-	final public function action( $controller, $action, $queryString = null, $render = 0, $isAdmin = false )
+	final public function action( $controller, $action, $queryString = null, $render = 0, $isAdmin = false, $callBefore = false, $callAfter = false )
 	{
 		$oldTrackerVal = $this->_tracker->is_enabled();
 
@@ -136,12 +203,25 @@ class Framework
 			$queryString = array();
 		}
 
-		$controllerName = ucfirst( $controller ) . 'Controller';
-		$dispatch = new $controllerName( $controller, $action, $render, $isAdmin );
+		$controllerName = $this->create_controller_name( $controller );
+
+		$dispatch = $this->create_dispatch( $controller, $action, $render, $isAdmin );
 
 		$this->_tracker->set_enabled( $oldTrackerVal );
 
-		return call_user_func_array( array( $dispatch, $action ), $queryString );
+		if( $callBefore )
+		{
+			call_user_func_array( array( $dispatch, "beforeAction" ), $this->_queryString );
+		}
+
+		$actionResponse = call_user_func_array( array( $dispatch, $action ), $queryString );
+
+		if( $callAfter )
+		{
+			call_user_func_array( array( $dispatch, "afterAction" ), $this->_queryString );
+		}
+
+		return $actionResponse;
 	}
 
 	final public function load()
@@ -169,7 +249,8 @@ class Framework
 		$this->_tracker = new Tracker();
 
 		// init dbh
-		$this->_dbh = new SQLQuery( DB_HOST, DB_USER, DB_PASSWORD, DB_NAME );
+		$this->_dbh = new SQLConn( DB_HOST, DB_USER, DB_PASSWORD, DB_NAME );
+		$this->_isOffline = ( $this->_dbh->isValid() === false );
 	}
 
 	final protected function init_profiler()
@@ -199,6 +280,7 @@ class Framework
 
 		Registry::set( "_dbh", $this->_dbh, true );
 		Registry::set( "dbh", $this->_dbh, true );
+		Registry::set( "isOffline", $this->_isOffline, true );
 
 		Registry::set( "_tracker", $this->_tracker, true );
 		Registry::set( "_profiler", $this->_profiler, true );
@@ -229,6 +311,12 @@ class Framework
 				}
 			}
 
+			// reset action to index if controller isset
+			if( count( $urlArray ) >= 1 )
+			{
+				$action = "index";
+			}
+
 			// get controller
 			if( isset( $urlArray[0] ) )
 			{
@@ -236,6 +324,20 @@ class Framework
 
 				// pop off for action call
 				array_shift( $urlArray );
+
+				if( $controller == AJAX_ALIAS )
+				{
+					// set in registry
+					$this->_isAjax = true;
+
+					$controller = $this->_defaultPage['controller'];
+
+					if( isset( $urlArray[0] ) )
+					{
+						$controller = $urlArray[0];
+						array_shift( $urlArray );
+					}
+				}
 
 				// if is admin
 				if( $controller == ADMIN_ALIAS )
@@ -247,27 +349,17 @@ class Framework
 					// load default admin
 					$controller = $this->_defaultPage['admin']['controller'];
 					$action 	= $this->_defaultPage['admin']['action'];
-				}
-				else if( $controller == AJAX_ALIAS )
-				{
-					// set in registry
-					$this->_isAjax = true;
 
-					$controller = $this->_defaultPage['controller'];
-				}
-				else if( $controller == SCRIPTS_ALIAS )
-				{
-					$this->_isScript = true;
-				}
-
-				if( $this->_isAdmin || $this->_isAjax )
-				{
 					// get admin controller
 					if( isset( $urlArray[0] ) )
 					{
 						$controller = $urlArray[0];
 						array_shift( $urlArray );
 					}
+				}
+				else if( $controller == SCRIPTS_ALIAS )
+				{
+					$this->_isScript = true;
 				}
 			}
 
@@ -282,30 +374,26 @@ class Framework
 			$queryString = $urlArray;
 		}
 
-		$controllerName = ucfirst( $controller ) . 'Controller';
+		$controllerName = $this->create_controller_name( $controller );
+
 		if( ENVIRONMENT != "LIVE" && DEVELOPMENT_ENVIRONMENT == true && DEVELOPMENT_SHOW_CONTROLLER == true )
 		{
 			echo "Original: " . $controllerName . " C: " . $controller . " A: " . $action . " Q: " . implode( ",", $queryString ) . "<br>";
 		}
 
-		if( !class_exists( $controllerName ) || !method_exists( $controllerName, $action ) )
+		if( ( MAINTENANCE_MODE !== "OFF" && !isset( $_SESSION[MAINTENANCE_MODE_ACCESS_SESSION_VAR] ) ) || !class_exists( $controllerName ) || !method_exists( $controllerName, $action ) || $this->_isOffline )
 		{
 			$controllerName = "ErrorsController";
 			$controller 	= "errors";
-			$action 		= "index";
+			$action 		= ( MAINTENANCE_MODE !== "OFF" || $this->_isOffline ? "maintenance" : "index" );
 
 			$this->_tracker->set_enabled( false );
 		}
 
-		$this->_controllerName = $controllerName;
-		$this->_controller = $controller;
-		$this->_action = $action;
-		$this->_queryString = $queryString;
-
-		if( ENVIRONMENT != "LIVE" && DEVELOPMENT_ENVIRONMENT == true && DEVELOPMENT_SHOW_CONTROLLER == true )
-		{
-			echo "After Check: " . $controllerName . " C: " . $controller . " A: " . $action . " Q: " . implode( ",", $queryString ) . "<br>";
-		}
+		$this->set_controller_name( $controllerName );
+		$this->set_controller( $controller );
+		$this->set_action( $action );
+		$this->set_query_string( $queryString );
 	}
 
 	/** Check if environment is development and display errors **/
@@ -313,7 +401,7 @@ class Framework
 	{
 		error_reporting( E_ALL /* | E_STRICT */ );
 		ini_set( 'log_errors', 'On' );
-		ini_set( 'error_log', LOGS_DIR . LOG_FILE_NAME );
+		//ini_set( 'error_log', LOGS_DIR . LOG_FILE_NAME );
 
 		if( ENVIRONMENT != "LIVE" && DEVELOPMENT_ENVIRONMENT == true )
 		{
@@ -328,11 +416,11 @@ class Framework
 	/** Check for Magic Quotes and remove them **/
 	final protected function strip_slashes_deep( $value )
 	{
-		if( empty( $value ) )
+		/*if( empty( $value ) )
 		{
 			$value = "";
 		}
-		else if ( is_array( $value ) )
+		else */if ( is_array( $value ) )
 		{
 			$value = array_map( array( "self", "strip_slashes_deep" ), $value );
 		}
@@ -411,6 +499,10 @@ class Framework
 			"DOMAIN" => array( "%" ),
 			"DOMAIN_SECURE" => array( "", "%" ),
 			"AUTH_KEY" => array( "", "%" ),
+			"VERSION" => array( "%" ),
+			"MAINTENANCE_MODE" => array( "FULL", "PARTIAL", "OFF" ),
+			"MAINTENANCE_MODE_ACCESS_TOKEN" => array( "%" ),
+			"MAINTENANCE_MODE_ACCESS_SESSION_VAR" => array( "%" ),
 
 			// ** DEVELOPMENT VARIABLES ** //
 			"DEVELOPMENT_ENVIRONMENT" => array( true, false ),

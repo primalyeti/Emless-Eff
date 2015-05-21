@@ -19,6 +19,22 @@ Please see the Installation section of documentation/userguide.md
 
 Changelog
 --------------------------
+## Version 1.2
+Release Date May 21, 2015
+* Added
+	* Added SQL Cell, SQL Row, SQL Table, SQL Result and SQL Conn classes
+	* Added API support
+	* Added Maintenance Mode support
+	* Added pre and is_test methods
+* Updated
+	* Updated SQL Object, now broken up into multiple classes
+	* Updated framework class, improved maintainability further, improved AJAX and Script support
+	* Updated profiler default table column names
+* Fixed
+	* Misc bugs
+* Removed
+	* Removed documentation
+
 ## Version 1.1.9
 Release Date July 15th, 2013
 * Added
